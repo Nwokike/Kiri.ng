@@ -1,0 +1,7 @@
+{% load i18n %}
+<h2>{% trans "Join Kiri.ng Today" %}</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% trans "Sign Up" %}</button>
+</form>

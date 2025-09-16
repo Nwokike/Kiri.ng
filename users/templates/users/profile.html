@@ -1,0 +1,17 @@
+{% load i18n %}
+<h2>{{ user.username }}'s {% trans "Profile" %}</h2>
+<p><strong>{% trans "Role:" %}</strong> {{ user.profile.get_role_display }}</p>
+
+{% if user.profile.verified %}
+    <p style="color: green;"><strong>{% trans "Status: Verified" %}</strong></p>
+{% else %}
+    <p style="color: orange;"><strong>{% trans "Status: Not Verified" %}</strong></p>
+    <hr>
+    <h3>{% trans "Become a Verified User" %}</h3>
+    <p>{% trans "To unlock all features, like posting a service, please upload a clear photo of an ID (NIN slip, passport, etc.). Our team will manually review it within 24 hours." %}</p>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ p_form.as_p }}
+        <button type="submit">{% trans "Upload ID for Verification" %}</button>
+    </form>
+{% endif %}
