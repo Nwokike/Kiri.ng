@@ -1,0 +1,17 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <h2>{% trans "All Services" %}</h2>
+    <a href="{% url 'marketplace:service-create' %}">{% trans "Post a New Service" %}</a>
+    <hr>
+    {% for service in services %}
+        <article>
+            <h3><a href="{% url 'marketplace:service-detail' service.id %}">{{ service.title }}</a></h3>
+            <p>{% trans "Category:" %} {{ service.category.name }}</p>
+            <p><strong>NGN {{ service.price }}</strong></p>
+        </article>
+    {% empty %}
+        <p>{% trans "No services have been posted yet." %}</p>
+    {% endfor %}
+{% endblock content %}

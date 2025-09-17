@@ -1,0 +1,35 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <article>
+        {% if object.image %}
+            <img src="{{ object.image.url }}" alt="{{ object.title }}" style="max-width: 300px;">
+        {% endif %}
+        <h2>{{ object.title }}</h2>
+        <p>{% trans "Category:" %} {{ object.category.name }}</p>
+        <p><strong>NGN {{ object.price }}</strong></p>
+        <p>{{ object.description|linebreaks }}</p>
+    </article>
+    <hr>
+    
+    <section>
+        <h3>{% trans "Book this Service" %}</h3>
+        <p>{% trans "Booking functionality coming soon!" %}</p>
+        </section>
+    <hr>
+    
+    <section>
+        <h3>{% trans "Reviews" %}</h3>
+        <p>{% trans "Review functionality coming soon!" %}</p>
+        {% for review in object.reviews.all %}
+            <article>
+                <strong>{{ review.reviewer.username }}</strong> - {{ review.rating }}/5
+                <p>{{ review.comment }}</p>
+            </article>
+        {% empty %}
+            <p>{% trans "No reviews yet." %}</p>
+        {% endfor %}
+    </section>
+
+{% endblock content %}

@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls', namespace='core')), 
     path('accounts/', include('users.urls', namespace='users')),
+    path('', include('marketplace.urls', namespace='marketplace')),
 ]
 
 # This line is to serve media files during development

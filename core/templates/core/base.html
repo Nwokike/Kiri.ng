@@ -1,0 +1,31 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "Kiri.ng" %}</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'core:home' %}">{% trans "Home" %}</a> |
+        <a href="{% url 'marketplace:service-list' %}">{% trans "Browse Services" %}</a>
+        {% if user.is_authenticated %}
+            | <a href="{% url 'users:profile' %}">{% trans "Profile" %}</a>
+            | <a href="{% url 'users:logout' %}">{% trans "Logout" %}</a>
+        {% else %}
+            | <a href="{% url 'users:login' %}">{% trans "Login" %}</a>
+            | <a href="{% url 'users:signup' %}">{% trans "Sign Up" %}</a>
+        {% endif %}
+    </nav>
+    <hr>
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 10px; margin: 10px 0; border: 1px solid green; color: green;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</body>
+</html>
