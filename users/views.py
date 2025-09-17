@@ -20,14 +20,16 @@ def signup(request):
 
 @login_required
 def profile(request):
-    if request.method == 'POST':
+    # We check if the form is being submitted
+    if request.method == 'POST' and not request.user.profile.verified:
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
         if p_form.is_valid():
             p_form.save()
-            messages.success(request, _('Your ID has been uploaded and is awaiting verification.'))
+            messages.success(request, _('Your ID has been uploaded and is now awaiting verification.'))
             return redirect('users:profile')
     else:
-        p_form = ProfileUpdateForm(instance=request.user.profile)
+        # This will be an empty form if the user is not verified, or None if they are.
+        p_form = ProfileUpdateForm(instance=request.user.profile) if not request.user.profile.verified else None
         
     context = {
         'p_form': p_form
