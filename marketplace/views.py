@@ -13,6 +13,7 @@ from .forms import ServiceCreateForm, BookingForm, ReviewForm
 from .recommender import get_similar_services
 
 
+
 class ServiceListView(generic.ListView):
     model = Service
     template_name = 'marketplace/service_list.html'
@@ -53,9 +54,9 @@ class ServiceDetailView(generic.DetailView):
         service = self.get_object()
         
         # Call our recommender function
-        recommended_services = get_similar_services(service.id)
+        recommended_services = get_similar_services(service) 
 
         context['booking_form'] = BookingForm()
         context['review_form'] = ReviewForm()
-        context['recommended_services'] = recommended_services # <-- Add recommendations to context
+        context['recommended_services'] = recommended_services 
         return context
