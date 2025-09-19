@@ -31,5 +31,21 @@
             <p>{% trans "No reviews yet." %}</p>
         {% endfor %}
     </section>
+  {# START NEW RECOMMENDATIONS SECTION #}
+    {% if recommended_services %}
+    <hr>
+    <section>
+        <h3>{% trans "You might also like" %}</h3>
+        <div style="display: flex; gap: 20px;">
+        {% for rec_service in recommended_services %}
+            <article style="border: 1px solid #ccc; padding: 10px;">
+                <h4><a href="{% url 'marketplace:service-detail' rec_service.id %}">{{ rec_service.title }}</a></h4>
+                <p><strong>NGN {{ rec_service.price }}</strong></p>
+            </article>
+        {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    {# END NEW RECOMMENDATIONS SECTION #}
 
 {% endblock content %}

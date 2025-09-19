@@ -1,11 +1,9 @@
 from django.shortcuts import render, redirect
-
 # Create your views here.
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
-from .forms import SignupForm, ProfileUpdateForm
-
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
@@ -35,3 +33,8 @@ def profile(request):
         'p_form': p_form
     }
     return render(request, 'users/profile.html', context)
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, _("You have been successfully logged out."))
+    return redirect('core:home')

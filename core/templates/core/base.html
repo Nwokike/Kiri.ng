@@ -39,7 +39,11 @@
     {# Google Translate Widget Script #}
     <script type="text/javascript">
     function googleTranslateElementInit() {
-      new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+      new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          // THIS IS THE NEW LINE: It limits the languages in the dropdown.
+          includedLanguages: 'en,ha,ig,yo'
+      }, 'google_translate_element');
     }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>

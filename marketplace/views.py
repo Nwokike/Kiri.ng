@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from core.models import Service
 from .models import Booking, Review
 from .forms import ServiceCreateForm, BookingForm, ReviewForm
+from .recommender import get_similar_services
 
 
 class ServiceListView(generic.ListView):
@@ -17,16 +18,6 @@ class ServiceListView(generic.ListView):
     template_name = 'marketplace/service_list.html'
     context_object_name = 'services'
 
-
-class ServiceDetailView(generic.DetailView):
-    model = Service
-    template_name = 'marketplace/service_detail.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['booking_form'] = BookingForm()
-        context['review_form'] = ReviewForm()
-        return context
 
 
 class ServiceCreateView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView):
@@ -51,3 +42,20 @@ class ServiceCreateView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateV
         messages.success(self.request, _("Your service has been created successfully!"))
         return super().form_valid(form)
 
+class ServiceDetailView(generic.DetailView):
+    model = Service
+    template_name = 'marketplace/service_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Get the current service object
+        service = self.get_object()
+        
+        # Call our recommender function
+        recommended_services = get_similar_services(service.id)
+
+        context['booking_form'] = BookingForm()
+        context['review_form'] = ReviewForm()
+        context['recommended_services'] = recommended_services # <-- Add recommendations to context
+        return context
