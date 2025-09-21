@@ -1,23 +1,25 @@
 from django.db import models
-
-# Create your models here.
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 class LearningPathway(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pathways')
     goal = models.TextField(_("User's Goal"))
-    generated_modules = models.JSONField(default=list, help_text=_("The raw AI-generated module structure."))
+    location = models.CharField(_("Location"), max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Pathway for {self.user.username}: {self.goal[:50]}..."
+        return f"Pathway for {self.user.username} in {self.location}"
 
 class PathwayModule(models.Model):
     pathway = models.ForeignKey(LearningPathway, on_delete=models.CASCADE, related_name='modules')
     title = models.CharField(_("Module Title"), max_length=255)
     order = models.PositiveIntegerField(default=0)
     is_completed = models.BooleanField(default=False)
+    written_content = models.TextField(_("Original Written Content"), blank=True)
+    video_url = models.URLField(_("Supplementary Video URL"), blank=True, null=True)
+    content_generated = models.BooleanField(default=False)
+    youtube_search_query = models.CharField(max_length=255, blank=True)
 
     class Meta:
         ordering = ['order']
@@ -26,15 +28,10 @@ class PathwayModule(models.Model):
         return f"{self.order}: {self.title}"
 
 class ModuleStep(models.Model):
-    STEP_TYPES = (('video', _('Video')), ('article', _('Article')), ('task', _('Practical Task')))
     module = models.ForeignKey(PathwayModule, on_delete=models.CASCADE, related_name='steps')
     title = models.CharField(_("Step Title"), max_length=255)
-    content_url = models.URLField(_("Content URL"), blank=True, null=True)
-    description = models.TextField(_("Description"), blank=True)
-    step_type = models.CharField(max_length=10, choices=STEP_TYPES, default='video')
     order = models.PositiveIntegerField(default=0)
-    is_completed = models.BooleanField(default=False)
-
+    
     class Meta:
         ordering = ['order']
 

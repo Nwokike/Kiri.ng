@@ -15,15 +15,16 @@
     <div id="google_translate_element" style="text-align: right; padding: 10px;"></div>
 
     <nav>
-        <a href="{% url 'core:home' %}">{% trans "Home" %}</a> |
-        <a href="{% url 'marketplace:service-list' %}">{% trans "Browse Services" %}</a>
-        {% if user.is_authenticated %}
-            | <a href="{% url 'users:profile' %}">{% trans "Profile" %}</a>
-            | <a href="{% url 'users:logout' %}">{% trans "Logout" %}</a>
-        {% else %}
-            | <a href="{% url 'users:login' %}">{% trans "Login" %}</a>
-            | <a href="{% url 'users:signup' %}">{% trans "Sign Up" %}</a>
-        {% endif %}
+    <a href="{% url 'core:home' %}">{% trans "Home" %}</a> |
+    <a href="{% url 'marketplace:service-list' %}">{% trans "Browse Services" %}</a> |
+    <a href="{% url 'academy:dashboard' %}">{% trans "My Academy" %}</a> {# <-- THIS IS THE NEW LINK #}
+    {% if user.is_authenticated %}
+        | <a href="{% url 'users:profile' %}">{% trans "Profile" %}</a>
+        | <a href="{% url 'users:logout' %}">{% trans "Logout" %}</a>
+    {% else %}
+        | <a href="{% url 'users:login' %}">{% trans "Login" %}</a>
+        | <a href="{% url 'users:signup' %}">{% trans "Sign Up" %}</a>
+    {% endif %}
     </nav>
     <hr>
     {% if messages %}

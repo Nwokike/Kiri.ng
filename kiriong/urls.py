@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('core.urls', namespace='core')),
     path('accounts/', include('users.urls', namespace='users')),
     path('', include('marketplace.urls', namespace='marketplace')),
+    path('', include('academy.urls', namespace='academy')), # <-- Add this line for the Academy app
 ]
 
 # This line is to serve media files during development

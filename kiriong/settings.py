@@ -120,3 +120,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Where to redirect users after a successful login.
 LOGIN_REDIRECT_URL = 'core:home'
+
+# This tells the browser to securely send referrer information when making requests,
+# which is required for embedding YouTube videos.
+SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"

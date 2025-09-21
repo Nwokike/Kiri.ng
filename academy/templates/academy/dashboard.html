@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <h2>{% trans "Welcome to the Kiri.ng Academy" %}</h2>
+    <p>{% trans "This is your personal growth engine. To get started, tell us your main business goal, and our AI mentor will design a custom learning pathway just for you." %}</p>
+    <hr>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
+            {% trans "Generate My Pathway" %}
+        </button>
+    </form>
+{% endblock content %}
