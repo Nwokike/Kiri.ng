@@ -1,61 +1,104 @@
-{% load i18n %}
 {% load static %}
+{% load i18n %}
+
 <!DOCTYPE html>
-<html lang="{{ request.LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
-    <title>{% trans "Kiri.ng" %}</title>
-    {# Add these lines for PWA #}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiri.ng</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
     <link rel="manifest" href="{% static 'manifest.json' %}">
-    <meta name="theme-color" content="#4A90E2">
+    
+    <style>
+        body { padding-top: 70px; } /* Offset for fixed navbar */
+        .footer { background-color: #f8f9fa; padding: 20px 0; }
+    </style>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'core:home' %}">Kiri.ng</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:home' %}">{% trans "Home" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'marketplace:service-list' %}">{% trans "Browse Services" %}</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'academy:dashboard' %}">{% trans "My Academy" %}</a>
+                        </li>
+                    {% endif %}
+                </ul>
 
-    {# This div is where the Google Translate widget will appear #}
-    <div id="google_translate_element" style="text-align: right; padding: 10px;"></div>
+                <ul class="navbar-nav">
+                    <li class="nav-item me-2">
+                        <div id="google_translate_element"></div>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'users:profile-detail' %}">{% trans "Profile" %}</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">{% trans "Logout" %}</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">{% trans "Login" %}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:signup' %}">{% trans "Sign Up" %}</a>
+                        </li>
 
-    <nav>
-    <a href="{% url 'core:home' %}">{% trans "Home" %}</a> |
-    <a href="{% url 'marketplace:service-list' %}">{% trans "Browse Services" %}</a> |
-    <a href="{% url 'academy:dashboard' %}">{% trans "My Academy" %}</a> {# <-- THIS IS THE NEW LINK #}
-    {% if user.is_authenticated %}
-        | <a href="{% url 'users:profile' %}">{% trans "Profile" %}</a>
-        | <a href="{% url 'users:logout' %}">{% trans "Logout" %}</a>
-    {% else %}
-        | <a href="{% url 'users:login' %}">{% trans "Login" %}</a>
-        | <a href="{% url 'users:signup' %}">{% trans "Sign Up" %}</a>
-    {% endif %}
-    </nav>
-    <hr>
-    {% if messages %}
-        {% for message in messages %}
-            <div style="padding: 10px; margin: 10px 0; border: 1px solid green; color: green;">
-                {{ message }}
+                    {% endif %}
+                </ul>
             </div>
-        {% endfor %}
-    {% endif %}
+        </div>
+    </nav>
 
-    {% block content %}{% endblock %}
+    <main class="container my-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
 
-    {# Google Translate Widget Script #}
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">© {% now "Y" %} Kiri.ng - {% trans "Empowering Artisans." %}</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
     <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          // THIS IS THE NEW LINE: It limits the languages in the dropdown.
-          includedLanguages: 'en,ha,ig,yo'
-      }, 'google_translate_element');
-    }
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,ha,ig,yo', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+        }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-    {# PWA Service Worker Script #}
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register("{% static 'sw.js' %}");
-            });
-        }
-    </script>
 </body>
 </html>

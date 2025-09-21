@@ -1,19 +1,3 @@
-"""
-URL configuration for kiriong project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -21,12 +5,18 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('core.urls', namespace='core')),
-    path('accounts/', include('users.urls', namespace='users')),
-    path('', include('marketplace.urls', namespace='marketplace')),
-    path('', include('academy.urls', namespace='academy')), # <-- Add this line for the Academy app
+    
+    # --- THIS IS THE FIX ---
+    # This single line includes all of Django's built-in auth URLs
+    # like login/, logout/, password_reset/, etc.
+    path('accounts/', include('django.contrib.auth.urls')),
+    
+    # Our custom app URLs
+    path('', include('core.urls')),
+    path('users/', include('users.urls')),
+    path('services/', include('marketplace.urls')),
+    path('academy/', include('academy.urls')),
 ]
 
-# This line is to serve media files during development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from .forms import GoalForm
 from .ai_services import generate_pathway_outline, generate_module_content, fetch_youtube_video
-from .models import LearningPathway, PathwayModule, ModuleStep
+from .models import LearningPathway, PathwayModule, ModuleStep, Badge, UserBadge
 
 class AcademyDashboardView(LoginRequiredMixin, View):
     template_name = 'academy/dashboard.html'
@@ -36,11 +36,12 @@ class AcademyDashboardView(LoginRequiredMixin, View):
                         youtube_search_query=module_data.get('youtube_search_query', ''),
                         order=module_order
                     )
-                    # This now correctly loops through a list of step objects
-                    for step_order, step_data in enumerate(module_data.get('steps', [])):
+                    # --- THIS LOGIC IS NOW CORRECT ---
+                    # It correctly loops through the simple list of step strings.
+                    for step_order, step_title in enumerate(module_data.get('steps', [])):
                         ModuleStep.objects.create(
                             module=module,
-                            title=step_data.get('title', 'Untitled Step'),
+                            title=step_title,
                             order=step_order
                         )
                 messages.success(request, _("Your personalized learning pathway outline has been generated!"))
@@ -88,6 +89,20 @@ def complete_module(request, module_id):
     if request.method == 'POST':
         module.is_completed = True
         module.save()
-        messages.success(request, _(f"Module '{module.title}' completed! The next module is unlocked."))
-        return redirect('academy:pathway-detail', pk=module.pathway.pk)
+
+        pathway = module.pathway
+        if not pathway.modules.filter(is_completed=False).exists():
+            print("Pathway complete! Attempting to award badge...")
+            try:
+                badge = Badge.objects.get(title="Academy Graduate")
+                UserBadge.objects.get_or_create(user=request.user, badge=badge)
+                messages.success(request, f"Congratulations! You've completed the entire pathway and earned the '{badge.title}' badge!")
+            except Badge.DoesNotExist:
+                print("CRITICAL: The 'Academy Graduate' badge does not exist in the admin panel.")
+                messages.info(request, "You've completed the entire pathway!")
+        else:
+             messages.success(request, f"Module '{module.title}' completed! The next module is unlocked.")
+
+        return redirect('academy:pathway-detail', pk=pathway.pk)
+    
     return redirect('academy:pathway-detail', pk=module.pathway.pk)

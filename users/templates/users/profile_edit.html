@@ -1,0 +1,139 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% trans "Edit Your Profile" %}</h2>
+    <p>{% trans "Keep your information up to date. A verified address is required to become a Kiri.ng Artisan." %}</p>
+    <hr>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label class="form-label">{{ form.bio.label }}</label>
+            {{ form.bio }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">{{ form.phone_number.label }}</label>
+            {{ form.phone_number }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">{{ form.profile_picture.label }}</label>
+            {{ form.profile_picture }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">{{ form.business_page_url.label }}</label>
+            {{ form.business_page_url }}
+        </div>
+
+        <hr class="my-4">
+
+        <h4>{% trans "Business Address (Verified by GPS)" %}</h4>
+        <p><small>{% trans "Verify your location to set your City and State. You can then edit your Street Address." %}</small></p>
+        
+        <div class="mb-3">
+            <label class="form-label">{{ form.street_address.label }}</label>
+            {{ form.street_address }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">{{ form.city.label }}</label>
+            <input type="text" id="visible_city" class="form-control" value="{{ form.instance.verified_city|default:'' }}" readonly>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">{{ form.state.label }}</label>
+            <input type="text" id="visible_state" class="form-control" value="{{ form.instance.verified_state|default:'' }}" readonly>
+        </div>
+        
+        <input type="hidden" id="id_verified_city" name="verified_city" value="{{ form.instance.verified_city|default:'' }}">
+        <input type="hidden" id="id_verified_state" name="verified_state" value="{{ form.instance.verified_state|default:'' }}">
+
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="consentCheck">
+            <label class="form-check-label" for="consentCheck">
+                {% trans "I confirm I am currently at my business address and consent to sharing my location for verification." %}
+            </label>
+        </div>
+
+        <button type="button" class="btn btn-info" id="verifyLocationBtn" disabled>{% trans "Verify My Location Now" %}</button>
+        <div id="verificationStatus" class="mt-2"></div>
+        <hr class="my-4">
+
+        <button type="submit" class="btn btn-primary mt-3">{% trans "Save Changes" %}</button>
+    </form>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const consentCheck = document.getElementById('consentCheck');
+    const verifyBtn = document.getElementById('verifyLocationBtn');
+    const statusDiv = document.getElementById('verificationStatus');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    consentCheck.addEventListener('change', function () {
+        verifyBtn.disabled = !this.checked;
+    });
+
+    verifyBtn.addEventListener('click', function () {
+        statusDiv.innerHTML = `<span class="text-primary">{% trans "Getting your location..." %}</span>`;
+        verifyBtn.disabled = true;
+
+        if (!navigator.geolocation) {
+            statusDiv.innerHTML = `<span class="text-danger">{% trans "Geolocation is not supported by your browser." %}</span>`;
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(success, error);
+    });
+
+    function success(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        statusDiv.innerHTML = `<span class="text-success">✅ {% trans "Location found! Verifying..." %}</span>`;
+        
+        fetch("{% url 'users:verify-location' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({
+                latitude: latitude,
+                longitude: longitude
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                statusDiv.innerHTML = `<div class="alert alert-success"><strong>{% trans "Location Verified!" %}</strong> {% trans "Your City and State have been set automatically. Please confirm your Street Address and save." %}</div>`;
+                verifyBtn.style.display = 'none';
+                consentCheck.disabled = true;
+
+                const addressParts = data.address.split(', ');
+                const city = addressParts[1] || '';
+                const state = addressParts[2] || '';
+                
+                // --- THIS IS THE FIX ---
+                // We now target the correct fields by their unique IDs.
+                document.getElementById('id_verified_city').value = city;
+                document.getElementById('id_verified_state').value = state;
+                document.getElementById('visible_city').value = city;
+                document.getElementById('visible_state').value = state;
+            } else {
+                error();
+            }
+        })
+        .catch(err => {
+            console.error('Fetch Error:', err);
+            error();
+        });
+    }
+
+    function error() {
+        statusDiv.innerHTML = `<span class="text-danger">{% trans "Unable to verify your location. Please ensure you have enabled location services and try again." %}</span>`;
+        verifyBtn.disabled = false;
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

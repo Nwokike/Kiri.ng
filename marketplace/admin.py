@@ -1,13 +1,13 @@
 from django.contrib import admin
+from .models import Category, Service
 
-# Register your models here.
-from .models import Booking, Review
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
 
-@admin.register(Booking)
-class BookingAdmin(admin.ModelAdmin):
-    list_display = ('service', 'buyer', 'booking_date', 'status')
-    list_filter = ('status',)
-
-@admin.register(Review)
-class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('service', 'reviewer', 'rating', 'created_at')
+@admin.register(Service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'entrepreneur', 'price', 'created_at')
+    list_filter = ('category', 'created_at')
+    search_fields = ('title', 'description', 'entrepreneur__username')

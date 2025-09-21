@@ -1,0 +1,40 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>{{ profile.user.username }}'s {% trans "Profile" %}</h2>
+        <a href="{% url 'users:profile-edit' %}" class="btn btn-secondary">{% trans "Edit Profile" %}</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {% if profile.profile_picture %}
+                <img src="{{ profile.profile_picture.url }}" alt="{{ profile.user.username }}'s profile picture" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+            {% endif %}
+
+            <h5 class="card-title">{{ profile.user.get_full_name|default:profile.user.username }}</h5>
+            
+            {% if profile.is_verified_artisan %}
+                <p><span class="badge bg-success fs-6">{% trans "Verified Artisan" %}</span></p>
+            {% endif %}
+
+            <p class="card-text"><strong>Bio:</strong> {{ profile.bio|linebreaksbr|default:"No bio provided." }}</p>
+            <p class="card-text"><strong>{% trans "Phone Number:" %}</strong> {{ profile.phone_number|default:"Not provided." }}</p>
+            
+            <p class="card-text"><strong>{% trans "Address:" %}</strong> 
+                {% if profile.is_verified_artisan %}
+                    {{ profile.street_address }}, {{ profile.city }}, {{ profile.state }}
+                {% else %}
+                    {% trans "Address not verified." %}
+                {% endif %}
+            </p>
+            
+            {% if profile.google_maps_link %}
+                <a href="{{ profile.google_maps_link }}" class="btn btn-info" target="_blank">{% trans "View on Google Maps" %}</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

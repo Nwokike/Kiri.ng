@@ -27,7 +27,6 @@ def generate_module_content(module_title, previous_module_title=None):
         if previous_module_title:
             context_prompt = f"The student just finished a module on '{previous_module_title}' and is now starting a new module on '{module_title}'."
 
-        # --- THIS IS THE NEW, SIMPLER PROMPT ---
         prompt = f"""
         You are an expert teacher creating a lesson for a Nigerian entrepreneur. {context_prompt}
         Your task is to write a complete, cohesive lesson that flows logically and uses markdown for formatting.
@@ -50,10 +49,13 @@ def generate_pathway_outline(goal, location):
     try:
         gemini_api_key = os.getenv('GEMINI_API_KEY')
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_api_key}"
+        # --- THIS PROMPT IS NOW CORRECTED ---
         prompt = f"""
         You are an expert curriculum designer for Nigerian entrepreneurs in {location}, Nigeria. A user's goal is: "{goal}"
-        Design a 5-module curriculum. For each module, provide a "title" and a single, concise "youtube_search_query". For each module, also create a list of 2-3 step objects, each with a "title" key.
+        Design a 5-module curriculum. For each module, provide a "title", a concise "youtube_search_query", and a simple list of 2-3 step "titles".
         Return ONLY a valid JSON object.
+        Example for one module:
+        {{ "title": "Module 1", "youtube_search_query": "search term", "steps": ["Defining Your Brand", "Market Research"] }}
         """
         payload = {"contents": [{"parts": [{"text": prompt}]}], "generation_config": {"response_mime_type": "application/json"}}
         headers = {'Content-Type': 'application/json'}

@@ -1,8 +1,0 @@
-{% load i18n %}
-<h2>{% trans "Log In" %}</h2>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">{% trans "Log In" %}</button>
-</form>
-<p><a href="{% url 'users:signup' %}">{% trans "Don't have an account? Sign Up" %}</a></p>

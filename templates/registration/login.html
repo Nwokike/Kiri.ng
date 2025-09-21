@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>{% trans "Log In" %}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary w-100">{% trans "Log In" %}</button>
+                    </form>
+                    <hr>
+                    <p class="text-center">{% trans "Don't have an account?" %} <a href="{% url 'users:signup' %}">{% trans "Sign Up" %}</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,22 +1,14 @@
 from django import forms
-from django.utils.translation import gettext_lazy as _
-from .models import Booking, Review
-from core.models import Service
+from .models import Service
 
-class ServiceCreateForm(forms.ModelForm):
+class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
-        fields = ['title', 'description', 'price', 'category', 'image']
-
-class BookingForm(forms.ModelForm):
-    class Meta:
-        model = Booking
-        fields = ['booking_date', 'notes']
+        fields = ['category', 'title', 'description', 'price', 'image']
         widgets = {
-            'booking_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
         }
-
-class ReviewForm(forms.ModelForm):
-    class Meta:
-        model = Review
-        fields = ['rating', 'comment']
