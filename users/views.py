@@ -6,7 +6,11 @@ from .forms import CustomUserCreationForm, ProfileUpdateForm
 from .models import Profile
 from django.http import JsonResponse
 import json
-import requests # <-- THIS IS THE FIX
+import requests
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+import urllib.parse
 
 def signup(request):
     if request.method == 'POST':
@@ -25,31 +29,67 @@ def profile_view(request):
     profile, created = Profile.objects.get_or_create(user=request.user)
     return render(request, 'users/profile_detail.html', {'profile': profile})
 
+def send_welcome_artisan_email(user, profile):
+    """
+    Sends a welcome email to a newly verified artisan with a link
+    to create their Google Business Profile.
+    """
+    # Create the pre-filled Google link
+    params = {
+        'business_name': user.get_full_name() or user.username,
+        'address_line_1': profile.street_address,
+        'address_line_2': f"{profile.city}, {profile.state}",
+        'phone_number': profile.phone_number
+    }
+    encoded_params = urllib.parse.urlencode(params)
+    google_link = f"https://www.google.com/business/add?{encoded_params}"
+
+    context = {
+        'user': user,
+        'google_link': google_link
+    }
+    html_message = render_to_string('registration/welcome_artisan_email.html', context)
+    plain_message = strip_tags(html_message)
+    
+    send_mail(
+        'Welcome to Kiri.ng! Your Next Step Awaits.',
+        plain_message,
+        'noreply@kiri.ng', # This can be any "from" address
+        [user.email],
+        html_message=html_message,
+        fail_silently=False, # Set to True in production if needed
+    )
+    print(f"Welcome email sent to {user.email}")
+
+
 @login_required
 def profile_edit_view(request):
     profile = get_object_or_404(Profile, user=request.user)
+    
+    # Track the verification status before any changes are made
+    was_verified_before = profile.is_verified_artisan
+
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             updated_profile = form.save(commit=False)
 
-            # --- THE FIX: Read from the hidden fields ---
             if profile.location_verified:
-                # Get the verified city/state from the hidden POST data
                 updated_profile.city = request.POST.get('verified_city', profile.verified_city)
                 updated_profile.state = request.POST.get('verified_state', profile.verified_state)
             
-            # Automated verification logic
             if updated_profile.location_verified and updated_profile.business_page_url:
-                if not updated_profile.is_verified_artisan:
-                    updated_profile.is_verified_artisan = True
-                    messages.success(request, 'Congratulations! You are now a Kiri.ng Verified Artisan.')
-                else:
-                    messages.success(request, 'Your profile has been updated successfully!')
-            else:
-                 messages.info(request, 'Your profile has been updated. Complete all verification steps to become an artisan.')
-
+                updated_profile.is_verified_artisan = True
+            
             updated_profile.save()
+
+            # Check if the user just became verified in this save operation
+            if updated_profile.is_verified_artisan and not was_verified_before:
+                messages.success(request, 'Congratulations! You are now a Kiri.ng Verified Artisan. Check your email for the next step!')
+                send_welcome_artisan_email(request.user, updated_profile)
+            else:
+                messages.success(request, 'Your profile has been updated successfully!')
+
             return redirect('users:profile-detail')
     else:
         form = ProfileUpdateForm(instance=profile)

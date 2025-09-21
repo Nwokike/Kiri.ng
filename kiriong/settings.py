@@ -45,7 +45,6 @@ ROOT_URLCONF = 'kiriong.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # --- THIS IS THE FIX ---
         'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -91,9 +90,13 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# --- THIS IS THE FIX ---
+# Tell Django to print emails to the console during development
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'core:home'
-LOGIN_URL = 'login' # This should match the name in your main urls.py
+LOGIN_URL = 'login'
 
 SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"
