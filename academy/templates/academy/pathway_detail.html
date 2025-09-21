@@ -9,39 +9,37 @@
     
     {% for module in pathway.modules.all %}
         {% if module.is_completed %}
-            {# --- NEW STYLE FOR COMPLETED (AND VIEWABLE) MODULES --- #}
-            <section style="margin-bottom: 1em; padding: 15px; background-color: #e8f5e9; border-left: 3px solid #4CAF50;">
-                <h3 style="color: #2e7d32;">✅ {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }} (Completed)</h3>
+            {# --- Your preferred design for COMPLETED modules --- #}
+            <details style="margin-bottom: 1em; padding: 15px; background-color: #e8f5e9; border-left: 3px solid #4CAF50; border-radius: 5px;">
+                <summary style="cursor: pointer; font-weight: bold; color: #2e7d32;">✅ {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }} (Completed - Click to review)</summary>
                 
-                {% if module.video_url %}
-                    <div style="margin-top: 10px;">
-                        <iframe width="560" height="315" 
-                                src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" 
-                                title="YouTube video player" frameborder="0" allowfullscreen>
-                        </iframe>
-                    </div>
-                {% endif %}
-
-                {% if module.written_content %}
-                     <div style="margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
-                        {{ module.written_content|markdownify }}
-                     </div>
-                {% endif %}
-            </section>
+                <div style="margin-top: 15px;">
+                    {% if module.video_url %}
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
+                        <p style="font-size: 0.9em; color: #666;">If the video is unavailable, <a href="{{ module.video_url }}" target="_blank" rel="noopener noreferrer">click here to watch on YouTube</a>.</p>
+                    {% endif %}
+                    {% if module.written_content %}
+                        <div style="margin-top: 15px; padding: 10px; background-color: #ffffff; border-radius: 5px;">
+                            {{ module.written_content|markdownify }}
+                        </div>
+                    {% endif %}
+                </div>
+            </details>
 
         {% elif module == unlocked_module %}
-            {# --- STYLE FOR THE CURRENT, UNLOCKED MODULE --- #}
+            {# --- Your preferred design for the CURRENT module --- #}
             <section style="margin-bottom: 1em; padding: 15px; border: 1px solid #ccc; border-left: 3px solid #2196F3;">
                 <h3>{% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</h3>
                 
                 {% if module.video_url %}
                     <div style="margin-top: 10px;">
-                        <iframe width="560" height="315" 
-                                src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" 
-                                title="YouTube video player" frameborder="0" allowfullscreen>
-                        </iframe>
-                    </div>
-                {% endif %}
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
+                        <p style="font-size: 0.9em; color: #666;">If the video is unavailable, <a href="{{ module.video_url }}" target="_blank" rel="noopener noreferrer">click here to watch on YouTube</a>.</p>
+                    {% else %}
+                         <div style="margin-top: 15px; padding: 40px; text-align: center; background-color: #f9f9f9; border-radius: 5px;">
+                            <p><strong>{% trans "Generating your lesson, please wait a few moments..." %}</strong></p>
+                         </div>
+                    {% endif %}
 
                 {% if module.written_content %}
                      <div style="margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
@@ -50,29 +48,27 @@
                 {% endif %}
                 
                 <hr>
-                <p><strong>{% trans "Steps in this module:" %}</strong></p>
+                <p><strong>{% trans "Topics in this module:" %}</strong></p>
                 <ul>
                 {% for step in module.steps.all %}
-                    <li>{{ step.title }}</li> {# <-- Step title is now fixed #}
+                    <li>{{ step.title }}</li>
                 {% endfor %}
                 </ul>
 
                 <hr>
-                {# --- THE VALIDATION FORM --- #}
+                {# --- The simplified validation form --- #}
                 <form action="{% url 'academy:complete-module' module.id %}" method="POST">
                     {% csrf_token %}
-                    <label for="takeaway"><strong>{% trans "To complete this module, what is your key takeaway?" %}</strong></label>
-                    <br>
-                    <textarea name="takeaway" id="takeaway" rows="3" style="width: 80%; margin-top: 10px;" required minlength="50" placeholder="Type at least 50 characters..."></textarea>
-                    <br>
+                    <label for="validation_answer" class="form-label"><strong>{% trans "Your Answer" %}</strong></label>
+                    <textarea name="validation_answer" id="validation_answer" rows="4" style="width: 100%; max-width: 600px; margin-top: 10px; display: block;" required minlength="50" placeholder="Write your answer here to unlock the next module..."></textarea>
                     <button type="submit" style="margin-top: 10px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
-                        {% trans "Mark as Complete & Unlock Next Module" %}
+                        {% trans "Submit & Unlock Next Module" %}
                     </button>
                 </form>
             </section>
         
         {% else %}
-            {# --- STYLE FOR LOCKED MODULES --- #}
+            {# --- Your preferred design for LOCKED modules --- #}
              <section style="margin-bottom: 1em; padding: 15px; background-color: #f5f5f5; border-left: 3px solid #9e9e9e;">
                 <h3 style="color: #616161;">🔒 {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }} (Locked)</h3>
             </section>

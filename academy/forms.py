@@ -15,11 +15,19 @@ NIGERIAN_STATES = [
 class GoalForm(forms.Form):
     goal = forms.CharField(
         label=_("What is your primary goal?"),
-        widget=forms.Textarea(attrs={'rows': 3}),
-        help_text=_("Be as specific as you can.")
+        help_text=_("Be as specific as you can."),
+        # --- THIS IS THE FIX ---
+        widget=forms.Textarea(attrs={
+            'class': 'form-control', 
+            'rows': 3
+        })
     )
     location = forms.ChoiceField(
         label=_("Which state are you based in?"),
         choices=NIGERIAN_STATES,
-        help_text=_("This helps the AI give you localized advice.")
+        help_text=_("This helps the AI give you localized advice."),
+        # --- THIS IS THE FIX ---
+        widget=forms.Select(attrs={
+            'class': 'form-select'
+        })
     )

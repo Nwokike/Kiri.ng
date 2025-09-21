@@ -1,4 +1,3 @@
-import json 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views import generic
@@ -21,8 +20,6 @@ class AcademyDashboardView(LoginRequiredMixin, View):
         form = GoalForm()
         return render(request, self.template_name, {'form': form})
 
-    # In academy/views.py
-
     def post(self, request, *args, **kwargs):
         form = GoalForm(request.POST)
         if form.is_valid():
@@ -30,32 +27,28 @@ class AcademyDashboardView(LoginRequiredMixin, View):
             location = form.cleaned_data['location']
             pathway_outline = generate_pathway_outline(goal, location)
 
-            # --- THIS IS THE FINAL FIX ---
-            # We check for the 'curriculum' key that the AI is sending.
-            if pathway_outline and 'curriculum' in pathway_outline:
+            if pathway_outline and 'modules' in pathway_outline:
                 pathway = LearningPathway.objects.create(user=request.user, goal=goal, location=location)
-                
-                # We get the list of modules from inside the 'curriculum' list.
-                for module_order, module_data in enumerate(pathway_outline.get('curriculum', [])):
+                for module_order, module_data in enumerate(pathway_outline.get('modules', [])):
                     module = PathwayModule.objects.create(
                         pathway=pathway,
                         title=module_data.get('title', 'Untitled Module'),
                         youtube_search_query=module_data.get('youtube_search_query', ''),
                         order=module_order
                     )
-                    # We loop through the simple list of step strings.
-                    for step_order, step_title in enumerate(module_data.get('steps', [])):
+                    # This now correctly loops through a list of step objects
+                    for step_order, step_data in enumerate(module_data.get('steps', [])):
                         ModuleStep.objects.create(
                             module=module,
-                            title=step_title, # The step_title is now just the string itself.
+                            title=step_data.get('title', 'Untitled Step'),
                             order=step_order
                         )
-                
                 messages.success(request, _("Your personalized learning pathway outline has been generated!"))
                 return redirect('academy:pathway-detail', pk=pathway.pk)
             else:
                 messages.error(request, _("Sorry, we couldn't generate a pathway outline. Please try a different goal."))
-        
+        else:
+            messages.error(request, _("Please correct the errors below."))
         return render(request, self.template_name, {'form': form})
 
 class PathwayDetailView(LoginRequiredMixin, generic.DetailView):
@@ -64,33 +57,22 @@ class PathwayDetailView(LoginRequiredMixin, generic.DetailView):
     context_object_name = 'pathway'
 
     def get_queryset(self):
-        # Ensure users can only see their own pathways.
         return LearningPathway.objects.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         pathway = self.object
-        
-        # Find the first module that is not yet completed.
         unlocked_module = pathway.modules.filter(is_completed=False).order_by('order').first()
         
-        # --- THIS IS THE ON-DEMAND LOGIC ---
         if unlocked_module and not unlocked_module.content_generated:
             print(f"Content for module '{unlocked_module.title}' not found. Generating now...")
-            
-            # Get previous module title for AI context.
             previous_module = pathway.modules.filter(order__lt=unlocked_module.order).order_by('-order').first()
             previous_module_title = previous_module.title if previous_module else None
-            
-            # Get used video IDs to avoid duplicates.
             used_video_ids = set(pathway.modules.exclude(video_url__isnull=True).exclude(video_url__exact='').values_list('video_url', flat=True))
             used_ids = {url.split('v=')[-1] for url in used_video_ids if 'v=' in url}
-
-            # Call our AI services to get the rich content.
             module_content = generate_module_content(unlocked_module.title, previous_module_title)
             video_url, new_video_id = fetch_youtube_video(unlocked_module.youtube_search_query, used_ids)
 
-            # Save the new content to the database.
             unlocked_module.written_content = module_content
             unlocked_module.video_url = video_url
             unlocked_module.content_generated = True
