@@ -6,17 +6,25 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 
-from .forms import GoalForm
+from .forms import GoalForm, CommentForm
 from .ai_services import generate_pathway_outline, generate_module_content, fetch_youtube_video
-from .models import LearningPathway, PathwayModule, ModuleStep, Badge, UserBadge
+from .models import LearningPathway, PathwayModule, ModuleStep, Badge, UserBadge, Comment
 
-class AcademyDashboardView(LoginRequiredMixin, View):
-    template_name = 'academy/dashboard.html'
+class PathwayListView(generic.ListView):
+    model = LearningPathway
+    template_name = 'academy/pathway_list.html'
+    context_object_name = 'pathways'
+    queryset = LearningPathway.objects.all().order_by('-created_at')
+
+class CreatePathwayView(LoginRequiredMixin, View):
+    template_name = 'academy/create_pathway.html'
 
     def get(self, request, *args, **kwargs):
         pathway = LearningPathway.objects.filter(user=request.user).first()
         if pathway:
+            messages.info(request, _("You already have a learning pathway. To create a new one, you would need to delete the old one first."))
             return redirect('academy:pathway-detail', pk=pathway.pk)
+        
         form = GoalForm()
         return render(request, self.template_name, {'form': form})
 
@@ -25,7 +33,14 @@ class AcademyDashboardView(LoginRequiredMixin, View):
         if form.is_valid():
             goal = form.cleaned_data['goal']
             location = form.cleaned_data['location']
-            pathway_outline = generate_pathway_outline(goal, location)
+            
+            try:
+                pathway_outline = generate_pathway_outline(goal, location)
+            except Exception as e:
+                pathway_outline = None
+
+            if pathway_outline and 'curriculum' in pathway_outline:
+                pathway_outline['modules'] = pathway_outline.pop('curriculum')
 
             if pathway_outline and 'modules' in pathway_outline:
                 pathway = LearningPathway.objects.create(user=request.user, goal=goal, location=location)
@@ -36,18 +51,12 @@ class AcademyDashboardView(LoginRequiredMixin, View):
                         youtube_search_query=module_data.get('youtube_search_query', ''),
                         order=module_order
                     )
-                    # --- THIS LOGIC IS NOW CORRECT ---
-                    # It correctly loops through the simple list of step strings.
                     for step_order, step_title in enumerate(module_data.get('steps', [])):
-                        ModuleStep.objects.create(
-                            module=module,
-                            title=step_title,
-                            order=step_order
-                        )
-                messages.success(request, _("Your personalized learning pathway outline has been generated!"))
+                        ModuleStep.objects.create(module=module, title=step_title, order=step_order)
+                messages.success(request, _("Your personalized learning pathway has been generated!"))
                 return redirect('academy:pathway-detail', pk=pathway.pk)
             else:
-                messages.error(request, _("Sorry, we couldn't generate a pathway outline. Please try a different goal."))
+                messages.error(request, _("Sorry, we couldn't generate a pathway. Please try a different goal."))
         else:
             messages.error(request, _("Please correct the errors below."))
         return render(request, self.template_name, {'form': form})
@@ -57,16 +66,14 @@ class PathwayDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'academy/pathway_detail.html'
     context_object_name = 'pathway'
 
-    def get_queryset(self):
-        return LearningPathway.objects.filter(user=self.request.user)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         pathway = self.object
+        context['comments'] = pathway.comments.all().order_by('created_at')
+        context['comment_form'] = CommentForm()
         unlocked_module = pathway.modules.filter(is_completed=False).order_by('order').first()
         
         if unlocked_module and not unlocked_module.content_generated:
-            print(f"Content for module '{unlocked_module.title}' not found. Generating now...")
             previous_module = pathway.modules.filter(order__lt=unlocked_module.order).order_by('-order').first()
             previous_module_title = previous_module.title if previous_module else None
             used_video_ids = set(pathway.modules.exclude(video_url__isnull=True).exclude(video_url__exact='').values_list('video_url', flat=True))
@@ -78,10 +85,25 @@ class PathwayDetailView(LoginRequiredMixin, generic.DetailView):
             unlocked_module.video_url = video_url
             unlocked_module.content_generated = True
             unlocked_module.save()
-            print("Content generation complete and saved.")
 
         context['unlocked_module'] = unlocked_module
         return context
+
+    def post(self, request, *args, **kwargs):
+        pathway = self.get_object()
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.pathway = pathway
+            comment.author = request.user
+            comment.save()
+            messages.success(request, _("Your comment has been added."))
+            return redirect('academy:pathway-detail', pk=pathway.pk)
+        else:
+            context = self.get_context_data()
+            context['comment_form'] = form
+            messages.error(request, _("There was an error with your comment."))
+            return self.render_to_response(context)
 
 @login_required
 def complete_module(request, module_id):
@@ -92,13 +114,11 @@ def complete_module(request, module_id):
 
         pathway = module.pathway
         if not pathway.modules.filter(is_completed=False).exists():
-            print("Pathway complete! Attempting to award badge...")
             try:
                 badge = Badge.objects.get(title="Academy Graduate")
                 UserBadge.objects.get_or_create(user=request.user, badge=badge)
                 messages.success(request, f"Congratulations! You've completed the entire pathway and earned the '{badge.title}' badge!")
             except Badge.DoesNotExist:
-                print("CRITICAL: The 'Academy Graduate' badge does not exist in the admin panel.")
                 messages.info(request, "You've completed the entire pathway!")
         else:
              messages.success(request, f"Module '{module.title}' completed! The next module is unlocked.")

@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from .models import Comment 
 
 NIGERIAN_STATES = [
     ('', _('Select your state...')), ('Abia', 'Abia'), ('Adamawa', 'Adamawa'), ('Akwa Ibom', 'Akwa Ibom'),
@@ -16,7 +17,6 @@ class GoalForm(forms.Form):
     goal = forms.CharField(
         label=_("What is your primary goal?"),
         help_text=_("Be as specific as you can."),
-        # --- THIS IS THE FIX ---
         widget=forms.Textarea(attrs={
             'class': 'form-control', 
             'rows': 3
@@ -26,8 +26,22 @@ class GoalForm(forms.Form):
         label=_("Which state are you based in?"),
         choices=NIGERIAN_STATES,
         help_text=_("This helps the AI give you localized advice."),
-        # --- THIS IS THE FIX ---
         widget=forms.Select(attrs={
             'class': 'form-select'
         })
     )
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['body']
+        widgets = {
+            'body': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Add a comment or ask a question...'
+            }),
+        }
+        labels = {
+            'body': ''  
+        }
