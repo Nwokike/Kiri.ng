@@ -8,9 +8,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'entrepreneur', 'price', 'created_at')
+    # --- THIS IS THE FIX: Changed 'entrepreneur' to 'artisan' ---
+    list_display = ('title', 'category', 'artisan', 'price', 'created_at')
     list_filter = ('category', 'created_at')
-    search_fields = ('title', 'description', 'entrepreneur__username')
+    search_fields = ('title', 'description', 'artisan__username')
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):

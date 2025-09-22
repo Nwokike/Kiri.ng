@@ -5,108 +5,120 @@
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width-device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Kiri.ng{% endblock %}</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
     <link rel="manifest" href="{% static 'manifest.json' %}">
-    
     <style>
-        body { padding-top: 70px; } 
-        .footer { background-color: #f8f9fa; padding: 20px 0; }
+        body { padding-top: 120px; padding-bottom: 80px; }
+        /* THIS IS THE FIX: Ensure dropdown is on top of other elements */
+        .dropdown-menu { z-index: 1050; } 
     </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'core:home' %}">Kiri.ng</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:home' %}">{% trans "Home" %}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'marketplace:service-list' %}">{% trans "Browse Services" %}</a>
-                    </li>
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'academy:pathway-list' %}">{% trans "Community Pathways" %}</a>
-                        </li>
-                        {% if user.profile.is_verified_artisan %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'marketplace:artisan-dashboard' %}">{% trans "My Services" %}</a>
-                            </li>
-                        {% endif %}
-                    {% endif %}
-                </ul>
+<body class="bg-light">
 
-                <ul class="navbar-nav">
-                    <li class="nav-item me-2">
-                        <div id="google_translate_element"></div>
-                    </li>
-                    {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                {{ user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{% url 'users:profile-detail' %}">{% trans "Profile" %}</a></li>
-                                {% if user.profile.is_verified_artisan %}
-                                    <li><a class="dropdown-item" href="{% url 'marketplace:artisan-dashboard' %}">{% trans "My Dashboard" %}</a></li>
-                                {% endif %}
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
-                                        {% csrf_token %}
-                                        <button type="submit" class="dropdown-item">{% trans "Logout" %}</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">{% trans "Login" %}</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:signup' %}">{% trans "Sign Up" %}</a>
-                        </li>
-                    {% endif %}
-                </ul>
+    <div class="fixed-top">
+        <header id="main-header" class="d-flex justify-content-between align-items-center p-3 bg-white border-bottom">
+            <div id="back-button-container" style="width: 50px;"></div>
+            <a href="{% url 'core:home' %}" class="text-decoration-none"><h4 class="m-0 fw-bold text-dark">Kiri.ng</h4></a>
+            <div style="width: 50px;" class="d-flex justify-content-end">
+                {% if user.is_authenticated %}
+                    <div class="dropdown">
+                        <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if user.profile.profile_picture %}<img src="{{ user.profile.profile_picture.url }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                            {% else %}<i class="bi bi-person-circle fs-2 text-secondary"></i>{% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'users:profile-detail' %}">{% trans "View Profile" %}</a></li>
+                            {% if user.profile.is_verified_artisan %}<li><a class="dropdown-item" href="{% url 'marketplace:artisan-dashboard' %}">{% trans "Artisan Dashboard" %}</a></li>{% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><form action="{% url 'users:logout' %}" method="post">{% csrf_token %}<button type="submit" class="dropdown-item">{% trans "Logout" %}</button></form></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-sm">{% trans "Log In" %}</a>
+                {% endif %}
             </div>
-        </div>
-    </nav>
+        </header>
+        <div id="sub-header-container" class="bg-white"></div>
+    </div>
 
-    <main class="container my-4">
+    <main class="container py-4" id="main-content-wrapper">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
             {% endfor %}
         {% endif %}
         {% block content %}{% endblock %}
     </main>
-
-    <footer class="footer mt-auto py-3 bg-light">
-        <div class="container text-center">
-            <span class="text-muted">© {% now "Y" %} Kiri.ng - {% trans "Empowering Artisans." %}</span>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-          new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,ha,ig,yo', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-        }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <nav class="navbar navbar-light bg-white border-top fixed-bottom">
+        <div class="container-fluid d-flex justify-content-around">
+            <a href="{% url 'marketplace:service-list' %}" class="nav-link text-center bottom-nav-item" data-nav="services"><i class="bi bi-shop fs-3"></i><div class="small">{% trans "Services" %}</div></a>
+            <a href="{% url 'academy:dashboard' %}" class="nav-link text-center bottom-nav-item" data-nav="academy"><i class="bi bi-mortarboard-fill fs-3"></i><div class="small">{% trans "Academy" %}</div></a>
+            <a href="{% url 'core:home' %}" class="nav-link text-center bottom-nav-item" data-nav="blog"><i class="bi bi-newspaper fs-3"></i><div class="small">{% trans "Blog" %}</div></a>
+        </div>
+    </nav>
+    
+    <div id="sub-nav-definitions" style="display: none;">
+        <div id="sub-nav-services"><div class="container-fluid border-bottom"><div class="d-flex justify-content-around nav nav-tabs border-0"><a class="nav-link text-dark" href="{% url 'marketplace:service-list' %}">{% trans "Browse All" %}</a>{% if user.is_authenticated and user.profile.is_verified_artisan %}<a class="nav-link text-dark" href="{% url 'marketplace:artisan-dashboard' %}">{% trans "My Services" %}</a>{% endif %}</div></div></div>
+        <div id="sub-nav-academy"><div class="container-fluid border-bottom"><div class="d-flex justify-content-around nav nav-tabs border-0"><a class="nav-link text-dark" href="{% url 'academy:dashboard' %}">{% trans "My Dashboard" %}</a><a class="nav-link text-dark" href="{% url 'academy:pathway-list' %}">{% trans "Community" %}</a></div></div></div>
+        <div id="sub-nav-blog"><div class="container-fluid border-bottom"><div class="d-flex justify-content-around nav nav-tabs border-0"><a class="nav-link text-dark" href="{% url 'core:home' %}">{% trans "Community Blog" %}</a></div></div></div>
+        <div id="sub-nav-profile"><div class="container-fluid border-bottom"><div class="d-flex justify-content-around nav nav-tabs border-0"><a class="nav-link text-dark" href="{% url 'users:profile-detail' %}">{% trans "My Profile" %}</a></div></div></div>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- THIS IS THE FIX: A much smarter navigation script ---
+        const path = window.location.pathname;
+        const mainHeader = document.getElementById('main-header');
+        const subHeaderContainer = document.getElementById('sub-header-container');
+        const backButtonContainer = document.getElementById('back-button-container');
+
+        // 1. Determine the active section
+        let activeSection = 'blog'; // Default
+        if (path.includes('/marketplace/') || path.includes('/services/')) activeSection = 'services';
+        if (path.includes('/academy/')) activeSection = 'academy';
+        if (path.includes('/users/') || path.includes('/profile/')) activeSection = 'profile';
+
+        // 2. Set active bottom nav icon
+        document.querySelectorAll('.bottom-nav-item').forEach(item => item.classList.remove('text-primary'));
+        const activeNavItem = document.querySelector(`[data-nav="${activeSection}"]`);
+        if(activeNavItem) activeNavItem.classList.add('text-primary');
+
+        // 3. Inject and activate the correct sub-nav
+        const activeSubNavId = `sub-nav-${activeSection}`;
+        const activeSubNavHTML = document.getElementById(activeSubNavId)?.innerHTML;
+        if (activeSubNavHTML) {
+            subHeaderContainer.innerHTML = activeSubNavHTML;
+            // Now, find the active link within the sub-nav
+            subHeaderContainer.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('href') === path) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        // 4. Handle Smart Back Button
+        const mainTabs = ['{% url "marketplace:service-list" %}', '{% url "academy:dashboard" %}', '{% url "core:home" %}', '{% url "users:profile-detail" %}'];
+        if (!mainTabs.includes(path)) {
+            backButtonContainer.innerHTML = `<a href="javascript:history.back()" class="btn btn-light"><i class="bi bi-arrow-left fs-4"></i></a>`;
+        }
+        
+        // 5. Handle Dynamic Padding
+        function adjustPadding() {
+            const headerHeight = mainHeader.offsetHeight;
+            const subHeaderHeight = subHeaderContainer.offsetHeight;
+            document.body.style.paddingTop = `${headerHeight + subHeaderHeight}px`;
+            document.body.style.paddingBottom = `80px`;
+        }
+        setTimeout(adjustPadding, 100);
+        window.addEventListener('resize', adjustPadding);
+    });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

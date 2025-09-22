@@ -10,6 +10,32 @@ from .forms import GoalForm, CommentForm
 from .ai_services import generate_pathway_outline, generate_module_content, fetch_youtube_video
 from .models import LearningPathway, PathwayModule, ModuleStep, Badge, UserBadge, Comment
 
+# --- THIS IS THE MISSING VIEW THAT FIXES THE CRASH ---
+class AcademyDashboardView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'academy/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        
+        # Get the user's specific pathway
+        my_pathway = LearningPathway.objects.filter(user=user).first()
+        context['my_pathway'] = my_pathway
+        
+        # Get the user's earned badges
+        context['my_badges'] = UserBadge.objects.filter(user=user)
+        
+        # Get the 5 most recent comments from the whole community
+        context['recent_comments'] = Comment.objects.order_by('-created_at')[:5]
+        
+        # If the user has no pathway, include the creation form
+        if not my_pathway:
+            context['goal_form'] = GoalForm()
+            
+        return context
+# --- END OF THE NEW VIEW ---
+
+
 class PathwayListView(generic.ListView):
     model = LearningPathway
     template_name = 'academy/pathway_list.html'
@@ -22,7 +48,7 @@ class CreatePathwayView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         pathway = LearningPathway.objects.filter(user=request.user).first()
         if pathway:
-            messages.info(request, _("You already have a learning pathway. To create a new one, you would need to delete the old one first."))
+            messages.info(request, _("You already have a learning pathway."))
             return redirect('academy:pathway-detail', pk=pathway.pk)
         
         form = GoalForm()

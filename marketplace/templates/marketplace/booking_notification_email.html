@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>New Booking Request</title>
+    <title>New Booking Request on Kiri.ng</title>
 </head>
-<body style="font-family: sans-serif; margin: 0; padding: 20px;">
+<body style="font-family: sans-serif; margin: 0; padding: 20px; color: #333;">
     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: auto; border: 1px solid #ddd;">
         <tr>
-            <td style="background-color: #f8f9fa; padding: 20px; text-align: center;">
-                <h1 style="color: #333;">New Booking Request on Kiri.ng!</h1>
+            <td style="background-color: #0d6efd; padding: 20px; text-align: center; color: #fff;">
+                <h1 style="margin: 0;">Kiri.ng</h1>
             </td>
         </tr>
         <tr>
-            <td style="padding: 20px;">
+            <td style="padding: 30px;">
+                <h2 style="color: #0d6efd;">You have a new booking request!</h2>
                 <p>Hello {{ artisan_name }},</p>
-                <p>You have received a new booking request for your service: <strong>"{{ service_title }}"</strong>.</p>
-                <hr>
-                <h4>Customer Details:</h4>
+                <p>A customer is interested in your service '<strong>{{ service_title }}</strong>'. Please review the details below and contact them to finalize the arrangement.</p>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                <h3>Customer Details:</h3>
                 <ul>
                     <li><strong>Name:</strong> {{ booking.customer_name }}</li>
                     <li><strong>Email:</strong> {{ booking.customer_email }}</li>
@@ -24,12 +24,13 @@
                         <li><strong>Phone:</strong> {{ booking.customer_phone }}</li>
                     {% endif %}
                 </ul>
-                <h4>Message:</h4>
-                <p style="background-color: #f8f9fa; border-left: 4px solid #0d6efd; padding: 10px;">
-                    <em>{{ booking.message|linebreaksbr }}</em>
+                <h3>Message:</h3>
+                <p style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+                    <em>"{{ booking.message }}"</em>
                 </p>
-                <p>Please contact the customer directly to confirm the appointment details and timing.</p>
-                <p><em>The Kiri.ng Team</em></p>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                <p>Good luck!</p>
+                <p><strong>The Kiri.ng Team</strong></p>
             </td>
         </tr>
     </table>

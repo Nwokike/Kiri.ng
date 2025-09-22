@@ -7,7 +7,7 @@
         <h2>{% trans "Community Learning Pathways" %}</h2>
         <a href="{% url 'academy:create-pathway' %}" class="btn btn-primary">{% trans "Create My Pathway" %}</a>
     </div>
-    <p>{% trans "See the learning goals of other users in the community and contribute to the discussion." %}</p>
+    <p class="lead text-muted">{% trans "See the learning goals of other users in the community and contribute to the discussion." %}</p>
     <hr>
     <div class="list-group">
         {% for pathway in pathways %}

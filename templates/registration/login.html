@@ -4,20 +4,22 @@
 {% block title %}{% trans "Log In" %} - {{ block.super }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-body">
-                    <h2 class="card-title text-center">{% trans "Log In" %}</h2>
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4">{% trans "Log In" %}</h2>
                     <form method="post">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary w-100 mt-3">{% trans "Log In" %}</button>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary mt-3">{% trans "Log In" %}</button>
+                        </div>
                     </form>
                     <div class="mt-3 text-center">
                         <p>{% trans "Don't have an account?" %} <a href="{% url 'users:signup' %}">{% trans "Sign Up" %}</a></p>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>

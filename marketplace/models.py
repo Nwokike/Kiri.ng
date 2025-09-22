@@ -13,7 +13,8 @@ class Category(models.Model):
         return self.name
 
 class Service(models.Model):
-    entrepreneur = models.ForeignKey(User, on_delete=models.CASCADE, related_name='services')
+    # --- THIS IS THE FIX: Renamed 'entrepreneur' to 'artisan' ---
+    artisan = models.ForeignKey(User, on_delete=models.CASCADE, related_name='services')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='services')
     title = models.CharField(max_length=200)
     description = models.TextField()

@@ -12,17 +12,17 @@ class Profile(models.Model):
     # User-editable street address
     street_address = models.CharField(max_length=255, blank=True)
     
-    # Read-only fields set by GPS verification
+    # These are now the main, displayable fields
     city = models.CharField(max_length=100, blank=True)
     state = models.CharField(max_length=100, blank=True)
-    verified_street_address = models.CharField(max_length=255, blank=True, null=True)
+
+    # These are temporary holders from the GPS check
     verified_city = models.CharField(max_length=100, blank=True, null=True)
     verified_state = models.CharField(max_length=100, blank=True, null=True)
     
     google_maps_link = models.URLField(max_length=500, blank=True, null=True)
     business_page_url = models.URLField(max_length=500, blank=True, null=True, help_text=_("Your Instagram, Facebook, or WhatsApp Business link."))
     
-    # --- THIS FIELD WAS MISSING FROM THE DATABASE ---
     location_verified = models.BooleanField(default=False)
 
     def __str__(self):

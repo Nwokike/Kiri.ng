@@ -1,19 +1,13 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from .models import Profile
 from django.utils.translation import gettext_lazy as _
+from .models import Profile
+from django.core.exceptions import ValidationError
 
-NIGERIAN_STATES = [
-    ('', _('Select your state...')), ('Abia', 'Abia'), ('Adamawa', 'Adamawa'), ('Akwa Ibom', 'Akwa Ibom'),
-    ('Anambra', 'Anambra'), ('Bauchi', 'Bauchi'), ('Bayelsa', 'Bayelsa'), ('Benue', 'Benue'), ('Borno', 'Borno'),
-    ('Cross River', 'Cross River'), ('Delta', 'Delta'), ('Ebonyi', 'Ebonyi'), ('Edo', 'Edo'), ('Ekiti', 'Ekiti'),
-    ('Enugu', 'Enugu'), ('FCT', 'Federal Capital Territory'), ('Gombe', 'Gombe'), ('Imo', 'Imo'), ('Jigawa', 'Jigawa'),
-    ('Kaduna', 'Kaduna'), ('Kano', 'Kano'), ('Katsina', 'Katsina'), ('Kebbi', 'Kebbi'), ('Kogi', 'Kogi'),
-    ('Kwara', 'Kwara'), ('Lagos', 'Lagos'), ('Nasarawa', 'Nasarawa'), ('Niger', 'Niger'), ('Ogun', 'Ogun'),
-    ('Ondo', 'Ondo'), ('Osun', 'Osun'), ('Oyo', 'Oyo'), ('Plateau', 'Plateau'), ('Rivers', 'Rivers'),
-    ('Sokoto', 'Sokoto'), ('Taraba', 'Taraba'), ('Yobe', 'Yobe'), ('Zamfara', 'Zamfara'),
-]
+def validate_file_size(value):
+    limit = 2 * 1024 * 1024
+    if value.size > limit:
+        raise ValidationError(_('File too large. Size should not exceed 2 MB.'))
 
 class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
@@ -22,19 +16,16 @@ class CustomUserCreationForm(UserCreationForm):
         fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "email",)
 
 class ProfileUpdateForm(forms.ModelForm):
-    verified_city = forms.CharField(required=False, widget=forms.HiddenInput())
-    verified_state = forms.CharField(required=False, widget=forms.HiddenInput())
+    # --- THIS IS THE FIX: These fields will now appear as read-only in the template ---
+    city = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
+    state = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
 
     class Meta:
         model = Profile
-        fields = ['bio', 'phone_number', 'street_address', 'profile_picture', 'business_page_url']
+        fields = ['profile_picture', 'bio', 'phone_number', 'street_address', 'city', 'state', 'business_page_url']
         widgets = {
             'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
             'street_address': forms.TextInput(attrs={'class': 'form-control'}),
-            'profile_picture': forms.FileInput(attrs={'class': 'form-control'}),
-            'business_page_url': forms.URLInput(attrs={
-                'class': 'form-control', 
-                'placeholder': 'e.g., https://instagram.com/your-business or your WhatsApp, Facebook, etc.'
-            }),
+            'business_page_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'e.g., https://instagram.com/your-business'}),
         }

@@ -1,7 +1,23 @@
 from django import forms
 from .models import Service, Booking
+from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
+
+# --- NEW: File Size Validator ---
+def validate_file_size(value):
+    # Limit upload size to 2MB
+    limit = 2 * 1024 * 1024
+    if value.size > limit:
+        raise ValidationError(_('File too large. Size should not exceed 2 MB.'))
 
 class ServiceForm(forms.ModelForm):
+    # --- ADD VALIDATOR TO THE EXPLICIT FIELD DEFINITION ---
+    image = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={'class': 'form-control'}),
+        validators=[validate_file_size]
+    )
+    
     class Meta:
         model = Service
         fields = ['category', 'title', 'description', 'price', 'image']
@@ -10,7 +26,6 @@ class ServiceForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),
-            'image': forms.FileInput(attrs={'class': 'form-control'}),
         }
 
 class BookingForm(forms.ModelForm):

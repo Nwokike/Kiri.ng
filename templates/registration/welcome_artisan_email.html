@@ -1,26 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Welcome to Kiri.ng!</title>
+    <title>Welcome to Kiri.ng! Your Next Step Awaits.</title>
 </head>
-<body style="font-family: sans-serif; margin: 0; padding: 20px;">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: auto; border: 1px solid #ddd;">
+<body style="font-family: sans-serif; margin: 0; padding: 20px; color: #333; background-color: #f8f9fa;">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: auto; background-color: #fff; border: 1px solid #ddd;">
         <tr>
-            <td style="background-color: #f8f9fa; padding: 20px; text-align: center;">
-                <h1 style="color: #333;">Welcome, {{ user.username }}!</h1>
+            <td style="background-color: #0d6efd; padding: 20px; text-align: center; color: #fff;">
+                <h1 style="margin: 0;">Kiri.ng</h1>
             </td>
         </tr>
         <tr>
-            <td style="padding: 20px;">
-                <p>Congratulations! You are now a <strong>Kiri.ng Verified Artisan.</strong></p>
-                <p>Your next step is to get your business listed on Google Maps to attract more customers. We've made this easy for you.</p>
-                <p style="text-align: center; margin: 30px 0;">
-                    <a href="{{ google_link }}" style="background-color: #0d6efd; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px;">Create My Google Maps Listing</a>
-                </p>
-                <p>Click the button above to get started. We've pre-filled your business details for you. Just follow the steps on Google to complete your profile.</p>
-                <p>Thank you for being a part of our community!</p>
-                <p><em>The Kiri.ng Team</em></p>
+            <td style="padding: 30px;">
+                <h2 style="color: #0d6efd;">Congratulations, {{ user.first_name }}! You're a Verified Artisan!</h2>
+                <p>Welcome to the Kiri.ng community of trusted professionals. Your profile is now marked as "Verified," which will help you attract more customers.</p>
+                
+                <h3 style="margin-top: 30px;">Your Next Step: Get on Google</h3>
+                <p>To maximize your visibility, it's crucial to have a Google Business Profile. This allows customers to find you on Google Maps and Search. We've made it easy for you to get started.</p>
+                <p>Click the button below to pre-fill your business information and create your free Google Business Profile:</p>
+                
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td align="center" style="padding: 20px 0;">
+                            <a href="{{ google_link }}" target="_blank" style="background-color: #198754; color: #fff; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Create My Google Business Profile</a>
+                        </td>
+                    </tr>
+                </table>
+                
+                <p>If you have any questions, just reply to this email.</p>
+                <p>We're excited to see your business grow!</p>
+                <p><strong>The Kiri.ng Team</strong></p>
             </td>
         </tr>
     </table>

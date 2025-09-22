@@ -4,117 +4,67 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>{% trans "Your Personal Learning Pathway" %}</h2>
-    <p><strong>{% trans "Your Goal:" %}</strong> {{ pathway.goal }}</p>
-    <hr>
-    
-    {% for module in pathway.modules.all %}
-        {% if module.is_completed %}
-            <details class="mb-3 p-3 bg-light border-start border-success border-3 rounded">
-                <summary class="fw-bold text-success" style="cursor: pointer;">✅ {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }} (Completed - Click to review)</summary>
-                
-                <div class="mt-3">
-                    {% if module.video_url %}
-                        <div class="ratio ratio-16x9">
-                            <iframe src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                        <p class="small text-muted mt-1">If the video is unavailable, <a href="{{ module.video_url }}" target="_blank" rel="noopener noreferrer">click here to watch on YouTube</a>.</p>
-                    {% endif %}
-                    {% if module.written_content %}
-                        <div class="mt-3 p-2 bg-white rounded border">
-                            {{ module.written_content|markdownify }}
-                        </div>
-                    {% endif %}
-                </div>
-            </details>
-        {% elif module == unlocked_module %}
-            <div class="card mb-3 border-start border-primary border-3">
-                <div class="card-header">
-                    <h3>{% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</h3>
-                </div>
-                <div class="card-body">
-                    {% if module.video_url %}
-                        <div class="ratio ratio-16x9">
-                             <iframe src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                        <p class="small text-muted mt-1">If the video is unavailable, <a href="{{ module.video_url }}" target="_blank" rel="noopener noreferrer">click here to watch on YouTube</a>.</p>
-                    {% else %}
-                        <div class="text-center p-5 bg-light rounded">
-                            <p><strong>{% trans "Generating your lesson, please wait a few moments..." %}</strong></p>
-                        </div>
-                    {% endif %}
-
-                    {% if module.written_content %}
-                        <div class="mt-3 p-3 bg-light rounded">
-                            {{ module.written_content|markdownify }}
-                        </div>
-                    {% endif %}
-                    
-                    <hr>
-                    <p><strong>{% trans "Topics in this module:" %}</strong></p>
-                    <ul>
-                        {% for step in module.steps.all %}
-                            <li>{{ step.title }}</li>
-                        {% endfor %}
-                    </ul>
-
-                    <hr>
-                    <form action="{% url 'academy:complete-module' module.id %}" method="POST">
-                        {% csrf_token %}
-                        <label for="validation_answer" class="form-label"><strong>{% trans "Your Answer" %}</strong></label>
-                        <textarea name="validation_answer" id="validation_answer" rows="4" class="form-control" required minlength="50" placeholder="Write your answer here to unlock the next module..."></textarea>
-                        <button type="submit" class="btn btn-success mt-3">
-                            {% trans "Submit & Unlock Next Module" %}
-                        </button>
-                    </form>
-                </div>
-            </div>
-        {% else %}
-            <div class="card mb-3 bg-light border-start border-secondary border-3">
-                 <div class="card-body text-muted">
-                    <h3 style="color: #616161;">🔒 {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }} (Locked)</h3>
-                 </div>
-            </div>
-        {% endif %}
-    {% endfor %}
-
-    {% if not unlocked_module and pathway.modules.all %}
-        <div class="text-center p-5 bg-success-subtle rounded">
-            <h2>🎉 {% trans "Congratulations!" %} 🎉</h2>
-            <p>{% trans "You have completed your entire learning pathway." %}</p>
-        </div>
-    {% endif %}
-
-    <hr class="my-5">
     <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-8">
-            <h4>{% trans "Discussion" %}</h4>
-            <div class="comments-section mb-4">
-                {% for comment in comments %}
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <p class="card-text">{{ comment.body|linebreaksbr }}</p>
-                            <footer class="blockquote-footer mb-0">
-                                {{ comment.author.username }} <cite>on {{ comment.created_at|date:"F j, Y, P" }}</cite>
-                            </footer>
+        <div class="col-lg-10">
+            <div class="mb-4">
+                <h2>{% trans "Your Learning Pathway" %}</h2>
+                <p class="lead text-muted"><strong>{% trans "Your Goal:" %}</strong> {{ pathway.goal }}</p>
+            </div>
+            
+            <div class="accordion" id="pathwayAccordion">
+                {% for module in pathway.modules.all %}
+                    {% if module.is_completed %}
+                        <div class="accordion-item">
+                             <h2 class="accordion-header"><button class="accordion-button collapsed bg-success-subtle" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-completed-{{ module.id }}">✅ {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</button></h2>
+                             <div id="collapse-completed-{{ module.id }}" class="accordion-collapse collapse" data-bs-parent="#pathwayAccordion">
+                                 <div class="accordion-body">
+                                     {% if module.video_url %}<div class="ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div>{% endif %}
+                                     {% if module.written_content %}<div class="mt-4 p-3 bg-light rounded">{{ module.written_content|markdownify }}</div>{% endif %}
+                                 </div>
+                             </div>
                         </div>
-                    </div>
-                {% empty %}
-                    <div class="alert alert-secondary">{% trans "No comments yet. Be the first to start the discussion!" %}</div>
+                    {% elif module == unlocked_module %}
+                        <div class="card mb-3 border-primary">
+                            <div class="card-header bg-primary-subtle"><h5 class="mb-0">🚀 {% trans "Current Module" %} {{ module.order|add:1 }}: {{ module.title }}</h5></div>
+                            <div class="card-body">
+                                {% if not module.content_generated %}
+                                    <div id="loading-indicator" class="text-center p-5">
+                                        <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
+                                        <p class="mt-2"><strong>{% trans "Generating your lesson, this may take a moment..." %}</strong></p>
+                                    </div>
+                                {% else %}
+                                    {% if module.video_url %}<div class="ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div>{% endif %}
+                                    {% if module.written_content %}<div class="mt-4 p-3 bg-light rounded">{{ module.written_content|markdownify }}</div>{% endif %}
+                                    <hr class="my-4">
+                                    <form action="{% url 'academy:complete-module' module.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <label for="validation_answer" class="form-label"><strong>{% trans "Ready for the next step?" %}</strong></label>
+                                        <textarea name="validation_answer" id="validation_answer" rows="3" class="form-control" required minlength="20" placeholder="Briefly describe what you learned..."></textarea>
+                                        <button type="submit" class="btn btn-success mt-3">{% trans "Complete Module & Unlock Next" %}</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="card mb-3"><div class="card-header bg-light"><h5 class="mb-0 text-muted">🔒 {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }} (Locked)</h5></div></div>
+                    {% endif %}
                 {% endfor %}
             </div>
-
-            <div class="card">
-                <div class="card-body">
-                    <h5>{% trans "Leave a Comment" %}</h5>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ comment_form.as_p }}
-                        <button type="submit" class="btn btn-primary mt-2">{% trans "Post Comment" %}</button>
-                    </form>
-                </div>
             </div>
-        </div>
     </div>
 </div>
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loadingIndicator = document.getElementById('loading-indicator');
+    // If the loading indicator is present on the page, start checking for content.
+    if (loadingIndicator) {
+        setTimeout(function() {
+            window.location.reload();
+        }, 5000); // Reload the page every 5 seconds
+    }
+});
+</script>
+{% endblock %}

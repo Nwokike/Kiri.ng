@@ -2,43 +2,23 @@
 {% load i18n %}
 
 {% block content %}
-    <div class="container mt-4">
-        <h2>{% trans "Welcome to the Kiri.ng Academy" %}</h2>
-        <p>{% trans "This is your personal growth engine. To get started, tell us your main business goal, and our AI mentor will design a custom learning pathway just for you." %}</p>
-        
-        <form method="POST" class="mt-4">
-            {% csrf_token %}
-
-            {# This will display any general form errors #}
-            {% if form.non_field_errors %}
-                <div class="alert alert-danger">
-                    {{ form.non_field_errors }}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                 <div class="card-header">
+                    <h4>{% trans "Create Your Learning Pathway" %}</h4>
                 </div>
-            {% endif %}
-
-            <div class="mb-3">
-                <label for="{{ form.goal.id_for_label }}" class="form-label"><strong>{{ form.goal.label }}</strong></label>
-                {{ form.goal }}
-                <div class="form-text">{{ form.goal.help_text }}</div>
-                {% if form.goal.errors %}
-                    <div class="alert alert-danger mt-1 p-2">
-                        {{ form.goal.errors }}
-                    </div>
-                {% endif %}
+                <div class="card-body p-4">
+                    <p class="card-text">{% trans "To get started, tell us your main business goal, and our AI mentor will design a custom learning pathway just for you." %}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-success mt-3">{% trans "Generate My Pathway" %}</button>
+                    </form>
+                </div>
             </div>
-
-            <div class="mb-3">
-                <label for="{{ form.location.id_for_label }}" class="form-label"><strong>{{ form.location.label }}</strong></label>
-                {{ form.location }}
-                <div class="form-text">{{ form.location.help_text }}</div>
-                {% if form.location.errors %}
-                    <div class="alert alert-danger mt-1 p-2">
-                        {{ form.location.errors }}
-                    </div>
-                {% endif %}
-            </div>
-
-            <button type="submit" class="btn btn-primary">{% trans "Generate My Pathway" %}</button>
-        </form>
+        </div>
     </div>
-{% endblock content %}
+</div>
+{% endblock %}

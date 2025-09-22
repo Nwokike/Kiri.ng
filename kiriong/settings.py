@@ -67,12 +67,23 @@ DATABASES = {
     }
 }
 
+# --- THIS IS THE ONLY CHANGE ---
+# We are temporarily commenting out the similarity validator.
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
+# --- END CHANGE ---
 
 LANGUAGE_CODE = 'en'
 LANGUAGES = [
@@ -90,8 +101,6 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# --- THIS IS THE FIX ---
-# Tell Django to print emails to the console during development
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

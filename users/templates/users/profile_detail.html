@@ -1,39 +1,47 @@
 {% extends "core/base.html" %}
 {% load i18n %}
 
+{% block back_button %}
+    <a href="javascript:history.back()" class="btn btn-light"><i class="bi bi-arrow-left fs-4"></i></a>
+{% endblock %}
+
+{% block sub_header %}
+<div class="d-flex justify-content-around nav nav-tabs border-0">
+    <a class="nav-link text-dark active" href="#">{% trans "My Profile" %}</a>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>{{ profile.user.username }}'s {% trans "Profile" %}</h2>
-        <a href="{% url 'users:profile-edit' %}" class="btn btn-secondary">{% trans "Edit Profile" %}</a>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            {% if profile.profile_picture %}
-                <img src="{{ profile.profile_picture.url }}" alt="{{ profile.user.username }}'s profile picture" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-            {% endif %}
-
-            <h5 class="card-title">{{ profile.user.get_full_name|default:profile.user.username }}</h5>
-            
-            {% if profile.is_verified_artisan %}
-                <p><span class="badge bg-success fs-6">{% trans "Verified Artisan" %}</span></p>
-            {% endif %}
-
-            <p class="card-text"><strong>Bio:</strong> {{ profile.bio|linebreaksbr|default:"No bio provided." }}</p>
-            <p class="card-text"><strong>{% trans "Phone Number:" %}</strong> {{ profile.phone_number|default:"Not provided." }}</p>
-            
-            <p class="card-text"><strong>{% trans "Address:" %}</strong> 
-                {% if profile.is_verified_artisan %}
-                    {{ profile.street_address }}, {{ profile.city }}, {{ profile.state }}
-                {% else %}
-                    {% trans "Address not verified." %}
-                {% endif %}
-            </p>
-            
+<div class="row">
+    <div class="col-md-4 text-center">
+        {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="img-fluid rounded-circle mb-3 shadow-sm" style="width: 150px; height: 150px; object-fit: cover;">
+        {% endif %}
+        <h3 class="fw-bold">{{ profile.user.first_name }} {{ profile.user.last_name }}</h3>
+        <p class="text-muted">@{{ profile.user.username }}</p>
+        {% if profile.is_verified_artisan %}
+            <p><span class="badge bg-success fs-6">{% trans "Verified Artisan" %}</span></p>
             {% if profile.google_maps_link %}
-                <a href="{{ profile.google_maps_link }}" class="btn btn-info" target="_blank">{% trans "View on Google Maps" %}</a>
+                <a href="{{ profile.google_maps_link }}" class="btn btn-sm btn-outline-secondary mt-2" target="_blank">
+                    <i class="bi bi-geo-alt-fill"></i> {% trans "View on Google Maps" %}
+                </a>
             {% endif %}
+        {% else %}
+             <p><span class="badge bg-secondary">{% trans "Standard User" %}</span></p>
+        {% endif %}
+        <a href="{% url 'users:profile-edit' %}" class="btn btn-primary mt-3">{% trans "Edit Profile" %}</a>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                 <h4 class="card-title">{% trans "Profile Details" %}</h4><hr>
+                 <h5>{% trans "Bio" %}</h5><p>{{ profile.bio|default:"No bio provided."|linebreaksbr }}</p><hr>
+                 <h5>{% trans "Contact Information" %}</h5><p><strong>{% trans "Email:" %}</strong> {{ profile.user.email }}</p><p><strong>{% trans "Phone:" %}</strong> {{ profile.phone_number|default:"Not provided." }}</p><hr>
+                 <h5>{% trans "Location" %}</h5><p><strong>{% trans "Address:" %}</strong> {{ profile.street_address|default:"Not provided." }}</p><p><strong>{% trans "City:" %}</strong> {{ profile.city|default:"Not provided." }}</p><p><strong>{% trans "State:" %}</strong> {{ profile.state|default:"Not provided." }}</p><hr>
+                 <h5>{% trans "Business Page" %}</h5>
+                 {% if profile.business_page_url %}<a href="{{ profile.business_page_url }}" target="_blank">{{ profile.business_page_url }}</a>
+                 {% else %}<p>{% trans "Not provided." %}</p>{% endif %}
+            </div>
         </div>
     </div>
 </div>

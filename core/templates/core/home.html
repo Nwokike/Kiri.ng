@@ -1,24 +1,14 @@
 {% extends "core/base.html" %}
 {% load i18n %}
 
-{% block content %}
-<div class="px-4 py-5 my-5 text-center">
-    <h1 class="display-5 fw-bold">{% trans "Welcome to Kiri.ng" %}</h1>
-    <div class="col-lg-6 mx-auto">
-        <p class="lead mb-4">{% trans "Your trusted platform to connect with verified artisans. Learn new skills, grow your business, and find the right professional for any job." %}</p>
-        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <a href="{% url 'marketplace:service-list' %}" class="btn btn-primary btn-lg px-4 gap-3">{% trans "Browse Services" %}</a>
-            
-            {% if user.is_authenticated %}
-                {% if user.profile.is_verified_artisan %}
-                    <a href="{% url 'marketplace:artisan-dashboard' %}" class="btn btn-outline-secondary btn-lg px-4">{% trans "Go to My Dashboard" %}</a>
-                {% else %}
-                    <a href="{% url 'academy:dashboard' %}" class="btn btn-outline-secondary btn-lg px-4">{% trans "Go to My Academy" %}</a>
-                {% endif %}
-            {% else %}
-                 <a href="{% url 'users:signup' %}" class="btn btn-outline-secondary btn-lg px-4">{% trans "Join as an Artisan" %}</a>
-            {% endif %}
-        </div>
-    </div>
+{% block sub_header %}
+<div class="container-fluid p-3 border-bottom">
+    <h5 class="m-0">{% trans "Community Blog & Tutorials" %}</h5>
 </div>
+{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <p class="lead">{% trans "Coming soon: A place for artisans to share their success stories, tutorials, and advice." %}</p>
+    </div>
 {% endblock %}
