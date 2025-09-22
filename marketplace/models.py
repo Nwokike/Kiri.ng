@@ -24,3 +24,15 @@ class Service(models.Model):
 
     def __str__(self):
         return self.title
+
+class Booking(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='bookings')
+    customer_name = models.CharField(max_length=100)
+    customer_email = models.EmailField()
+    customer_phone = models.CharField(max_length=20, blank=True)
+    message = models.TextField()
+    requested_at = models.DateTimeField(auto_now_add=True)
+    is_confirmed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Booking for {self.service.title} by {self.customer_name}"

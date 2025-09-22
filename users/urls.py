@@ -8,4 +8,6 @@ urlpatterns = [
     path('profile/', views.profile_view, name='profile-detail'),
     path('profile/edit/', views.profile_edit_view, name='profile-edit'),
     path('verify-location/', views.verify_location_view, name='verify-location'),
+    path('artisan/<str:username>/', views.ArtisanStorefrontView.as_view(), name='artisan-storefront'),
+    path('logout/', views.custom_logout, name='logout'),
 ]

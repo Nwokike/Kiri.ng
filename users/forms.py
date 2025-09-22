@@ -16,18 +16,17 @@ NIGERIAN_STATES = [
 ]
 
 class CustomUserCreationForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
+    last_name = forms.CharField(max_length=150, required=True, help_text='Required.')
     class Meta(UserCreationForm.Meta):
-        fields = UserCreationForm.Meta.fields + ("email",)
+        fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "email",)
 
 class ProfileUpdateForm(forms.ModelForm):
-    # --- THIS IS THE FIX ---
-    # We define the fields here and make them not required by the form itself.
     verified_city = forms.CharField(required=False, widget=forms.HiddenInput())
     verified_state = forms.CharField(required=False, widget=forms.HiddenInput())
 
     class Meta:
         model = Profile
-        # We only list the fields the user can directly edit here.
         fields = ['bio', 'phone_number', 'street_address', 'profile_picture', 'business_page_url']
         widgets = {
             'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),

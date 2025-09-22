@@ -7,9 +7,14 @@
     <div class="col-lg-6 mx-auto">
         <p class="lead mb-4">{% trans "Your trusted platform to connect with verified artisans. Learn new skills, grow your business, and find the right professional for any job." %}</p>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <a href="{% url 'marketplace:service-list' %}" class="btn btn-primary btn-lg px-4 gap-3">{% trans "Browse Artisans" %}</a>
+            <a href="{% url 'marketplace:service-list' %}" class="btn btn-primary btn-lg px-4 gap-3">{% trans "Browse Services" %}</a>
+            
             {% if user.is_authenticated %}
-                <a href="{% url 'academy:dashboard' %}" class="btn btn-outline-secondary btn-lg px-4">{% trans "Go to My Academy" %}</a>
+                {% if user.profile.is_verified_artisan %}
+                    <a href="{% url 'marketplace:artisan-dashboard' %}" class="btn btn-outline-secondary btn-lg px-4">{% trans "Go to My Dashboard" %}</a>
+                {% else %}
+                    <a href="{% url 'academy:dashboard' %}" class="btn btn-outline-secondary btn-lg px-4">{% trans "Go to My Academy" %}</a>
+                {% endif %}
             {% else %}
                  <a href="{% url 'users:signup' %}" class="btn btn-outline-secondary btn-lg px-4">{% trans "Join as an Artisan" %}</a>
             {% endif %}

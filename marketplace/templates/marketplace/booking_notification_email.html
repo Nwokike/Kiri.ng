@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Booking Request</title>
+</head>
+<body style="font-family: sans-serif; margin: 0; padding: 20px;">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: auto; border: 1px solid #ddd;">
+        <tr>
+            <td style="background-color: #f8f9fa; padding: 20px; text-align: center;">
+                <h1 style="color: #333;">New Booking Request on Kiri.ng!</h1>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 20px;">
+                <p>Hello {{ artisan_name }},</p>
+                <p>You have received a new booking request for your service: <strong>"{{ service_title }}"</strong>.</p>
+                <hr>
+                <h4>Customer Details:</h4>
+                <ul>
+                    <li><strong>Name:</strong> {{ booking.customer_name }}</li>
+                    <li><strong>Email:</strong> {{ booking.customer_email }}</li>
+                    {% if booking.customer_phone %}
+                        <li><strong>Phone:</strong> {{ booking.customer_phone }}</li>
+                    {% endif %}
+                </ul>
+                <h4>Message:</h4>
+                <p style="background-color: #f8f9fa; border-left: 4px solid #0d6efd; padding: 10px;">
+                    <em>{{ booking.message|linebreaksbr }}</em>
+                </p>
+                <p>Please contact the customer directly to confirm the appointment details and timing.</p>
+                <p><em>The Kiri.ng Team</em></p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

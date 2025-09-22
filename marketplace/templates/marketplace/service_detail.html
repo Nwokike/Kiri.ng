@@ -2,50 +2,41 @@
 {% load i18n %}
 
 {% block content %}
-    <article>
-        {% if object.image %}
-            <img src="{{ object.image.url }}" alt="{{ object.title }}" style="max-width: 300px;">
-        {% endif %}
-        <h2>{{ object.title }}</h2>
-        <p>{% trans "Category:" %} {{ object.category.name }}</p>
-        <p><strong>NGN {{ object.price }}</strong></p>
-        <p>{{ object.description|linebreaks }}</p>
-    </article>
-    <hr>
-    
-    <section>
-        <h3>{% trans "Book this Service" %}</h3>
-        <p>{% trans "Booking functionality coming soon!" %}</p>
-        </section>
-    <hr>
-    
-    <section>
-        <h3>{% trans "Reviews" %}</h3>
-        <p>{% trans "Review functionality coming soon!" %}</p>
-        {% for review in object.reviews.all %}
-            <article>
-                <strong>{{ review.reviewer.username }}</strong> - {{ review.rating }}/5
-                <p>{{ review.comment }}</p>
-            </article>
-        {% empty %}
-            <p>{% trans "No reviews yet." %}</p>
-        {% endfor %}
-    </section>
-  {# START NEW RECOMMENDATIONS SECTION #}
-    {% if recommended_services %}
-    <hr>
-    <section>
-        <h3>{% trans "You might also like" %}</h3>
-        <div style="display: flex; gap: 20px;">
-        {% for rec_service in recommended_services %}
-            <article style="border: 1px solid #ccc; padding: 10px;">
-                <h4><a href="{% url 'marketplace:service-detail' rec_service.id %}">{{ rec_service.title }}</a></h4>
-                <p><strong>NGN {{ rec_service.price }}</strong></p>
-            </article>
-        {% endfor %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <h2>{{ service.title }}</h2>
+            <p class="text-muted">
+                {% trans "Offered by:" %} 
+                <a href="{% url 'users:artisan-storefront' username=service.entrepreneur.username %}">
+                    {{ service.entrepreneur.username }}
+                </a>
+                {% if service.entrepreneur.profile.is_verified_artisan %}
+                    <span class="badge bg-success">{% trans "Verified Artisan" %}</span>
+                {% endif %}
+            </p>
+            <hr>
+            {% if service.image %}
+                <img src="{{ service.image.url }}" class="img-fluid rounded mb-3" alt="{{ service.title }}">
+            {% endif %}
+            <h4>{% trans "Description" %}</h4>
+            <p>{{ service.description|linebreaksbr }}</p>
+            <p><strong>{% trans "Price:" %}</strong> NGN {{ service.price }}</p>
         </div>
-    </section>
-    {% endif %}
-    {# END NEW RECOMMENDATIONS SECTION #}
 
-{% endblock content %}
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">{% trans "Book This Service" %}</h4>
+                    <p class="card-text">{% trans "Send a request to the artisan. They will contact you to confirm the appointment." %}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ booking_form.as_p }}
+                        <button type="submit" class="btn btn-primary w-100">{% trans "Send Booking Request" %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CustomUserCreationForm, ProfileUpdateForm
@@ -11,6 +11,9 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 import urllib.parse
+from django.views import generic
+from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _ # <-- THIS IS THE FIX
 
 def signup(request):
     if request.method == 'POST':
@@ -30,11 +33,6 @@ def profile_view(request):
     return render(request, 'users/profile_detail.html', {'profile': profile})
 
 def send_welcome_artisan_email(user, profile):
-    """
-    Sends a welcome email to a newly verified artisan with a link
-    to create their Google Business Profile.
-    """
-    # Create the pre-filled Google link
     params = {
         'business_name': user.get_full_name() or user.username,
         'address_line_1': profile.street_address,
@@ -52,12 +50,12 @@ def send_welcome_artisan_email(user, profile):
     plain_message = strip_tags(html_message)
     
     send_mail(
-        'Welcome to Kiri.ng! Your Next Step Awaits.',
+        _('Welcome to Kiri.ng! Your Next Step Awaits.'),
         plain_message,
-        'noreply@kiri.ng', # This can be any "from" address
+        'noreply@kiri.ng',
         [user.email],
         html_message=html_message,
-        fail_silently=False, # Set to True in production if needed
+        fail_silently=False,
     )
     print(f"Welcome email sent to {user.email}")
 
@@ -65,8 +63,6 @@ def send_welcome_artisan_email(user, profile):
 @login_required
 def profile_edit_view(request):
     profile = get_object_or_404(Profile, user=request.user)
-    
-    # Track the verification status before any changes are made
     was_verified_before = profile.is_verified_artisan
 
     if request.method == 'POST':
@@ -83,12 +79,11 @@ def profile_edit_view(request):
             
             updated_profile.save()
 
-            # Check if the user just became verified in this save operation
             if updated_profile.is_verified_artisan and not was_verified_before:
-                messages.success(request, 'Congratulations! You are now a Kiri.ng Verified Artisan. Check your email for the next step!')
+                messages.success(request, _('Congratulations! You are now a Kiri.ng Verified Artisan. Check your email for the next step!'))
                 send_welcome_artisan_email(request.user, updated_profile)
             else:
-                messages.success(request, 'Your profile has been updated successfully!')
+                messages.success(request, _('Your profile has been updated successfully!'))
 
             return redirect('users:profile-detail')
     else:
@@ -130,3 +125,21 @@ def verify_location_view(request):
             return JsonResponse({'status': 'error', 'message': 'Could not process location.'}, status=400)
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+
+
+class ArtisanStorefrontView(generic.DetailView):
+    model = User
+    template_name = 'users/artisan_storefront.html'
+    context_object_name = 'artisan'
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        artisan_user = self.get_object()
+        return context
+
+def custom_logout(request):
+    logout(request)
+    messages.success(request, _("You have been successfully logged out."))
+    return redirect('core:home')

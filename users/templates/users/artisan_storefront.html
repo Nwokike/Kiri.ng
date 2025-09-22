@@ -1,0 +1,60 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% load marketplace_tags %} {% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card p-3 mb-4">
+                <div class="row g-0">
+                    <div class="col-md-2 text-center">
+                        {% if artisan.profile.profile_picture %}
+                            <img src="{{ artisan.profile.profile_picture.url }}" class="img-fluid rounded-circle" alt="{{ artisan.username }}'s profile picture" style="width: 120px; height: 120px; object-fit: cover;">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-10">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ artisan.username }}</h3>
+                            {% if artisan.profile.is_verified_artisan %}
+                                <p><span class="badge bg-success fs-6">{% trans "Verified Artisan" %}</span></p>
+                            {% endif %}
+                            <p class="card-text">{{ artisan.profile.bio|linebreaksbr }}</p>
+                            <p class="card-text"><small class="text-muted"><strong>{% trans "Location:" %}</strong> {{ artisan.profile.city }}, {{ artisan.profile.state }}</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4>{% trans "Services Offered" %}</h4>
+            <hr>
+            <div class="row">
+                {% for service in artisan.services.all %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            {% if service.image %}
+                                <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.title }}" style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ service.title }}</h5>
+                                <p class="card-text">{{ service.description|truncatewords:20 }}</p>
+                                <a href="{% url 'marketplace:service-detail' pk=service.pk %}" class="btn btn-primary">{% trans "View Details & Book" %}</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>{% trans "This artisan has not listed any services yet." %}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <h4>{% trans "Connect" %}</h4>
+            <hr>
+            {% if artisan.profile.business_page_url %}
+                {% social_link_card artisan.profile.business_page_url %}
+            {% else %}
+                <p class="text-muted">{% trans "Artisan has not provided a business link." %}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
