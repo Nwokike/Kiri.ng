@@ -4,9 +4,10 @@ from django.utils.translation import gettext_lazy as _
 from .models import Profile
 from django.core.exceptions import ValidationError
 
-def validate_file_size(value):
-    limit = 2 * 1024 * 1024
-    if value.size > limit:
+# --- This is our reusable size validator ---
+def validate_image_size(value):
+    limit = 2 * 1024 * 1024  # 2MB
+    if value and value.size > limit:
         raise ValidationError(_('File too large. Size should not exceed 2 MB.'))
 
 class CustomUserCreationForm(UserCreationForm):
@@ -16,7 +17,12 @@ class CustomUserCreationForm(UserCreationForm):
         fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "email",)
 
 class ProfileUpdateForm(forms.ModelForm):
-    # --- THIS IS THE FIX: These fields will now appear as read-only in the template ---
+    profile_picture = forms.ImageField(
+        required=False, 
+        widget=forms.FileInput(attrs={'class': 'form-control'}), 
+        validators=[validate_image_size], # <-- Add the validator
+        help_text=_("Max size 2MB.") # <-- Add help text
+    )
     city = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
     state = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
 

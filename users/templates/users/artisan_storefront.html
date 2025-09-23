@@ -1,13 +1,12 @@
 {% extends "core/base.html" %}
-{% load i18n %}
-{% load marketplace_tags %}
+{% load i18n marketplace_tags %}
 
 {% block content %}
 <div class="card p-4 mb-4">
     <div class="row align-items-center">
         <div class="col-md-3 text-center">
             {% if artisan.profile.profile_picture %}
-                <img src="{{ artisan.profile.profile_picture.url }}" class="img-fluid rounded-circle shadow-lg" alt="Profile picture" style="width: 150px; height: 150px; object-fit: cover;">
+                <img src="{{ artisan.profile.profile_picture.url }}" class="img-fluid rounded-circle shadow-lg profile-picture-lg" alt="Profile picture">
             {% endif %}
         </div>
         <div class="col-md-9">
@@ -34,7 +33,7 @@
     {% for service in artisan.services.all %}
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
-                {% if service.image %}<img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.title }}" style="height: 200px; object-fit: cover;">{% endif %}
+                {% if service.image %}<img src="{{ service.image.url }}" class="card-img-top card-img-top-custom" alt="{{ service.title }}">{% endif %}
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ service.title }}</h5>
                     <p class="card-text">{{ service.description|truncatewords:15 }}</p>

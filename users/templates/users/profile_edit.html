@@ -1,5 +1,5 @@
 {% extends "core/base.html" %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block content %}
 <div class="card">
@@ -26,35 +26,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-document.getElementById('verifyLocationBtn').addEventListener('click', function () {
-    const statusDiv = document.getElementById('verificationStatus');
-    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    statusDiv.innerHTML = `<span class="text-primary">{% trans "Verifying location..." %}</span>`;
-
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            const { latitude, longitude } = position.coords;
-            fetch("{% url 'users:verify-location' %}", {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrfToken},
-                body: JSON.stringify({ latitude, longitude })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    statusDiv.innerHTML = `<div class="alert alert-success"><strong>{% trans "Location Verified:" %}</strong> ${data.city}, ${data.state}</div>`;
-                    document.getElementById('id_city').value = data.city;
-                    document.getElementById('id_state').value = data.state;
-                } else {
-                    statusDiv.innerHTML = `<span class="text-danger">${data.message || '{% trans "Verification failed." %}'}</span>`;
-                }
-            });
-        },
-        () => {
-             statusDiv.innerHTML = `<span class="text-danger">{% trans "Could not get location. Please enable location services in your browser." %}</span>`;
-        }
-    );
-});
-</script>
+<script src="{% static 'js/profile_edit.js' %}"></script>
 {% endblock %}

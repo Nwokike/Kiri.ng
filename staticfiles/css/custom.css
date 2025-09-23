@@ -1,0 +1,23 @@
+/* static/css/custom.css */
+
+body {
+    background-color: #f8f9fa; /* A light grey background for a softer look */
+}
+
+/* Custom styles for modern-looking cards */
+.card {
+    border: none;
+    border-radius: 0.75rem; /* Softer rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Add a subtle lift effect on hover */
+}
+
+.card-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+}

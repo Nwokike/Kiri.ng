@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'marketplace.apps.MarketplaceConfig',
     'academy.apps.AcademyConfig',
     'blog.apps.BlogConfig',
+    'django_ckeditor_5'
 ]
 
 MIDDLEWARE = [
@@ -68,8 +69,13 @@ DATABASES = {
     }
 }
 
-# --- THIS IS THE ONLY CHANGE ---
-# We are temporarily commenting out the similarity validator.
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
+                    'bulletedList', 'numberedList', 'blockQuote', 'imageUpload'],
+    },
+}
+
 AUTH_PASSWORD_VALIDATORS = [
     # {
     #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -84,7 +90,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-# --- END CHANGE ---
 
 LANGUAGE_CODE = 'en'
 LANGUAGES = [
@@ -99,6 +104,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
+# --- THIS IS THE FIX ---
+# The absolute path to the directory where collectstatic will collect static files.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 

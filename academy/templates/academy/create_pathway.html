@@ -2,42 +2,24 @@
 {% load i18n %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card">
-                 <div class="card-header">
-                    <h4>{% trans "Create Your Learning Pathway" %}</h4>
-                </div>
-                <div class="card-body p-4">
-                    <p class="card-text">{% trans "To get started, tell us your main business goal, and our AI mentor will design a custom learning pathway just for you." %}</p>
-                    
-                    <form id="create-pathway-form" method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button id="generate-btn" type="submit" class="btn btn-success mt-3">
-                            <span id="btn-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                            <span id="btn-text">{% trans "Generate My Pathway" %}</span>
-                        </button>
-                    </form>
-                </div>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+             <div class="card-header">
+                <h4>{% trans "Create Your Learning Pathway" %}</h4>
+            </div>
+            <div class="card-body p-4">
+                <p class="card-text">{% trans "To get started, tell us your main business goal, and our AI mentor will design a custom learning pathway just for you." %}</p>
+                <form id="create-pathway-form" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button id="generate-btn" type="submit" class="btn btn-success mt-3">
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <span class="btn-text">{% trans "Generate My Pathway" %}</span>
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-// THIS IS THE FIX: For the generate button loading simulation
-document.getElementById('create-pathway-form').addEventListener('submit', function(event) {
-    // We only show the simulation if the form is valid
-    if (this.checkValidity()) {
-        const btn = document.getElementById('generate-btn');
-        document.getElementById('btn-spinner').classList.remove('d-none');
-        document.getElementById('btn-text').innerText = "{% trans 'Generating...' %}";
-        btn.disabled = true;
-    }
-});
-</script>
 {% endblock %}

@@ -56,3 +56,49 @@ class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView
         form.instance.author = self.request.user
         messages.success(self.request, _("Your post has been saved as a draft."))
         return super().form_valid(form)
+    
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/post_form.html' # We can reuse the same form template
+
+    def test_func(self):
+        # Make sure the user trying to edit the post is the author
+        post = self.get_object()
+        return self.request.user == post.author
+
+    def get_success_url(self):
+        # Redirect back to the post detail page after editing
+        return self.get_object().get_absolute_url()
+
+    def form_valid(self, form):
+        messages.success(self.request, _("Your post has been updated successfully."))
+        return super().form_valid(form)
+    
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+
+    # --- THIS IS THE FIX: Add the success message ---
+    def post(self, request, *args, **kwargs):
+        messages.success(self.request, _("Your comment has been deleted."))
+        return super().post(request, *args, **kwargs)

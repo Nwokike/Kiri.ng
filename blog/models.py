@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.utils.text import slugify
+from django_ckeditor_5.fields import CKEditor5Field
 
 class Post(models.Model):
     class Status(models.TextChoices):
@@ -12,11 +13,11 @@ class Post(models.Model):
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250, unique_for_date='publish')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
-    body = models.TextField()
     
-    # --- THIS IS THE NEW FIELD ---
+    # --- THIS IS THE FIX: Removed the "Text" label ---
+    body = CKEditor5Field(config_name='default')
+    
     header_image = models.ImageField(upload_to='post_headers/', blank=True, null=True, help_text=_("Optional: Upload an image that will appear at the top of your post."))
-    
     publish = models.DateTimeField(auto_now_add=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -35,7 +36,6 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('blog:post_detail', args=[self.publish.year, self.publish.month, self.publish.day, self.slug])
 
-# --- THIS IS THE NEW MODEL FOR BLOG COMMENTS ---
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_comments')

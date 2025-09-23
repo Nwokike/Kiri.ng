@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views import generic
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
@@ -92,6 +92,33 @@ class PathwayDetailView(LoginRequiredMixin, generic.DetailView):
         context['comment_form'] = form
         messages.error(request, _("There was an error with your comment."))
         return self.render_to_response(context)
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'academy/comment_form.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return self.object.pathway.get_absolute_url()
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = Comment
+    template_name = 'academy/comment_confirm_delete.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return self.object.pathway.get_absolute_url()
+
+    # --- THIS IS THE FIX: Add the success message ---
+    def post(self, request, *args, **kwargs):
+        messages.success(self.request, _("Your comment has been deleted."))
+        return super().post(request, *args, **kwargs)
 
 @login_required
 @require_POST # <-- Add this decorator to ensure it only accepts POST requests

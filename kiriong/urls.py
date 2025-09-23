@@ -14,6 +14,7 @@ urlpatterns = [
     path('academy/', include('academy.urls')),
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('blog/', include('blog.urls')),
+    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
 ]
 
 if settings.DEBUG:

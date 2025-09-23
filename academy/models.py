@@ -5,9 +5,9 @@ from django.utils.text import slugify
 from django.urls import reverse
 
 class LearningPathway(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='learning_pathways') # Changed related_name for consistency
-    goal = models.CharField(max_length=255) # Changed from TextField for better admin display
-    location = models.CharField(_("Location"), max_length=100, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='learning_pathways')
+    goal = models.CharField(max_length=255)
+    location = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(max_length=255, blank=True)
 
@@ -15,6 +15,10 @@ class LearningPathway(models.Model):
         if not self.slug:
             self.slug = slugify(self.goal)
         super().save(*args, **kwargs)
+
+    # --- THIS IS THE FIX: Added the missing method ---
+    def get_absolute_url(self):
+        return reverse('academy:pathway-detail', kwargs={'pk': self.pk})
 
     def get_public_url(self):
         return reverse('academy:public-pathway-detail', kwargs={'pk': self.pk, 'slug': self.slug})

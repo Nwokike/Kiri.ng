@@ -34,6 +34,8 @@
                     </ul>
                 {% endif %}
             </div>
+        {% empty %}
+            <p>{% trans "The modules for this pathway are still being generated." %}</p>
         {% endfor %}
     </div>
 </div>

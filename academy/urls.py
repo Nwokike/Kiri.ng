@@ -6,15 +6,13 @@ app_name = 'academy'
 urlpatterns = [
     path('dashboard/', views.AcademyDashboardView.as_view(), name='dashboard'),
     path('', views.PathwayListView.as_view(), name='pathway-list'),
-    path('create/', views.CreatePathwayView.as_view(), name='create-pathway'),
-    
-    # This is the original, private view for the owner
+    path('create/', views.CreatePathwayView.as_view(), name='create-pathway'),    
     path('pathway/<int:pk>/', views.PathwayDetailView.as_view(), name='pathway-detail'),
-
-    # --- THIS IS THE NEW PUBLIC URL ---
     path('pathway/public/<int:pk>/<slug:slug>/', 
          views.PublicPathwayDetailView.as_view(), 
-         name='public-pathway-detail'),
-    
+         name='public-pathway-detail'),    
     path('module/<int:module_id>/complete/', views.complete_module, name='complete-module'),
+    path('comment/<int:pk>/edit/', views.CommentUpdateView.as_view(), name='comment-edit'),
+    path('comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='comment-delete'),
+
 ]

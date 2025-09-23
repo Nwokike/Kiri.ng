@@ -2,67 +2,41 @@
 {% load i18n %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-lg-8">
-            {% if my_pathway %}
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h4>{% trans "Your Learning Journey" %}</h4>
-                    </div>
-                    <div class="card-body p-4">
-                        <h5 class="card-title">{{ my_pathway.goal }}</h5>
-                        <p class="card-text text-muted">{% trans "Your personalized pathway to success." %}</p>
-                        <a href="{% url 'academy:pathway-detail' pk=my_pathway.pk %}" class="btn btn-primary">{% trans "Continue Learning" %}</a>
-                        <a href="{% url 'academy:pathway-list' %}" class="btn btn-outline-secondary">{% trans "View Community Pathways" %}</a>
-                    </div>
-                </div>
-            {% else %}
-                <div class="card mb-4">
-                     <div class="card-header">
-                        <h4>{% trans "Create Your Learning Pathway" %}</h4>
-                    </div>
-                    <div class="card-body p-4">
-                        <p>{% trans "To get started, tell us your main business goal, and our AI mentor will design a custom learning pathway just for you." %}</p>
-                        <form action="{% url 'academy:create-pathway' %}" method="post">
-                            {% csrf_token %}
-                            {{ goal_form.as_p }}
-                            <button type="submit" class="btn btn-success mt-3">{% trans "Generate My Pathway" %}</button>
-                        </form>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="col-lg-4">
+<div class="row">
+    <div class="col-lg-8">
+        {% if my_pathway %}
             <div class="card mb-4">
-                <div class="card-header">
-                    <h6>{% trans "My Badges" %}</h6>
+                <div class="card-header bg-primary text-white">
+                    <h4>{% trans "Your Learning Journey" %}</h4>
                 </div>
-                <div class="card-body">
-                    {% for user_badge in my_badges %}
-                        <span class="badge bg-warning text-dark me-1 fs-6">{{ user_badge.badge.title }}</span>
-                    {% empty %}
-                        <p class="text-muted small mb-0">{% trans "You haven't earned any badges yet. Complete a pathway to get started!" %}</p>
-                    {% endfor %}
+                <div class="card-body p-4">
+                    <h5 class="card-title">{{ my_pathway.goal }}</h5>
+                    <p class="card-text text-muted">{% trans "Your personalized pathway to success." %}</p>
+                    <a href="{% url 'academy:pathway-detail' pk=my_pathway.pk %}" class="btn btn-primary">{% trans "Continue Learning" %}</a>
+                    <a href="{% url 'academy:pathway-list' %}" class="btn btn-outline-secondary">{% trans "View Community Pathways" %}</a>
                 </div>
             </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h6>{% trans "Recent Community Activity" %}</h6>
+        {% else %}
+            <div class="card mb-4">
+                 <div class="card-header">
+                    <h4>{% trans "Create Your Learning Pathway" %}</h4>
                 </div>
-                <ul class="list-group list-group-flush">
-                    {% for comment in recent_comments %}
-                        <a href="{% url 'academy:pathway-detail' pk=comment.pathway.pk %}" class="list-group-item list-group-item-action">
-                            <strong>{{ comment.author.username }}</strong> {% trans "commented on" %}
-                            <span class="text-primary d-block">"{{ comment.pathway.goal|truncatewords:5 }}"</span>
-                            <div class="text-muted small">{{ comment.created_at|timesince }} {% trans "ago" %}</div>
-                        </a>
-                    {% empty %}
-                         <li class="list-group-item text-muted small">{% trans "No community comments yet." %}</li>
-                    {% endfor %}
-                </ul>
+                <div class="card-body p-4">
+                    <p>{% trans "To get started, tell us your main business goal, and our AI mentor will design a custom learning pathway just for you." %}</p>
+                    <a href="{% url 'academy:create-pathway' %}" class="btn btn-success">{% trans "Get Started Now" %}</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header"><h6>{% trans "My Badges" %}</h6></div>
+            <div class="card-body">
+                {% for user_badge in my_badges %}
+                    <span class="badge bg-warning text-dark me-1 fs-6">{{ user_badge.badge.title }}</span>
+                {% empty %}
+                    <p class="text-muted small mb-0">{% trans "You haven't earned any badges yet. Complete a pathway to get started!" %}</p>
+                {% endfor %}
             </div>
         </div>
     </div>

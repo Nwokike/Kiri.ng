@@ -21,7 +21,7 @@
                 {% for rec_service in recommended_services %}
                 <div class="col-md-6 mb-4">
                     <div class="card h-100">
-                        {% if rec_service.image %}<img src="{{ rec_service.image.url }}" class="card-img-top" style="height: 150px; object-fit: cover;" alt="{{ rec_service.title }}">{% endif %}
+                        {% if rec_service.image %}<img src="{{ rec_service.image.url }}" class="card-img-top service-detail-img" alt="{{ rec_service.title }}">{% endif %}
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">{{ rec_service.title }}</h5>
                             <p class="card-text"><small class="text-muted">by {{ rec_service.artisan.username }}</small></p>
