@@ -13,7 +13,6 @@ class Category(models.Model):
         return self.name
 
 class Service(models.Model):
-    # --- THIS IS THE FIX: Renamed 'entrepreneur' to 'artisan' ---
     artisan = models.ForeignKey(User, on_delete=models.CASCADE, related_name='services')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='services')
     title = models.CharField(max_length=200)
@@ -33,7 +32,7 @@ class Booking(models.Model):
     customer_phone = models.CharField(max_length=20, blank=True)
     message = models.TextField()
     requested_at = models.DateTimeField(auto_now_add=True)
-    is_confirmed = models.BooleanField(default=False)
+    # --- The 'is_confirmed' field has been removed ---
 
     def __str__(self):
         return f"Booking for {self.service.title} by {self.customer_name}"

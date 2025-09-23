@@ -1,10 +1,23 @@
 from django.contrib import admin
 from .models import LearningPathway, PathwayModule, ModuleStep, Badge, UserBadge, Comment
 
+class PathwayModuleInline(admin.TabularInline):
+    model = PathwayModule
+    extra = 0
+    readonly_fields = ('title', 'order', 'is_completed')
+    can_delete = False
+    ordering = ('order',)
+
+class CommentInline(admin.TabularInline):
+    model = Comment
+    extra = 0
+    readonly_fields = ('author', 'body', 'created_at')
+
 @admin.register(LearningPathway)
 class LearningPathwayAdmin(admin.ModelAdmin):
     list_display = ('user', 'goal', 'created_at')
     search_fields = ('goal', 'user__username')
+    inlines = [PathwayModuleInline, CommentInline]
 
 @admin.register(Badge)
 class BadgeAdmin(admin.ModelAdmin):
@@ -12,7 +25,7 @@ class BadgeAdmin(admin.ModelAdmin):
 
 @admin.register(UserBadge)
 class UserBadgeAdmin(admin.ModelAdmin):
-    list_display = ('user', 'badge', 'earned_at')
+    list_display = ('user', 'badge', 'awarded_at')
     list_filter = ('badge',)
 
 @admin.register(Comment)

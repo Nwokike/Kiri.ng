@@ -13,8 +13,10 @@
     <link rel="manifest" href="{% static 'manifest.json' %}">
     <style>
         body { padding-top: 120px; padding-bottom: 80px; }
-        /* THIS IS THE FIX: Ensure dropdown is on top of other elements */
-        .dropdown-menu { z-index: 1050; } 
+        .dropdown-menu { z-index: 1050; }
+        /* --- THIS IS THE FIX: Hides the "Powered by Google" attribution --- */
+        .skiptranslate iframe { display: none !important; }
+        body { top: 0 !important; } 
     </style>
 </head>
 <body class="bg-light">
@@ -23,7 +25,8 @@
         <header id="main-header" class="d-flex justify-content-between align-items-center p-3 bg-white border-bottom">
             <div id="back-button-container" style="width: 50px;"></div>
             <a href="{% url 'core:home' %}" class="text-decoration-none"><h4 class="m-0 fw-bold text-dark">Kiri.ng</h4></a>
-            <div style="width: 50px;" class="d-flex justify-content-end">
+            <div class="d-flex justify-content-end align-items-center" style="min-width: 50px;">
+                <div id="google_translate_element" class="me-2"></div>
                 {% if user.is_authenticated %}
                     <div class="dropdown">
                         <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -32,7 +35,13 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="{% url 'users:profile-detail' %}">{% trans "View Profile" %}</a></li>
-                            {% if user.profile.is_verified_artisan %}<li><a class="dropdown-item" href="{% url 'marketplace:artisan-dashboard' %}">{% trans "Artisan Dashboard" %}</a></li>{% endif %}
+                            {% if user.learning_pathways.first %}
+                                <li><a class="dropdown-item" href="{% url 'academy:pathway-detail' pk=user.learning_pathways.first.pk %}">{% trans "My Academy Pathway" %}</a></li>
+                            {% endif %}
+                            {% if user.profile.is_verified_artisan %}
+                                <li><a class="dropdown-item" href="{% url 'marketplace:artisan-dashboard' %}">{% trans "Artisan Dashboard" %}</a></li>
+                                <li><a class="dropdown-item" href="{% url 'blog:post_create' %}">{% trans "Write a Post" %}</a></li>
+                            {% endif %}
                             <li><hr class="dropdown-divider"></li>
                             <li><form action="{% url 'users:logout' %}" method="post">{% csrf_token %}<button type="submit" class="dropdown-item">{% trans "Logout" %}</button></form></li>
                         </ul>
@@ -58,43 +67,42 @@
         <div class="container-fluid d-flex justify-content-around">
             <a href="{% url 'marketplace:service-list' %}" class="nav-link text-center bottom-nav-item" data-nav="services"><i class="bi bi-shop fs-3"></i><div class="small">{% trans "Services" %}</div></a>
             <a href="{% url 'academy:dashboard' %}" class="nav-link text-center bottom-nav-item" data-nav="academy"><i class="bi bi-mortarboard-fill fs-3"></i><div class="small">{% trans "Academy" %}</div></a>
-            <a href="{% url 'core:home' %}" class="nav-link text-center bottom-nav-item" data-nav="blog"><i class="bi bi-newspaper fs-3"></i><div class="small">{% trans "Blog" %}</div></a>
+            <a href="{% url 'blog:post_list' %}" class="nav-link text-center bottom-nav-item" data-nav="blog"><i class="bi bi-newspaper fs-3"></i><div class="small">{% trans "Blog" %}</div></a>
         </div>
     </nav>
     
     <div id="sub-nav-definitions" style="display: none;">
         <div id="sub-nav-services"><div class="container-fluid border-bottom"><div class="d-flex justify-content-around nav nav-tabs border-0"><a class="nav-link text-dark" href="{% url 'marketplace:service-list' %}">{% trans "Browse All" %}</a>{% if user.is_authenticated and user.profile.is_verified_artisan %}<a class="nav-link text-dark" href="{% url 'marketplace:artisan-dashboard' %}">{% trans "My Services" %}</a>{% endif %}</div></div></div>
         <div id="sub-nav-academy"><div class="container-fluid border-bottom"><div class="d-flex justify-content-around nav nav-tabs border-0"><a class="nav-link text-dark" href="{% url 'academy:dashboard' %}">{% trans "My Dashboard" %}</a><a class="nav-link text-dark" href="{% url 'academy:pathway-list' %}">{% trans "Community" %}</a></div></div></div>
-        <div id="sub-nav-blog"><div class="container-fluid border-bottom"><div class="d-flex justify-content-around nav nav-tabs border-0"><a class="nav-link text-dark" href="{% url 'core:home' %}">{% trans "Community Blog" %}</a></div></div></div>
+        <div id="sub-nav-blog"><div class="container-fluid border-bottom"><div class="d-flex justify-content-around nav nav-tabs border-0"><a class="nav-link text-dark" href="{% url 'blog:post_list' %}">{% trans "Community Blog" %}</a></div></div></div>
         <div id="sub-nav-profile"><div class="container-fluid border-bottom"><div class="d-flex justify-content-around nav nav-tabs border-0"><a class="nav-link text-dark" href="{% url 'users:profile-detail' %}">{% trans "My Profile" %}</a></div></div></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">function googleTranslateElementInit() {new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,ha,ig,yo', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false}, 'google_translate_element');}</script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- THIS IS THE FIX: A much smarter navigation script ---
+        // --- This is your stable, working navigation script ---
         const path = window.location.pathname;
         const mainHeader = document.getElementById('main-header');
         const subHeaderContainer = document.getElementById('sub-header-container');
         const backButtonContainer = document.getElementById('back-button-container');
 
-        // 1. Determine the active section
-        let activeSection = 'blog'; // Default
-        if (path.includes('/marketplace/') || path.includes('/services/')) activeSection = 'services';
+        let activeSection = 'blog';
+        if (path.includes('/marketplace/')) activeSection = 'services';
         if (path.includes('/academy/')) activeSection = 'academy';
         if (path.includes('/users/') || path.includes('/profile/')) activeSection = 'profile';
 
-        // 2. Set active bottom nav icon
         document.querySelectorAll('.bottom-nav-item').forEach(item => item.classList.remove('text-primary'));
         const activeNavItem = document.querySelector(`[data-nav="${activeSection}"]`);
         if(activeNavItem) activeNavItem.classList.add('text-primary');
 
-        // 3. Inject and activate the correct sub-nav
         const activeSubNavId = `sub-nav-${activeSection}`;
         const activeSubNavHTML = document.getElementById(activeSubNavId)?.innerHTML;
         if (activeSubNavHTML) {
             subHeaderContainer.innerHTML = activeSubNavHTML;
-            // Now, find the active link within the sub-nav
             subHeaderContainer.querySelectorAll('.nav-link').forEach(link => {
                 if (link.getAttribute('href') === path) {
                     link.classList.add('active');
@@ -102,13 +110,11 @@
             });
         }
         
-        // 4. Handle Smart Back Button
-        const mainTabs = ['{% url "marketplace:service-list" %}', '{% url "academy:dashboard" %}', '{% url "core:home" %}', '{% url "users:profile-detail" %}'];
+        const mainTabs = ['{% url "marketplace:service-list" %}', '{% url "academy:dashboard" %}', '{% url "blog:post_list" %}', '{% url "users:profile-detail" %}'];
         if (!mainTabs.includes(path)) {
             backButtonContainer.innerHTML = `<a href="javascript:history.back()" class="btn btn-light"><i class="bi bi-arrow-left fs-4"></i></a>`;
         }
         
-        // 5. Handle Dynamic Padding
         function adjustPadding() {
             const headerHeight = mainHeader.offsetHeight;
             const subHeaderHeight = subHeaderContainer.offsetHeight;

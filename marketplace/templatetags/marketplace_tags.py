@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 register = template.Library()
 
+# --- THIS IS YOUR EXISTING, WORKING CODE ---
 @register.simple_tag
 def social_link_card(url):
     if not url:
@@ -57,3 +58,14 @@ def social_link_card(url):
     </a>
     """
     return mark_safe(card_html)
+
+# --- THIS IS THE NEW FUNCTION TO ADD ---
+@register.filter
+def total_bookings(services):
+    """
+    Takes a queryset of services and returns the total
+    number of bookings across all of them.
+    """
+    if not services:
+        return 0
+    return sum(service.bookings.count() for service in services)

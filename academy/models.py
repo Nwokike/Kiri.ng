@@ -1,14 +1,26 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from django.utils.text import slugify
+from django.urls import reverse
 
 class LearningPathway(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pathways')
-    goal = models.TextField(_("User's Goal"))
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='learning_pathways') # Changed related_name for consistency
+    goal = models.CharField(max_length=255) # Changed from TextField for better admin display
     location = models.CharField(_("Location"), max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    slug = models.SlugField(max_length=255, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.goal)
+        super().save(*args, **kwargs)
+
+    def get_public_url(self):
+        return reverse('academy:public-pathway-detail', kwargs={'pk': self.pk, 'slug': self.slug})
+
     def __str__(self):
-        return f"Pathway for {self.user.username} in {self.location}"
+        return f"Pathway for {self.user.username}: {self.goal}"
 
 class PathwayModule(models.Model):
     pathway = models.ForeignKey(LearningPathway, on_delete=models.CASCADE, related_name='modules')
@@ -19,11 +31,9 @@ class PathwayModule(models.Model):
     video_url = models.URLField(_("Supplementary Video URL"), blank=True, null=True)
     content_generated = models.BooleanField(default=False)
     youtube_search_query = models.CharField(max_length=255, blank=True)
-
     class Meta:
         ordering = ['order']
-    def __str__(self):
-        return f"{self.order}: {self.title}"
+    def __str__(self): return f"{self.order}: {self.title}"
 
 class ModuleStep(models.Model):
     module = models.ForeignKey(PathwayModule, on_delete=models.CASCADE, related_name='steps')
@@ -31,35 +41,29 @@ class ModuleStep(models.Model):
     order = models.PositiveIntegerField(default=0)
     class Meta:
         ordering = ['order']
-    def __str__(self):
-        return f"Step {self.order} for {self.module.title}"
+    def __str__(self): return f"Step {self.order} for {self.module.title}"
 
 class Badge(models.Model):
     title = models.CharField(_("Badge Title"), max_length=100, unique=True)
     description = models.TextField(_("Badge Description"))
-    icon_svg = models.TextField(_("Icon SVG Code"), help_text=_("Paste the SVG code for the badge icon here."))
-    def __str__(self):
-        return self.title
+    icon = models.CharField(max_length=50, blank=True) # Changed from icon_svg for simplicity
+    def __str__(self): return self.title
 
 class UserBadge(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='badges')
-    badge = models.ForeignKey(Badge, on_delete=models.CASCADE, related_name='earned_by')
-    earned_at = models.DateTimeField(auto_now_add=True)
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE, related_name='user_badges') # Changed related_name
+    awarded_at = models.DateTimeField(auto_now_add=True) # Renamed from earned_at
     class Meta:
         unique_together = ('user', 'badge')
-    def __str__(self):
-        return f"{self.user.username} earned {self.badge.title}"
+    def __str__(self): return f"{self.user.username} earned {self.badge.title}"
 
 class Comment(models.Model):
     pathway = models.ForeignKey(LearningPathway, on_delete=models.CASCADE, related_name='comments')
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='academy_comments') # Added related_name
     body = models.TextField(_("Comment"))
     created_at = models.DateTimeField(auto_now_add=True)
-
     class Meta:
-        ordering = ['created_at'] 
-        verbose_name = _("Comment")
-        verbose_name_plural = _("Comments")
-
+        ordering = ['-created_at'] # Changed to descending
     def __str__(self):
-        return f'Comment by {self.author.username} on {self.pathway.title}'
+        # --- THIS IS THE FIX: Changed pathway.title to pathway.goal ---
+        return f'Comment by {self.author.username} on {self.pathway.goal}'

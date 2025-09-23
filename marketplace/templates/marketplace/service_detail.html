@@ -2,49 +2,43 @@
 {% load i18n %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-lg-8">
-            {% if service.image %}<img src="{{ service.image.url }}" class="img-fluid rounded mb-4" alt="{{ service.title }}">{% endif %}
-            <h1>{{ service.title }}</h1>
-            <p class="lead">{% trans "Price:" %} ₦{{ service.price|floatformat:2 }}</p>
-            <hr>
-            <h4>{% trans "Description" %}</h4>
-            <p>{{ service.description|linebreaksbr }}</p>
-
-            {% if recommended_services %}
-            <hr class="my-4">
-            <h4>{% trans "You Might Also Like" %}</h4>
-            <div class="list-group">
-                {% for rec_service in recommended_services %}
-                    <a href="{% url 'marketplace:service-detail' pk=rec_service.pk %}" class="list-group-item list-group-item-action">
-                        {{ rec_service.title }} 
-                        {% if rec_service.artisan %}<span class="text-muted">by {{ rec_service.artisan.username }}</span>{% endif %}
-                    </a>
-                {% endfor %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            {% if service.image %}<img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.title }}">{% endif %}
+            <div class="card-body">
+                <h1 class="card-title">{{ service.title }}</h1>
+                <h4 class="card-subtitle mb-2 text-muted">₦{{ service.price|floatformat:2 }}</h4>
+                <p class="card-text"><small class="text-muted">{% trans "Offered by:" %} <a href="{% url 'users:artisan-storefront' service.artisan.username %}">{{ service.artisan.first_name }} {{ service.artisan.last_name }}</a></small></p>
+                <hr><h5 class="mt-4">{% trans "Description" %}</h5><p>{{ service.description|linebreaksbr }}</p>
             </div>
-            {% endif %}
         </div>
 
-        <div class="col-lg-4">
-            <div class="card mb-4">
-                <div class="card-header"><h4>{% trans "Book This Service" %}</h4></div>
-                <div class="card-body">
-                    <form method="post">{% csrf_token %}{{ form.as_p }}<div class="d-grid"><button type="submit" class="btn btn-primary">{% trans "Send Booking Request" %}</button></div></form>
+        {% if recommended_services %}
+        <div class="mt-5">
+            <h3 class="mb-3">{% trans "You Might Also Like" %}</h3>
+            <div class="row">
+                {% for rec_service in recommended_services %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        {% if rec_service.image %}<img src="{{ rec_service.image.url }}" class="card-img-top" style="height: 150px; object-fit: cover;" alt="{{ rec_service.title }}">{% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ rec_service.title }}</h5>
+                            <p class="card-text"><small class="text-muted">by {{ rec_service.artisan.username }}</small></p>
+                            <a href="{% url 'marketplace:service-detail' pk=rec_service.pk %}" class="btn btn-outline-secondary mt-auto">{% trans "View Service" %}</a>
+                        </div>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
+        </div>
+        {% endif %}
+    </div>
 
-            {% if service.artisan %}
-            <div class="card">
-                <div class="card-header"><h4>{% trans "About the Artisan" %}</h4></div>
-                <div class="card-body">
-                    <h5><a href="{% url 'users:artisan-storefront' service.artisan.username %}">{{ service.artisan.username }}</a></h5>
-                    {% if service.artisan.profile.is_verified_artisan %}<p><span class="badge bg-success">{% trans "Verified Artisan" %}</span></p>{% endif %}
-                    <p>{{ service.artisan.profile.bio|truncatewords:20 }}</p>
-                    <div class="d-grid"><a href="{% url 'users:artisan-storefront' service.artisan.username %}" class="btn btn-outline-secondary">{% trans "View Storefront" %}</a></div>
-                </div>
-            </div>
-            {% endif %}
+    <div class="col-lg-4">
+        <div class="card position-sticky" style="top: 140px;">
+            <div class="card-header"><h4>{% trans "Book This Service" %}</h4></div>
+            <div class="card-body"><form method="post">{% csrf_token %}{{ form.as_p }}<div class="d-grid"><button type="submit" class="btn btn-primary">{% trans "Send Request" %}</button></div></form></div>
         </div>
     </div>
 </div>

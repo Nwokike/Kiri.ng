@@ -13,6 +13,7 @@ urlpatterns = [
     path('marketplace/', include('marketplace.urls')),
     path('academy/', include('academy.urls')),
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('blog/', include('blog.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,8 +1,10 @@
 from django.urls import path
-from .views import home
+from marketplace.views import ServiceListView  # <-- Import the correct view
+from . import views
 
 app_name = 'core'
 
 urlpatterns = [
-    path('', home, name='home'),
+    # --- THIS IS THE FIX: The homepage is now the service list ---
+    path('', ServiceListView.as_view(), name='home'),
 ]

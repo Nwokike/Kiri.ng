@@ -1,56 +1,62 @@
 {% extends "core/base.html" %}
-{% load i18n %}
-{% load academy_extras %}
+{% load i18n academy_extras %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="mb-4">
-                <h2>{% trans "Your Learning Pathway" %}</h2>
-                <p class="lead text-muted"><strong>{% trans "Your Goal:" %}</strong> {{ pathway.goal }}</p>
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="mb-4">
+            <h2>{% trans "Learning Pathway" %}</h2>
+            <p class="lead text-muted"><strong>{% trans "Goal:" %}</strong> {{ pathway.goal }}</p>
+            <p><em>{% trans "Created by:" %} {{ pathway.user.username }}</em></p>
+        </div>
+        
+        <div class="accordion" id="pathwayAccordion">
+        {% for module in pathway.modules.all %}
+            <div class="accordion-item mb-2">
+            {% if module.is_completed %}
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ module.id }}">✅ {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</button></h2>
+                <div id="collapse{{ module.id }}" class="accordion-collapse collapse" data-bs-parent="#pathwayAccordion">
+                    <div class="accordion-body">
+                        {% if module.video_url %}<div class="ratio ratio-16x9 mb-3"><iframe src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div>{% endif %}
+                        <div class="p-3 bg-light rounded">{{ module.written_content|markdownify }}</div>
+                    </div>
+                </div>
+            {% elif pathway.user == user and module == unlocked_module %}
+                <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ module.id }}">▶️ {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</button></h2>
+                <div id="collapse{{ module.id }}" class="accordion-collapse collapse show" data-bs-parent="#pathwayAccordion">
+                    <div class="accordion-body">
+                        {% if not module.content_generated %}
+                            <div id="loading-indicator" class="p-5 text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-3"><strong>{% trans "Generating your lesson..." %}</strong></p></div>
+                        {% else %}
+                            {% if module.video_url %}<div class="ratio ratio-16x9 mb-3"><iframe src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div>{% endif %}
+                            <div class="p-3 bg-light rounded">{{ module.written_content|markdownify }}</div>
+                            <hr class="my-4">
+                            <form id="complete-module-form" action="{% url 'academy:complete-module' module.id %}" method="POST">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="validation_answer" class="form-label"><strong>{% trans "To complete this module, Write your answer below (min. 50 characters):" %}</strong></label>
+                                    <textarea name="validation_answer" rows="4" class="form-control" required minlength="50" placeholder="{% trans 'Write your answer here...' %}"></textarea>
+                                </div>
+                                <button id="complete-module-btn" type="submit" class="btn btn-success">
+                                    <span id="btn-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    <span id="btn-text">{% trans "Submit & Unlock Next Module" %}</span>
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <h2 class="accordion-header"><button class="accordion-button collapsed disabled" type="button">🔒 {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</button></h2>
+            {% endif %}
             </div>
-            
-            <div class="accordion" id="pathwayAccordion">
-                {% for module in pathway.modules.all %}
-                    {% if module.is_completed %}
-                        <div class="accordion-item">
-                             <h2 class="accordion-header"><button class="accordion-button collapsed bg-success-subtle" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-completed-{{ module.id }}">✅ {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</button></h2>
-                             <div id="collapse-completed-{{ module.id }}" class="accordion-collapse collapse" data-bs-parent="#pathwayAccordion">
-                                 <div class="accordion-body">
-                                     {% if module.video_url %}<div class="ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div>{% endif %}
-                                     {% if module.written_content %}<div class="mt-4 p-3 bg-light rounded">{{ module.written_content|markdownify }}</div>{% endif %}
-                                 </div>
-                             </div>
-                        </div>
-                    {% elif module == unlocked_module %}
-                        <div class="card mb-3 border-primary">
-                            <div class="card-header bg-primary-subtle"><h5 class="mb-0">🚀 {% trans "Current Module" %} {{ module.order|add:1 }}: {{ module.title }}</h5></div>
-                            <div class="card-body">
-                                {% if not module.content_generated %}
-                                    <div id="loading-indicator" class="text-center p-5">
-                                        <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
-                                        <p class="mt-2"><strong>{% trans "Generating your lesson, this may take a moment..." %}</strong></p>
-                                    </div>
-                                {% else %}
-                                    {% if module.video_url %}<div class="ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div>{% endif %}
-                                    {% if module.written_content %}<div class="mt-4 p-3 bg-light rounded">{{ module.written_content|markdownify }}</div>{% endif %}
-                                    <hr class="my-4">
-                                    <form action="{% url 'academy:complete-module' module.id %}" method="POST">
-                                        {% csrf_token %}
-                                        <label for="validation_answer" class="form-label"><strong>{% trans "Ready for the next step?" %}</strong></label>
-                                        <textarea name="validation_answer" id="validation_answer" rows="3" class="form-control" required minlength="20" placeholder="Briefly describe what you learned..."></textarea>
-                                        <button type="submit" class="btn btn-success mt-3">{% trans "Complete Module & Unlock Next" %}</button>
-                                    </form>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="card mb-3"><div class="card-header bg-light"><h5 class="mb-0 text-muted">🔒 {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }} (Locked)</h5></div></div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-            </div>
+        {% endfor %}
+        </div>
+        <hr class="my-5">
+        <h4>{% trans "Pathway Discussion" %}</h4>
+        {% for comment in comments %}<div class="card mb-3"><div class="card-body"><p class="card-text">{{ comment.body|linebreaksbr }}</p><footer class="blockquote-footer mb-0">{{ comment.author.username }} <cite>on {{ comment.created_at|date:"F j, Y, P" }}</cite></footer></div></div>{% empty %}<div class="alert alert-secondary">{% trans "No comments yet." %}</div>{% endfor %}
+        {% if user.is_authenticated %}
+            <div class="card mt-4"><div class="card-body"><h5>{% trans "Leave a Comment" %}</h5><form method="post">{% csrf_token %}{{ comment_form.as_p }}<button type="submit" class="btn btn-primary mt-2">{% trans "Post Comment" %}</button></form></div></div>
+        {% endif %}
     </div>
 </div>
 {% endblock content %}
@@ -58,12 +64,27 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // For auto-refreshing when content is generating
     const loadingIndicator = document.getElementById('loading-indicator');
-    // If the loading indicator is present on the page, start checking for content.
     if (loadingIndicator) {
-        setTimeout(function() {
-            window.location.reload();
-        }, 5000); // Reload the page every 5 seconds
+        setTimeout(function() { window.location.reload(); }, 7000); 
+    }
+
+    // THIS IS THE FIX: For the submit button loading simulation
+    const completeModuleForm = document.getElementById('complete-module-form');
+    if (completeModuleForm) {
+        completeModuleForm.addEventListener('submit', function() {
+            const btn = document.getElementById('complete-module-btn');
+            const spinner = document.getElementById('btn-spinner');
+            const btnText = document.getElementById('btn-text');
+            
+            // We only show the simulation if the form is valid (e.g., textarea has min 50 chars)
+            if (completeModuleForm.checkValidity()) {
+                spinner.classList.remove('d-none');
+                btnText.innerText = "{% trans 'Submitting...' %}";
+                btn.disabled = true;
+            }
+        });
     }
 });
 </script>

@@ -1,7 +1,9 @@
 from django import forms
+from .models import Comment
 from django.utils.translation import gettext_lazy as _
 from .models import Comment 
 
+# --- Restoring the full list of states from your version ---
 NIGERIAN_STATES = [
     ('', _('Select your state...')), ('Abia', 'Abia'), ('Adamawa', 'Adamawa'), ('Akwa Ibom', 'Akwa Ibom'),
     ('Anambra', 'Anambra'), ('Bauchi', 'Bauchi'), ('Bayelsa', 'Bayelsa'), ('Benue', 'Benue'), ('Borno', 'Borno'),
@@ -13,35 +15,28 @@ NIGERIAN_STATES = [
     ('Sokoto', 'Sokoto'), ('Taraba', 'Taraba'), ('Yobe', 'Yobe'), ('Zamfara', 'Zamfara'),
 ]
 
+# --- Restoring your superior GoalForm ---
 class GoalForm(forms.Form):
     goal = forms.CharField(
-        label=_("What is your primary goal?"),
-        help_text=_("Be as specific as you can."),
-        widget=forms.Textarea(attrs={
-            'class': 'form-control', 
-            'rows': 3
-        })
+        label=_("What is your primary business goal?"),
+        widget=forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+        help_text=_("e.g., 'Master social media marketing for my tailoring business'")
     )
     location = forms.ChoiceField(
         label=_("Which state are you based in?"),
         choices=NIGERIAN_STATES,
-        help_text=_("This helps the AI give you localized advice."),
-        widget=forms.Select(attrs={
-            'class': 'form-select'
-        })
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        help_text=_("This helps the AI give you localized advice.")
     )
 
+# --- This is our simple and correct CommentForm ---
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['body']
+        fields = ('body',)
         widgets = {
-            'body': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'Add a comment or ask a question...'
-            }),
+            'body': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Add a comment or ask a question...'}),
         }
         labels = {
-            'body': ''  
+            'body': ''  # No label for the comment box
         }

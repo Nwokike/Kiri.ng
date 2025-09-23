@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'marketplace.apps.MarketplaceConfig',
     'academy.apps.AcademyConfig',
+    'blog.apps.BlogConfig'
 ]
 
 MIDDLEWARE = [
