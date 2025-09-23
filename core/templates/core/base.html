@@ -14,9 +14,26 @@
     <style>
         body { padding-top: 120px; padding-bottom: 80px; }
         .dropdown-menu { z-index: 1050; }
-        /* --- THIS IS THE FIX: Hides the "Powered by Google" attribution --- */
         .skiptranslate iframe { display: none !important; }
-        body { top: 0 !important; } 
+        body { top: 0 !important; }
+        
+        /* --- THIS IS THE FIX: Custom styles for Google Translate --- */
+        #google_translate_element .goog-te-gadget-simple {
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            font-size: 1rem !important;
+        }
+        #google_translate_element .goog-te-gadget-simple .goog-te-menu-value span {
+            color: #6c757d !important; /* Bootstrap's text-muted color */
+            text-decoration: none !important;
+        }
+        #google_translate_element .goog-te-gadget-simple .goog-te-menu-value span:hover {
+            text-decoration: underline !important;
+        }
+        #google_translate_element .goog-te-gadget-icon {
+            display: none !important; /* Hides the Google icon */
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -55,11 +72,6 @@
     </div>
 
     <main class="container py-4" id="main-content-wrapper">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
-            {% endfor %}
-        {% endif %}
         {% block content %}{% endblock %}
     </main>
     
@@ -90,10 +102,12 @@
         const subHeaderContainer = document.getElementById('sub-header-container');
         const backButtonContainer = document.getElementById('back-button-container');
 
-        let activeSection = 'blog';
+        let activeSection = 'services'; // Default to services now
         if (path.includes('/marketplace/')) activeSection = 'services';
         if (path.includes('/academy/')) activeSection = 'academy';
+        if (path.includes('/blog/')) activeSection = 'blog';
         if (path.includes('/users/') || path.includes('/profile/')) activeSection = 'profile';
+        if (path === '/') activeSection = 'services'; // Homepage is services
 
         document.querySelectorAll('.bottom-nav-item').forEach(item => item.classList.remove('text-primary'));
         const activeNavItem = document.querySelector(`[data-nav="${activeSection}"]`);
