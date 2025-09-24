@@ -16,12 +16,19 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 def signup(request):
-    # ... (no changes) ...
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            Profile.objects.create(user=user)
+            referral_code = form.cleaned_data.get('referral_code')
+            referred_by_user = None
+            if referral_code:
+                try:
+                    referred_by_user = User.objects.get(username__iexact=referral_code)
+                except User.DoesNotExist:
+                    pass
+            
+            Profile.objects.create(user=user, referred_by=referred_by_user)
             login(request, user)
             return redirect('core:home')
     else:

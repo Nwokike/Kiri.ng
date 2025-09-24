@@ -17,8 +17,14 @@
         {% else %}
              <p><span class="badge bg-secondary">{% trans "Standard User" %}</span></p>
         {% endif %}
-        <a href="{% url 'users:profile-edit' %}" class="btn btn-primary mt-3">{% trans "Edit Profile" %}</a>
-    </div>
+
+        <div class="d-grid gap-2 mt-3">
+            <a href="{% url 'users:profile-edit' %}" class="btn btn-primary">{% trans "Edit Profile" %}</a>
+            {% if profile.is_verified_artisan %}
+                <a href="{% url 'users:artisan-storefront' profile.user.username %}" class="btn btn-outline-primary">{% trans "View My Storefront" %}</a>
+            {% endif %}
+        </div>
+        </div>
     <div class="col-md-8">
         <div class="card">
             <div class="card-body">

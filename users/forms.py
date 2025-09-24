@@ -13,6 +13,8 @@ def validate_image_size(value):
 class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
     last_name = forms.CharField(max_length=150, required=True, help_text='Required.')
+    referral_code = forms.CharField(max_length=150, required=False, label=_('Referral Code (Optional)'))
+
     class Meta(UserCreationForm.Meta):
         fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "email",)
 
@@ -23,7 +25,7 @@ class ProfileUpdateForm(forms.ModelForm):
         validators=[validate_image_size], # <-- Add the validator
         help_text=_("Max size 2MB.") # <-- Add help text
     )
-    city = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
+    city = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': False}))
     state = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
 
     class Meta:

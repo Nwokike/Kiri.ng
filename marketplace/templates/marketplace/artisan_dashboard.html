@@ -4,9 +4,18 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0">{% trans "My Services Dashboard" %}</h2>
-    <div>
-        <a href="{% url 'blog:post_create' %}" class="btn btn-outline-secondary">{% trans "Write a Post" %}</a>
-        <a href="{% url 'marketplace:service-create' %}" class="btn btn-primary">{% trans "Add New Service" %}</a>
+    <div class="d-flex gap-2">
+        <a href="{% url 'blog:post_create' %}" class="btn btn-outline-secondary">
+            {% trans "Write a Post" %}
+        </a>
+        <a href="{% url 'marketplace:service-create' %}" class="btn btn-primary">
+            {% trans "Add New Service" %}
+        </a>
+        {% if request.user.profile.is_verified_artisan %}
+            <a href="{% url 'users:artisan-storefront' request.user.username %}" class="btn btn-outline-primary">
+                {% trans "View My Storefront" %}
+            </a>
+        {% endif %}
     </div>
 </div>
 
@@ -26,8 +35,12 @@
                     <p class="card-text">{{ service.description|truncatewords:15 }}</p>
                     <div class="mt-auto pt-3">
                         <div class="d-grid gap-2">
-                            <a href="{% url 'marketplace:service-detail' pk=service.pk %}" class="btn btn-outline-secondary btn-sm">{% trans "View Public Page" %}</a>
-                            <a href="{% url 'marketplace:service-update' pk=service.pk %}" class="btn btn-secondary btn-sm">{% trans "Edit Service" %}</a>
+                            <a href="{% url 'marketplace:service-detail' pk=service.pk %}" class="btn btn-outline-secondary btn-sm">
+                                {% trans "View Public Page" %}
+                            </a>
+                            <a href="{% url 'marketplace:service-update' pk=service.pk %}" class="btn btn-secondary btn-sm">
+                                {% trans "Edit Service" %}
+                            </a>
                         </div>
                     </div>
                 </div>
