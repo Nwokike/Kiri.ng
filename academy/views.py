@@ -95,7 +95,7 @@ class PathwayDetailView(LoginRequiredMixin, generic.DetailView):
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Comment
     form_class = CommentForm
-    template_name = 'academy/comment_form.html'
+    template_name = 'comment_form.html'
 
     def test_func(self):
         comment = self.get_object()
@@ -106,7 +106,7 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateV
 
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Comment
-    template_name = 'academy/comment_confirm_delete.html'
+    template_name = 'comment_confirm_delete.html'
 
     def test_func(self):
         comment = self.get_object()
