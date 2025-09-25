@@ -1,3 +1,29 @@
+// --- THIS IS THE NEW DARK MODE LOGIC (at the top of the file) ---
+const themeToggle = document.getElementById('theme-toggle');
+const currentTheme = localStorage.getItem('theme');
+
+// Set the initial theme on page load
+if (currentTheme) {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    if (currentTheme === 'dark' && themeToggle) {
+        themeToggle.checked = true;
+    }
+}
+
+// Listener for the toggle switch
+if (themeToggle) {
+    themeToggle.addEventListener('change', function() {
+        if (this.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+}
+// --- END NEW LOGIC ---
+
 // Function for Google Translate
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({
@@ -24,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.bottom-nav-item').forEach(item => item.classList.remove('text-primary'));
     const activeNavItem = document.querySelector(`[data-nav="${activeSection}"]`);
-    if(activeNavItem) activeNavItem.classList.add('text-primary');
+    if (activeNavItem) activeNavItem.classList.add('text-primary');
 
     const activeSubNavId = `sub-nav-${activeSection}`;
     const activeSubNavHTML = document.getElementById(activeSubNavId)?.innerHTML;

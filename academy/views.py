@@ -1,4 +1,3 @@
-# academy/views.py
 import base64
 from pathlib import Path
 from datetime import date
@@ -12,7 +11,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.utils.timezone import now
 from django.views import View, generic
 from django.views.decorators.http import require_POST
 
@@ -28,6 +26,7 @@ from .models import (
     UserBadge,
     Comment,
 )
+from notifications.models import Notification  # Added import
 
 
 # -------------------------------
@@ -46,7 +45,6 @@ class AcademyDashboardView(LoginRequiredMixin, generic.TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        # Load user's pathways and mark completion state for template
         my_pathways = LearningPathway.objects.filter(user=user).order_by("-created_at")
         for pathway in my_pathways:
             pathway.is_complete = all(m.is_completed for m in pathway.modules.all())
@@ -101,14 +99,11 @@ class CreatePathwayView(LoginRequiredMixin, View):
             except Exception:
                 pathway_outline = None
 
-            # Accept 'curriculum' key from older AI responses
             if pathway_outline and "curriculum" in pathway_outline:
                 pathway_outline["modules"] = pathway_outline.pop("curriculum")
 
             if pathway_outline and "modules" in pathway_outline:
-                pathway = LearningPathway.objects.create(
-                    user=request.user, goal=goal, location=location
-                )
+                pathway = LearningPathway.objects.create(user=request.user, goal=goal, location=location)
                 for order, module_data in enumerate(pathway_outline.get("modules", [])):
                     module = PathwayModule.objects.create(
                         pathway=pathway,
@@ -117,9 +112,7 @@ class CreatePathwayView(LoginRequiredMixin, View):
                         order=order,
                     )
                     for step_order, step_title in enumerate(module_data.get("steps", [])):
-                        ModuleStep.objects.create(
-                            module=module, title=step_title, order=step_order
-                        )
+                        ModuleStep.objects.create(module=module, title=step_title, order=step_order)
                 messages.success(request, _("Your personalized learning pathway has been generated!"))
                 return redirect("academy:pathway-detail", pk=pathway.pk)
             else:
@@ -186,7 +179,16 @@ class PathwayDetailView(LoginRequiredMixin, generic.DetailView):
             comment.pathway = pathway
             comment.author = request.user
             comment.save()
-            messages.success(request, _("Your comment has been added."))
+
+            # --- CREATE NOTIFICATION ---
+            if pathway.user != request.user:
+                Notification.objects.create(
+                    recipient=pathway.user,
+                    message=_(f"{request.user.username} commented on your pathway: '{pathway.goal}'"),
+                    link=pathway.get_absolute_url()
+                )
+
+            messages.success(request, _("Your comment has been posted."))
             return redirect("academy:pathway-detail", pk=pathway.pk)
 
         context = self.get_context_data()
@@ -221,7 +223,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteV
         return self.object.pathway.get_absolute_url()
 
     def post(self, request, *args, **kwargs):
-        messages.success(request, _("Your comment has been deleted."))
+        messages.success(self.request, _("Your comment has been deleted."))
         return super().post(request, *args, **kwargs)
 
 
@@ -269,19 +271,12 @@ def complete_module(request, module_id):
 # Certificate Download
 # -------------------------------
 class DownloadCertificateView(LoginRequiredMixin, View):
-    """
-    Generates a PDF certificate using WeasyPrint.
-    Passes first_name / last_name separately and embeds signature as base64.
-    """
-
     def get(self, request, pk):
         pathway = get_object_or_404(LearningPathway, pk=pk, user=request.user)
 
-        # Only allow download when pathway is complete
         if not all(module.is_completed for module in pathway.modules.all()):
             raise Http404("Pathway is not yet complete.")
 
-        # Load signature image and encode to base64 (safe fallback to empty string)
         signature_data_uri = ""
         try:
             signature_file = Path(settings.BASE_DIR) / "core" / "static" / "img" / "signature.png"
@@ -292,7 +287,6 @@ class DownloadCertificateView(LoginRequiredMixin, View):
         except Exception:
             signature_data_uri = ""
 
-        # Prepare name components
         first_name = (request.user.first_name or "").strip()
         last_name = (request.user.last_name or "").strip()
         full_name = (request.user.get_full_name() or request.user.username).strip()

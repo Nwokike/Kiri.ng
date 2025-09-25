@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'academy.apps.AcademyConfig',
     'blog.apps.BlogConfig',
     'django_ckeditor_5',
-    'anymail',  # Anymail is required for Brevo
+    'anymail',
+    'notifications.apps.NotificationsConfig',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +59,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.notifications',
             ],
         },
     },

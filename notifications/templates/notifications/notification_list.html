@@ -1,0 +1,31 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="col-lg-8 mx-auto">
+    <div class="card">
+        <div class="card-header">
+            <h4>{% trans "All Notifications" %}</h4>
+        </div>
+        <div class="list-group list-group-flush">
+            {% for notification in notifications %}
+                {% if notification.link %}
+                    <a href="{{ notification.link }}" class="list-group-item list-group-item-action {% if not notification.is_read %}list-group-item-light fw-bold{% endif %}">
+                        <p class="mb-1">{{ notification.message }}</p>
+                        <small class="text-muted">{{ notification.created_at|timesince }} {% trans "ago" %}</small>
+                    </a>
+                {% else %}
+                    <div class="list-group-item {% if not notification.is_read %}list-group-item-light fw-bold{% endif %}">
+                        <p class="mb-1">{{ notification.message }}</p>
+                        <small class="text-muted">{{ notification.created_at|timesince }} {% trans "ago" %}</small>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <div class="list-group-item">
+                    <p class="text-muted mb-0">{% trans "You have no notifications." %}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
