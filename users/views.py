@@ -14,6 +14,8 @@ import urllib.parse
 from django.views import generic
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
+
 
 def signup(request):
     if request.method == 'POST':
@@ -27,7 +29,7 @@ def signup(request):
                     referred_by_user = User.objects.get(username__iexact=referral_code)
                 except User.DoesNotExist:
                     pass
-            
+
             Profile.objects.create(user=user, referred_by=referred_by_user)
             login(request, user)
             return redirect('core:home')
@@ -35,24 +37,30 @@ def signup(request):
         form = CustomUserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
 
+
 @login_required
 def profile_view(request):
-    # ... (no changes) ...
     profile, created = Profile.objects.get_or_create(user=request.user)
     return render(request, 'users/profile_detail.html', {'profile': profile})
 
+
 def send_welcome_artisan_email(user, profile):
-    # ... (no changes) ...
     google_link = profile.google_maps_link or "#"
     context = {'user': user, 'google_link': google_link}
     html_message = render_to_string('registration/welcome_artisan_email.html', context)
     plain_message = strip_tags(html_message)
     print(f"--- SENDING WELCOME ARTISAN EMAIL to {user.email} ---")
-    send_mail(_('Welcome to Kiri.ng!'), plain_message, 'noreply@kiri.ng', [user.email], html_message=html_message)
+    send_mail(
+        _('Welcome to Kiri.ng!'),
+        plain_message,
+        settings.DEFAULT_FROM_EMAIL,  # ✅ Use configured sender
+        [user.email],
+        html_message=html_message,
+    )
+
 
 @login_required
 def profile_edit_view(request):
-    # ... (no changes) ...
     profile = get_object_or_404(Profile, user=request.user)
     was_verified_before = profile.is_verified_artisan
     if request.method == 'POST':
@@ -77,40 +85,59 @@ def profile_edit_view(request):
         form = ProfileUpdateForm(instance=profile)
     return render(request, 'users/profile_edit.html', {'form': form})
 
+
 @login_required
 def verify_location_view(request):
     if request.method == 'POST':
         profile = get_object_or_404(Profile, user=request.user)
         try:
-            # --- THIS IS THE FIX: We are back to using browser GPS ---
             data = json.loads(request.body)
             latitude, longitude = data.get('latitude'), data.get('longitude')
             if latitude is not None and longitude is not None:
                 url = f"https://nominatim.openstreetmap.org/reverse?format=json&lat={latitude}&lon={longitude}&zoom=18"
                 response = requests.get(url, headers={'User-Agent': 'Kiri.ng/1.0'})
-                response.raise_for_status() # Check for errors
+                response.raise_for_status()
                 address_data = response.json().get('address', {})
-                
-                # We save the verified data to both sets of fields
-                city = address_data.get('city', address_data.get('town', address_data.get('village', '')))
-                state = address_data.get('state', '')
+
+                city = (
+                    address_data.get('city')
+                    or address_data.get('village')
+                    or address_data.get('county')
+                    or address_data.get('town')
+                    or address_data.get('locality')
+                    or address_data.get('municipality')
+                    or address_data.get('district')
+                    or address_data.get('suburb')
+                    or ''
+                )
+
+                state = (
+                    address_data.get('state')
+                    or address_data.get('region')
+                    or address_data.get('state_district')
+                    or ''
+                )
+
                 profile.city, profile.state = city, state
                 profile.verified_city, profile.verified_state = city, state
                 profile.location_verified = True
                 profile.save()
-                
+
                 return JsonResponse({'status': 'success', 'city': city, 'state': state})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Coordinates missing.'}, status=400)
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 
-# ... ArtisanStorefrontView and custom_logout remain unchanged ...
+
 class ArtisanStorefrontView(generic.DetailView):
     model = User
     template_name = 'users/artisan_storefront.html'
     context_object_name = 'artisan'
     slug_field = 'username'
     slug_url_kwarg = 'username'
+
 
 def custom_logout(request):
     logout(request)

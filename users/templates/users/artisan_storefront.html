@@ -14,7 +14,17 @@
             <h4 class="text-muted">@{{ artisan.username }}</h4>
             {% if artisan.profile.is_verified_artisan %}<p><span class="badge bg-success fs-6">{% trans "Verified Artisan" %}</span></p>{% endif %}
             <p class="mt-3">{{ artisan.profile.bio|linebreaksbr }}</p>
-            <p><small class="text-muted"><strong>{% trans "Location:" %}</strong> {{ artisan.profile.city }}, {{ artisan.profile.state }}</small></p>
+            
+            <!-- UPDATED: Added a flex container for location and Google Maps button -->
+            <div class="d-flex align-items-center gap-3 mt-3">
+                <p class="mb-0"><small class="text-muted"><strong>{% trans "Location:" %}</strong> {{ artisan.profile.city }}, {{ artisan.profile.state }}</small></p>
+                {% if artisan.profile.google_maps_link %}
+                    <a href="{{ artisan.profile.google_maps_link }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-geo-alt-fill me-1"></i> {% trans "Locate Store" %}
+                    </a>
+                {% endif %}
+            </div>
+
             {% if artisan.profile.business_page_url %}{% social_link_card artisan.profile.business_page_url %}{% endif %}
         </div>
     </div>

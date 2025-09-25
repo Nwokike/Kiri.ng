@@ -8,6 +8,20 @@
             <h2>{% trans "Learning Pathway" %}</h2>
             <p class="lead text-muted"><strong>{% trans "Goal:" %}</strong> {{ pathway.goal }}</p>
             <p><em>{% trans "Created by:" %} {{ pathway.user.username }}</em></p>
+
+            {% if is_pathway_complete and pathway.user == user %}
+            <div class="alert alert-success d-flex align-items-center my-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <div>
+                    🎉 {% trans "Congratulations! You've completed this pathway." %}
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a href="{% url 'academy:download-certificate' pk=pathway.pk %}" class="btn btn-warning">
+                    <i class="bi bi-award-fill"></i> {% trans "Download Certificate" %}
+                </a>
+            </div>
+            {% endif %}
         </div>
         
         <div class="accordion" id="pathwayAccordion">

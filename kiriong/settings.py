@@ -7,12 +7,14 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# --- API Keys and Secrets ---
 SECRET_KEY = os.getenv('SECRET_KEY')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
+BREVO_API_KEY = os.getenv('BREVO_API_KEY')  # Brevo API key
 
+# --- Core Django Settings ---
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
@@ -28,7 +30,8 @@ INSTALLED_APPS = [
     'marketplace.apps.MarketplaceConfig',
     'academy.apps.AcademyConfig',
     'blog.apps.BlogConfig',
-    'django_ckeditor_5'
+    'django_ckeditor_5',
+    'anymail',  # Anymail is required for Brevo
 ]
 
 MIDDLEWARE = [
@@ -62,6 +65,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kiriong.wsgi.application'
 
+# --- Database ---
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -69,6 +73,7 @@ DATABASES = {
     }
 }
 
+# --- CKEditor Config ---
 CKEDITOR_5_CONFIGS = {
     'default': {
         'toolbar': ['heading', '|', 'bold', 'italic', 'link',
@@ -76,10 +81,8 @@ CKEDITOR_5_CONFIGS = {
     },
 }
 
+# --- Password Validators ---
 AUTH_PASSWORD_VALIDATORS = [
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    # },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
@@ -91,6 +94,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# --- Localization ---
 LANGUAGE_CODE = 'en'
 LANGUAGES = [
     ('en', _('English')),
@@ -102,18 +106,23 @@ TIME_ZONE = 'Africa/Lagos'
 USE_I18N = True
 USE_TZ = True
 
+# --- Static & Media ---
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-
-# --- THIS IS THE FIX ---
-# The absolute path to the directory where collectstatic will collect static files.
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# --- Email Configuration (Brevo) ---
+EMAIL_BACKEND = 'anymail.backends.brevo.EmailBackend'
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'nwokikeonyeka@gmail.com')
 
+ANYMAIL = {
+    "BREVO_API_KEY": BREVO_API_KEY,
+}
+
+# --- Django Defaults ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'core:home'
