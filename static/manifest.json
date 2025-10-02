@@ -1,0 +1,50 @@
+{
+  "name": "Kiri.ng - Nigerian Artisan Marketplace",
+  "short_name": "Kiri.ng",
+  "description": "Connect with skilled Nigerian artisans and learn trades through AI-powered pathways",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d6efd",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/static/logo-light.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/logo-light.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/logo-dark.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "education", "marketplace"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "scope": "/",
+  "shortcuts": [
+    {
+      "name": "Browse Services",
+      "short_name": "Services",
+      "description": "Browse artisan services",
+      "url": "/services/",
+      "icons": [{ "src": "/static/logo-light.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Academy",
+      "short_name": "Learn",
+      "description": "Access learning pathways",
+      "url": "/academy/",
+      "icons": [{ "src": "/static/logo-light.png", "sizes": "96x96" }]
+    }
+  ]
+}

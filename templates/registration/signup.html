@@ -1,0 +1,53 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Sign Up" %} - {{ block.super }}{% endblock %}
+
+{% block back_button %}
+    <a href="{% url 'login' %}" class="btn btn-light"><i class="bi bi-arrow-left"></i></a>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body p-4">
+                <h2 class="card-title text-center mb-4">{% trans "Create an Account" %}</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <p class="mb-0">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary mt-3">{% trans "Sign Up" %}</button>
+                    </div>
+                </form>
+                <div class="mt-3 text-center">
+                    <p>{% trans "Already have an account?" %} <a href="{% url 'login' %}">{% trans "Log In" %}</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

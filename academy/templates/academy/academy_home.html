@@ -1,0 +1,188 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">{% trans "Kiri Academy" %}</h1>
+        <p class="lead text-muted">{% trans "Your Personalized Learning Journey Starts Here" %}</p>
+    </div>
+
+    <!-- Introduction Section -->
+    <div class="row mb-5">
+        <div class="col-md-10 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-3">{% trans "What is Kiri Academy?" %}</h3>
+                    <p class="card-text">
+                        {% trans "Kiri Academy is your AI-powered learning companion that creates personalized learning pathways based on your career goals and location. Whether you're an artisan looking to upgrade your skills or someone starting a new career journey, we provide tailored modules, curated video content, and progress tracking to help you achieve your goals." %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-4">{% trans "How Kiri Academy Works" %}</h2>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 text-center shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="bi bi-1-circle-fill text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">{% trans "Set Your Goal" %}</h5>
+                    <p class="card-text">
+                        {% trans "Tell us what you want to learn and where you're located. Our AI will understand your needs." %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 text-center shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="bi bi-2-circle-fill text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">{% trans "Get Your Pathway" %}</h5>
+                    <p class="card-text">
+                        {% trans "Receive a customized learning pathway with modules, steps, and curated YouTube videos tailored to your goal." %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 text-center shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="bi bi-3-circle-fill text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">{% trans "Track Progress & Earn Certificates" %}</h5>
+                    <p class="card-text">
+                        {% trans "Complete modules, track your progress, and earn certificates to showcase your achievements." %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-4">{% trans "Academy Features" %}</h2>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-robot text-primary me-2"></i>
+                        {% trans "AI-Powered Personalization" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans "Each pathway is uniquely generated based on your specific goals and location context." %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-youtube text-danger me-2"></i>
+                        {% trans "Curated Video Content" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans "Carefully selected YouTube videos complement each module to enhance your learning experience." %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-award text-warning me-2"></i>
+                        {% trans "Certificates & Badges" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans "Earn verifiable certificates upon completing your learning pathway to showcase on your profile." %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-people text-success me-2"></i>
+                        {% trans "Community Learning" %}
+                    </h5>
+                    <p class="card-text">
+                        {% trans "See what others are learning, share feedback through comments, and learn together." %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body text-center p-5">
+                    <h3 class="card-title mb-3">{% trans "Ready to Start Learning?" %}</h3>
+                    <p class="card-text mb-4">
+                        {% trans "Create your free account to generate your personalized learning pathway and join our community of learners." %}
+                    </p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'academy:dashboard' %}" class="btn btn-light btn-lg me-2">
+                            <i class="bi bi-speedometer2 me-2"></i>{% trans "Go to Dashboard" %}
+                        </a>
+                        <a href="{% url 'academy:pathway-list' %}" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-list-ul me-2"></i>{% trans "Browse Pathways" %}
+                        </a>
+                    {% else %}
+                        <a href="{% url 'users:signup' %}" class="btn btn-light btn-lg me-2">
+                            <i class="bi bi-person-plus me-2"></i>{% trans "Sign Up Free" %}
+                        </a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>{% trans "Log In" %}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Community Pathways Preview (if any exist) -->
+    {% if recent_pathways %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="text-center mb-4">{% trans "Recent Learning Pathways from Our Community" %}</h3>
+            <div class="list-group">
+                {% for pathway in recent_pathways %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ pathway.goal }}</h6>
+                            <small class="text-muted">{{ pathway.created_at|timesince }} {% trans "ago" %}</small>
+                        </div>
+                        <p class="mb-1 text-muted small">
+                            {% trans "Created by a community member" %} • {{ pathway.modules.count }} {% trans "modules" %}
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-3">
+                <a href="{% url 'academy:pathway-list' %}" class="btn btn-outline-primary">
+                    {% trans "View All Community Pathways" %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

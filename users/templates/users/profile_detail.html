@@ -1,0 +1,48 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 text-center">
+        {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="img-fluid rounded-circle mb-3 shadow-sm profile-picture-lg">
+        {% endif %}
+        <h3 class="fw-bold">{{ profile.user.first_name }} {{ profile.user.last_name }}</h3>
+        <p class="text-muted">@{{ profile.user.username }}</p>
+        {% if profile.is_verified_artisan %}
+            <p><span class="badge bg-success fs-6">{% trans "Verified Artisan" %}</span></p>
+            {% if profile.google_maps_link %}
+                <a href="{{ profile.google_maps_link }}" class="btn btn-sm btn-outline-secondary mt-2" target="_blank" rel="noopener noreferrer">{% trans "View on Google Maps" %}</a>
+            {% endif %}
+        {% else %}
+             <p><span class="badge bg-secondary">{% trans "Standard User" %}</span></p>
+        {% endif %}
+
+        <div class="d-grid gap-2 mt-3">
+            <a href="{% url 'users:profile-edit' %}" class="btn btn-primary">{% trans "Edit Profile" %}</a>
+            {% if profile.is_verified_artisan %}
+                <a href="{% url 'users:artisan-storefront' profile.user.username %}" class="btn btn-outline-primary">{% trans "View My Storefront" %}</a>
+            {% endif %}
+        </div>
+        
+        <div class="d-grid gap-2 mt-4">
+            <a href="{% url 'users:delete-account' %}" class="btn btn-outline-danger btn-sm">
+                <i class="bi bi-trash me-1"></i> {% trans "Delete Account" %}
+            </a>
+        </div>
+        </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                 <h4 class="card-title">{% trans "Profile Details" %}</h4><hr>
+                 <h5>{% trans "Bio" %}</h5><p>{{ profile.bio|default:"No bio provided."|linebreaksbr }}</p><hr>
+                 <h5>{% trans "Contact Information" %}</h5><p><strong>{% trans "Email:" %}</strong> {{ profile.user.email }}</p><p><strong>{% trans "Phone:" %}</strong> {{ profile.phone_number|default:"Not provided." }}</p><hr>
+                 <h5>{% trans "Location" %}</h5><p><strong>{% trans "Address:" %}</strong> {{ profile.street_address|default:"Not provided." }}</p><p><strong>{% trans "City:" %}</strong> {{ profile.city|default:"Not provided." }}</p><p><strong>{% trans "State:" %}</strong> {{ profile.state|default:"Not provided." }}</p><hr>
+                 <h5>{% trans "Business Page" %}</h5>
+                 {% if profile.business_page_url %}<a href="{{ profile.business_page_url }}" target="_blank" rel="noopener noreferrer">{{ profile.business_page_url }}</a>
+                 {% else %}<p class="text-muted">{% trans "Not provided." %}</p>{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

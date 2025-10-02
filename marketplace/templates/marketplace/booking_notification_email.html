@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Booking Request on Kiri.ng</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --color-primary: #2c5530;
+            --color-accent: #d4af37;
+            --color-dark: #2c2c2c;
+            --bg-page: #f8f9fa;
+        }
+    </style>
+</head>
+<body style="font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 20px; color: #2c2c2c; background-color: #f8f9fa;">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+        <tr>
+            <td style="background-color: #2c5530; padding: 20px; text-align: center; color: #fff;">
+                <h1 style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 28px; letter-spacing: 2px;">Kiri.ng</h1>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 30px;">
+                <h2 style="color: #2c5530; font-family: 'Playfair Display', Georgia, serif;">You have a new booking request!</h2>
+                <p style="font-size: 16px; line-height: 1.6;">Hello {{ artisan_name }},</p>
+                <p style="font-size: 16px; line-height: 1.6;">A customer is interested in your service '<strong>{{ service_title }}</strong>'. Please review the details below and contact them promptly to finalize the arrangement.</p>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+                
+                <h3 style="color: #2c5530; font-family: 'Playfair Display', Georgia, serif; margin-bottom: 15px;">Customer Details</h3>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size: 16px;">
+                    <tr>
+                        <td style="padding-bottom: 10px; width: 80px;"><strong>Name:</strong></td>
+                        <td style="padding-bottom: 10px;">{{ booking.customer_name }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-bottom: 10px;"><strong>Email:</strong></td>
+                        <td style="padding-bottom: 10px;">{{ booking.customer_email }}</td>
+                    </tr>
+                    {% if booking.customer_phone %}
+                    <tr>
+                        <td style="padding-bottom: 10px;"><strong>Phone:</strong></td>
+                        <td style="padding-bottom: 10px;">{{ booking.customer_phone }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+
+                <h3 style="color: #2c5530; font-family: 'Playfair Display', Georgia, serif; margin-top: 30px; margin-bottom: 15px;">Message from Customer</h3>
+                <p style="background-color: #f8f9fa; padding: 20px; border-left: 4px solid #d4af37; border-radius: 4px; font-style: italic; font-size: 16px; line-height: 1.6; margin: 0;">
+                    "{{ booking.message }}"
+                </p>
+                
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+                <p style="font-size: 16px; line-height: 1.6;">This is a great opportunity to connect with a new customer. Good luck!</p>
+                <p style="font-size: 16px; line-height: 1.6;"><strong>The Kiri.ng Team</strong></p>
+            </td>
+        </tr>
+         <tr>
+            <td style="background-color: #f8f9fa; padding: 20px; text-align: center; color: #8B7355; font-size: 12px;">
+                <p style="margin:0;">&copy; 2025 Kiri.ng | Connecting Artisans, Building Trust.</p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

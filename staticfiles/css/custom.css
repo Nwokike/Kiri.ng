@@ -1,0 +1,587 @@
+/* static/css/custom.css - Significantly Improved UI */
+
+/* === Color Scheme Based on Logo Colors === */
+:root {
+    --primary-green: #2c5530;
+    --secondary-green: #3d7242;
+    --accent-gold: #d4af37;
+    --light-bg: #f8f9fa;
+    --light-card: #ffffff;
+    --light-text: #212529;
+    --light-muted: #6c757d;
+    --light-border: #dee2e6;
+    --active-bg: rgba(44, 85, 48, 0.1);
+    --hover-bg: rgba(44, 85, 48, 0.05);
+}
+
+[data-theme="dark"] {
+    --primary-green: #4a8f52;
+    --secondary-green: #5fa867;
+    --accent-gold: #f0c952;
+    --light-bg: #121212;
+    --light-card: #1e1e1e;
+    --light-text: #e0e0e0;
+    --light-muted: #999;
+    --light-border: #444;
+    --active-bg: rgba(74, 143, 82, 0.2);
+    --hover-bg: rgba(74, 143, 82, 0.1);
+}
+
+/* === General Body & Layout === */
+body {
+    background-color: var(--light-bg);
+    color: var(--light-text);
+    padding-top: 140px;
+    padding-bottom: 80px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-menu {
+    z-index: 1050;
+    background-color: var(--light-card);
+    border-color: var(--light-border);
+}
+
+.dropdown-item {
+    color: var(--light-text);
+}
+
+.dropdown-item:hover {
+    background-color: var(--hover-bg);
+}
+
+/* === Card Styling === */
+.card {
+    background-color: var(--light-card);
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    background-color: var(--light-card);
+    border-bottom: 2px solid var(--primary-green);
+    font-weight: 600;
+    color: var(--light-text);
+}
+
+.alert {
+    background-color: var(--light-card);
+    border: 1px solid var(--light-border);
+    border-radius: 0.5rem;
+}
+
+/* === Header & Logo === */
+#main-header {
+    background-color: var(--light-card) !important;
+    border-bottom: 1px solid var(--light-border) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.logo-light,
+.logo-dark {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* === Logo Visibility for Dark/Light Mode === */
+.logo-light {
+    display: inline-block;
+}
+
+.logo-dark {
+    display: none;
+}
+
+[data-theme="dark"] .logo-light {
+    display: none;
+}
+
+[data-theme="dark"] .logo-dark {
+    display: inline-block !important;
+}
+
+/* === Bottom Navigation with Improved Active States === */
+.navbar.fixed-bottom {
+    background-color: var(--light-card) !important;
+    border-top: 2px solid var(--light-border);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.bottom-nav-item {
+    color: var(--light-muted);
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.bottom-nav-item:hover {
+    background-color: var(--hover-bg);
+    color: var(--primary-green);
+}
+
+.bottom-nav-item.text-primary,
+.bottom-nav-item.active {
+    color: var(--primary-green) !important;
+    background-color: var(--active-bg);
+    font-weight: 600;
+}
+
+.bottom-nav-item.text-primary::before,
+.bottom-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 3px;
+    background-color: var(--primary-green);
+    border-radius: 0 0 3px 3px;
+}
+
+/* === Sub Navigation with Active States === */
+#sub-header-container {
+    background-color: var(--light-card);
+    border-bottom: 1px solid var(--light-border);
+}
+
+.nav-tabs .nav-link {
+    color: var(--light-muted);
+    border: none;
+    transition: all 0.2s ease;
+    position: relative;
+    padding: 0.75rem 1.25rem;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: var(--hover-bg);
+    color: var(--primary-green);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary-green) !important;
+    background-color: var(--active-bg);
+    font-weight: 600;
+    border-bottom: 3px solid var(--primary-green);
+}
+
+/* === Buttons with Logo Colors === */
+.btn-primary {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-green);
+    border-color: var(--secondary-green);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(44, 85, 48, 0.2);
+}
+
+.btn-outline-primary {
+    border-color: var(--primary-green);
+    color: var(--primary-green);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+    color: white;
+}
+
+.btn-success {
+    background-color: var(--secondary-green);
+    border-color: var(--secondary-green);
+}
+
+.btn-success:hover {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+}
+
+/* === Badge Styling === */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+.badge.bg-success {
+    background-color: var(--secondary-green) !important;
+}
+
+.badge.bg-warning {
+    background-color: var(--accent-gold) !important;
+    color: #212529 !important;
+}
+
+/* === Form Controls === */
+input,
+textarea,
+select {
+    background-color: var(--light-card);
+    border-color: var(--light-border);
+    color: var(--light-text);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    background-color: var(--light-card);
+    border-color: var(--primary-green);
+    color: var(--light-text);
+    box-shadow: 0 0 0 0.2rem rgba(44, 85, 48, 0.15);
+}
+
+.form-control {
+    background-color: var(--light-card);
+    border-color: var(--light-border);
+    color: var(--light-text);
+}
+
+.form-control:focus {
+    background-color: var(--light-card);
+    border-color: var(--primary-green);
+    color: var(--light-text);
+}
+
+.form-label,
+label {
+    color: var(--light-text);
+}
+
+.form-check-label {
+    color: var(--light-text);
+}
+
+.form-text {
+    color: var(--light-muted);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--light-muted);
+    opacity: 0.7;
+}
+
+/* === Back Button Dark Mode Support === */
+.back-btn {
+    background-color: var(--light-card);
+    border-color: var(--light-border);
+    color: var(--light-text);
+}
+
+.back-btn:hover {
+    background-color: var(--hover-bg);
+    border-color: var(--primary-green);
+    color: var(--primary-green);
+}
+
+/* === Google Translate Widget - Compact Under Logo === */
+.skiptranslate iframe {
+    display: none !important;
+}
+
+body.skiptranslate {
+    top: 0 !important;
+}
+
+#google_translate_element {
+    text-align: center;
+    margin-top: 4px;
+}
+
+#google_translate_element .goog-te-gadget-simple {
+    background-color: transparent !important;
+    border: 1px solid var(--light-border) !important;
+    padding: 2px 6px !important;
+    font-size: 0.75rem !important;
+    border-radius: 4px !important;
+    display: inline-block !important;
+}
+
+#google_translate_element .goog-te-gadget-simple .goog-te-menu-value {
+    color: var(--light-text) !important;
+}
+
+#google_translate_element .goog-te-gadget-simple .goog-te-menu-value span {
+    color: var(--light-text) !important;
+    text-decoration: none !important;
+}
+
+#google_translate_element .goog-te-gadget-simple .goog-te-menu-value span:hover {
+    text-decoration: underline !important;
+}
+
+#google_translate_element .goog-te-gadget-icon {
+    display: none !important;
+}
+
+.goog-te-combo {
+    background-color: var(--light-card) !important;
+    color: var(--light-text) !important;
+    border-color: var(--light-border) !important;
+}
+
+/* === Force Google Translate dropdown and text color in both modes === */
+.goog-te-menu-value,
+.goog-te-menu-value *,
+.goog-te-banner-frame,
+select.goog-te-combo,
+.goog-te-combo option {
+    color: var(--light-text) !important;
+    background-color: var(--light-card) !important;
+}
+
+/* Dark mode specific overrides for Google Translate */
+[data-theme="dark"] .goog-te-menu-value,
+[data-theme="dark"] .goog-te-menu-value *,
+[data-theme="dark"] select.goog-te-combo,
+[data-theme="dark"] .goog-te-combo option {
+    color: var(--light-text) !important;
+    background-color: var(--light-card) !important;
+}
+
+/* === AI-Generated Content & Blog Post Styling === */
+.markdown-content table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: var(--light-text);
+    border-color: var(--light-border);
+}
+
+.markdown-content th,
+.markdown-content td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--light-border);
+}
+
+.markdown-content thead {
+    background-color: var(--hover-bg);
+}
+
+.markdown-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+}
+
+/* === CKEditor Custom Styles === */
+.ck-editor__editable_inline {
+    border: 1px solid var(--light-border) !important;
+    border-radius: 0.5rem !important;
+    padding: 1rem !important;
+    min-height: 250px;
+    background-color: var(--light-card) !important;
+    color: var(--light-text) !important;
+}
+
+/* === Reusable Image Utility Classes === */
+.profile-picture-lg {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 3px solid var(--primary-green);
+}
+
+.profile-picture-sm {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.card-img-top-custom {
+    height: 200px;
+    object-fit: cover;
+}
+
+.service-detail-img {
+    height: 150px;
+    object-fit: cover;
+}
+
+.post-header-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+.post-list-image {
+    max-height: 250px;
+    object-fit: cover;
+}
+
+/* === Dark Mode Specific Overrides === */
+[data-theme="dark"] #main-header {
+    background-color: var(--light-card) !important;
+    border-bottom-color: var(--light-border) !important;
+}
+
+[data-theme="dark"] footer {
+    background-color: var(--light-card) !important;
+    border-top-color: var(--light-border) !important;
+}
+
+[data-theme="dark"] .navbar {
+    background-color: var(--light-card) !important;
+    border-top-color: var(--light-border) !important;
+}
+
+[data-theme="dark"] .text-muted {
+    color: var(--light-muted) !important;
+}
+
+[data-theme="dark"] .text-dark {
+    color: var(--light-text) !important;
+}
+
+[data-theme="dark"] .bg-light {
+    background-color: var(--light-bg) !important;
+}
+
+[data-theme="dark"] .bg-white {
+    background-color: var(--light-card) !important;
+}
+
+[data-theme="dark"] .border {
+    border-color: var(--light-border) !important;
+}
+
+[data-theme="dark"] .list-group-item {
+    background-color: var(--light-card) !important;
+    border-color: var(--light-border) !important;
+    color: var(--light-text) !important;
+}
+
+[data-theme="dark"] .pagination .page-link {
+    background-color: var(--light-card) !important;
+    border-color: var(--light-border) !important;
+    color: var(--light-text) !important;
+}
+
+[data-theme="dark"] .pagination .page-item.active .page-link {
+    background-color: var(--primary-green) !important;
+    border-color: var(--primary-green) !important;
+}
+
+[data-theme="dark"] table {
+    color: var(--light-text) !important;
+}
+
+[data-theme="dark"] .table {
+    color: var(--light-text) !important;
+    border-color: var(--light-border) !important;
+}
+
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+[data-theme="dark"] .modal-content {
+    background-color: var(--light-card) !important;
+    color: var(--light-text) !important;
+}
+
+[data-theme="dark"] .modal-header {
+    border-bottom-color: var(--light-border) !important;
+}
+
+[data-theme="dark"] .modal-footer {
+    border-top-color: var(--light-border) !important;
+}
+
+[data-theme="dark"] .close {
+    color: var(--light-text) !important;
+}
+
+[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3, 
+[data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6 {
+    color: var(--light-text) !important;
+}
+
+[data-theme="dark"] p {
+    color: var(--light-text);
+}
+
+[data-theme="dark"] .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+[data-theme="dark"] hr {
+    border-color: var(--light-border) !important;
+    opacity: 0.3;
+}
+
+/* === Links === */
+a {
+    color: var(--primary-green);
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--secondary-green);
+}
+
+/* === Footer === */
+footer a {
+    color: var(--primary-green);
+}
+
+footer a:hover {
+    color: var(--secondary-green);
+}
+
+/* === Responsive Improvements === */
+@media (max-width: 768px) {
+    body {
+        padding-top: 130px;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .bottom-nav-item {
+        padding: 0.5rem 0.5rem;
+    }
+}
+
+/* === Smooth Transitions === */
+* {
+    transition-property: background-color, border-color, color;
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
+}
+
+button,
+a,
+.btn {
+    transition-property: all;
+}
+
+/* === Loading Animations === */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.3s ease-out;
+}

@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.pyc
+
+# Django
+*.log
+db.sqlite3
+
+# Environment
+.env
+Onyii/.env

@@ -1,0 +1,35 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block extra_head %}
+    {{ form.media }}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header"><h2>{% trans "Write a New Post" %}</h2></div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
+                        {{ form.title }}
+                        <div class="form-text">{{ form.title.help_text }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.header_image.id_for_label }}" class="form-label">{{ form.header_image.label }}</label>
+                        {{ form.header_image }}
+                        <div class="form-text">{{ form.header_image.help_text }}</div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.body }}
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">{% trans "Save Draft" %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>{% trans "Confirm Deletion" %}</h4>
+                </div>
+                <div class="card-body">
+                    <p>{% blocktrans with title=object.title %}Are you sure you want to delete the service "<strong>{{ title }}</strong>"?{% endblocktrans %}</p>
+                    <p class="text-danger">{% trans "This action cannot be undone." %}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">{% trans "Yes, Delete" %}</button>
+                        <a href="{% url 'marketplace:artisan-dashboard' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

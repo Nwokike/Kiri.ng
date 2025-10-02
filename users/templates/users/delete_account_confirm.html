@@ -1,0 +1,48 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title text-danger mb-4">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {% trans "Delete Account" %}
+                </h3>
+                
+                <div class="alert alert-danger">
+                    <h5>{% trans "Warning: This action cannot be undone!" %}</h5>
+                    <p class="mb-0">
+                        {% trans "Deleting your account will permanently remove:" %}
+                    </p>
+                    <ul class="mt-2">
+                        <li>{% trans "Your profile and all personal information" %}</li>
+                        <li>{% trans "All your learning pathways and progress" %}</li>
+                        <li>{% trans "Your services and bookings" %}</li>
+                        <li>{% trans "All your blog posts and comments" %}</li>
+                    </ul>
+                </div>
+
+                <p class="text-muted">
+                    {% trans "Are you absolutely sure you want to delete your account?" %}
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="bi bi-trash me-2"></i>
+                            {% trans "Yes, Delete My Account Permanently" %}
+                        </button>
+                        <a href="{% url 'users:profile-detail' %}" class="btn btn-secondary btn-lg">
+                            <i class="bi bi-x-circle me-2"></i>
+                            {% trans "Cancel" %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

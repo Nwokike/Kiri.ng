@@ -1,0 +1,138 @@
+{% extends "core/base.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="m-0">{% trans "Edit Your Profile" %}</h4>
+    </div>
+    <div class="card-body">
+        <form id="profile-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            
+            <hr class="my-4">
+            
+            <!-- Social Media Links Section -->
+            <h5 class="fw-bold mb-3">{% trans "Social Media Links" %}</h5>
+            <div class="p-3 bg-light rounded border mb-4">
+                <p class="small text-muted mb-3">
+                    {% trans "Add your social media profiles. At least one primary link is required for social verification." %}
+                </p>
+                
+                <div id="social-links-container">
+                    {% for link in user.profile.social_links.all %}
+                    <div class="row mb-2 social-link-row">
+                        <div class="col-md-4">
+                            <select name="social_platform_{{ forloop.counter0 }}" class="form-control">
+                                <option value="facebook" {% if link.platform == 'facebook' %}selected{% endif %}>Facebook</option>
+                                <option value="instagram" {% if link.platform == 'instagram' %}selected{% endif %}>Instagram</option>
+                                <option value="twitter" {% if link.platform == 'twitter' %}selected{% endif %}>Twitter/X</option>
+                                <option value="linkedin" {% if link.platform == 'linkedin' %}selected{% endif %}>LinkedIn</option>
+                                <option value="whatsapp" {% if link.platform == 'whatsapp' %}selected{% endif %}>WhatsApp Business</option>
+                                <option value="tiktok" {% if link.platform == 'tiktok' %}selected{% endif %}>TikTok</option>
+                                <option value="youtube" {% if link.platform == 'youtube' %}selected{% endif %}>YouTube</option>
+                                <option value="website" {% if link.platform == 'website' %}selected{% endif %}>Website</option>
+                                <option value="other" {% if link.platform == 'other' %}selected{% endif %}>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="url" name="social_url_{{ forloop.counter0 }}" class="form-control" 
+                                   placeholder="https://..." value="{{ link.url }}" required>
+                            <input type="hidden" name="social_id_{{ forloop.counter0 }}" value="{{ link.id }}">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-center gap-2">
+                            <div class="form-check">
+                                <input type="checkbox" name="social_primary_{{ forloop.counter0 }}" 
+                                       class="form-check-input" {% if link.is_primary %}checked{% endif %}>
+                                <label class="form-check-label small">{% trans "Primary" %}</label>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-danger remove-social-link" 
+                                    onclick="removeSocialLink(this, {{ link.id }})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addSocialLink()">
+                    <i class="bi bi-plus-circle me-1"></i> {% trans "Add Social Media Link" %}
+                </button>
+                <input type="hidden" name="social_links_count" id="social-links-count" value="{{ user.profile.social_links.all.count }}">
+                <input type="hidden" name="removed_social_links" id="removed-social-links" value="">
+            </div>
+            
+            <hr class="my-4">
+            
+            <h5 class="fw-bold">{% trans "Artisan Verification" %}</h5>
+            <div class="p-3 bg-light rounded border">
+                <p class="small text-muted">{% trans "To become a Verified Artisan, you must verify your location and add a business page link." %}</p>
+                <button type="button" class="btn btn-secondary" id="verifyLocationBtn">{% trans "Verify My Location" %}</button>
+                <div id="verificationStatus" class="mt-2"></div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <button type="submit" form="profile-form" class="btn btn-primary">{% trans "Save Changes" %}</button>
+    </div>
+</div>
+
+<script>
+let socialLinksCount = parseInt(document.getElementById('social-links-count').value) || 0;
+let removedLinks = [];
+
+function addSocialLink() {
+    const container = document.getElementById('social-links-container');
+    const newRow = document.createElement('div');
+    newRow.className = 'row mb-2 social-link-row';
+    newRow.innerHTML = `
+        <div class="col-md-4">
+            <select name="social_platform_${socialLinksCount}" class="form-control">
+                <option value="facebook">Facebook</option>
+                <option value="instagram">Instagram</option>
+                <option value="twitter">Twitter/X</option>
+                <option value="linkedin">LinkedIn</option>
+                <option value="whatsapp">WhatsApp Business</option>
+                <option value="tiktok">TikTok</option>
+                <option value="youtube">YouTube</option>
+                <option value="website">Website</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <input type="url" name="social_url_${socialLinksCount}" class="form-control" 
+                   placeholder="https://..." required>
+        </div>
+        <div class="col-md-2 d-flex align-items-center gap-2">
+            <div class="form-check">
+                <input type="checkbox" name="social_primary_${socialLinksCount}" class="form-check-input">
+                <label class="form-check-label small">{% trans "Primary" %}</label>
+            </div>
+            <button type="button" class="btn btn-sm btn-danger" onclick="removeNewSocialLink(this)">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    `;
+    container.appendChild(newRow);
+    socialLinksCount++;
+    document.getElementById('social-links-count').value = socialLinksCount;
+}
+
+function removeNewSocialLink(button) {
+    button.closest('.social-link-row').remove();
+}
+
+function removeSocialLink(button, linkId) {
+    if (linkId) {
+        removedLinks.push(linkId);
+        document.getElementById('removed-social-links').value = removedLinks.join(',');
+    }
+    button.closest('.social-link-row').remove();
+}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/profile_edit.js' %}"></script>
+{% endblock %}

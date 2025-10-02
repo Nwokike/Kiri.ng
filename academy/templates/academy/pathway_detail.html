@@ -1,0 +1,173 @@
+{% extends "core/base.html" %}
+{% load i18n academy_extras %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="mb-4">
+            <h2>{% trans "Learning Pathway" %}</h2>
+            <p class="lead text-muted"><strong>{% trans "Goal:" %}</strong> {{ pathway.goal }}</p>
+            <p><em>{% trans "Created by:" %} {{ pathway.user.username }}</em></p>
+
+            {% if is_pathway_complete and pathway.user == user %}
+            <div class="alert alert-success d-flex align-items-center my-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <div>
+                    🎉 {% trans "Congratulations! You've completed this pathway." %}
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a href="{% url 'academy:download-certificate' pk=pathway.pk %}" class="btn btn-warning">
+                    <i class="bi bi-award-fill"></i> {% trans "Download Certificate" %}
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="accordion" id="pathwayAccordion">
+        {% for module in pathway.modules.all %}
+            <div class="accordion-item mb-2">
+            {% if module.is_completed %}
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ module.id }}">✅ {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</button></h2>
+                <div id="collapse{{ module.id }}" class="accordion-collapse collapse" data-bs-parent="#pathwayAccordion">
+                    <div class="accordion-body markdown-content">
+                        {% if module.video_url %}<div class="ratio ratio-16x9 mb-3"><iframe src="https://www.youtube.com/embed/{{ module.video_url|get_yt_id }}" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div>{% endif %}
+                        {{ module.written_content|markdownify|safe }}
+                    </div>
+                </div>
+            {% elif pathway.user == user and module == unlocked_module %}
+                <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ module.id }}">▶️ {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</button></h2>
+                <div id="collapse{{ module.id }}" class="accordion-collapse collapse show" data-bs-parent="#pathwayAccordion">
+                    <div class="accordion-body markdown-content">
+                        {% if not module.content_generated %}
+                            <div id="loading-indicator" class="p-5 text-center">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mt-3"><strong>{% trans "Generating your personalized lesson and finding the best tutorial videos..." %}</strong></p>
+                                <p class="text-muted small">{% trans "This may take 10-15 seconds" %}</p>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info mb-4">
+                                <i class="bi bi-lightbulb-fill"></i> <strong>{% trans "Learning Resources" %}</strong>
+                                <p class="mb-0 small">{% trans "We've curated multiple video tutorials and written content to help you master this module." %}</p>
+                            </div>
+                            
+                            {% if module_videos %}
+                            <div class="mb-4">
+                                <h5 class="mb-3"><i class="bi bi-play-circle-fill text-primary"></i> {% trans "Video Tutorials" %}</h5>
+                                <div class="row">
+                                    {% for video in module_videos %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="ratio ratio-16x9">
+                                                <iframe src="https://www.youtube.com/embed/{{ video.video_url|get_yt_id }}" title="{{ video.title }}" frameborder="0" allowfullscreen></iframe>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-title small">{{ video.title }}</h6>
+                                                {% if video.description %}<p class="card-text text-muted small">{{ video.description|truncatewords:15 }}</p>{% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="mb-4">
+                                <h5 class="mb-3"><i class="bi bi-book-fill text-success"></i> {% trans "Written Lesson" %}</h5>
+                                <div class="p-3 bg-light rounded">
+                                    {{ module.written_content|markdownify|safe }}
+                                </div>
+                            </div>
+                            
+                            <div class="card bg-warning bg-opacity-10 border-warning mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="bi bi-robot"></i> {% trans "Ask the AI Instructor" %}</h5>
+                                    <p class="card-text">{% trans "Have questions about this module? Ask our AI instructor for instant help!" %}</p>
+                                    <form action="{% url 'academy:ask-question' module.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            <textarea name="question" class="form-control" rows="3" placeholder="{% trans 'Ask a question about this module...' %}" required minlength="10"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-warning">
+                                            <i class="bi bi-send-fill"></i> {% trans "Ask Question" %}
+                                        </button>
+                                    </form>
+                                    
+                                    {% if module_questions %}
+                                    <hr class="my-3">
+                                    <h6>{% trans "Your Previous Questions" %}</h6>
+                                    {% for question in module_questions %}
+                                    <div class="card mb-2">
+                                        <div class="card-body">
+                                            <p class="mb-2"><strong>Q:</strong> {{ question.question_text }}</p>
+                                            <p class="mb-0 text-muted"><strong>A:</strong> {{ question.ai_answer|markdownify|safe }}</p>
+                                            <small class="text-muted">{{ question.created_at|date:"F j, Y, g:i a" }}</small>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <h5 class="card-title text-success">{% trans "Complete This Module" %}</h5>
+                                    <form id="complete-module-form" action="{% url 'academy:complete-module' module.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            <label for="validation_answer" class="form-label"><strong>{% trans "Reflect on what you learned (min. 50 characters):" %}</strong></label>
+                                            <textarea name="validation_answer" rows="4" class="form-control" required minlength="50" placeholder="{% trans 'Describe what you learned and how you plan to apply it to your business...' %}"></textarea>
+                                            <div class="form-text">{% trans "Share your key takeaways to unlock the next module" %}</div>
+                                        </div>
+                                        <button id="complete-module-btn" type="submit" class="btn btn-success">
+                                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                            <span class="btn-text"><i class="bi bi-check-circle-fill"></i> {% trans "Complete & Unlock Next Module" %}</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <h2 class="accordion-header"><button class="accordion-button collapsed disabled" type="button">🔒 {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</button></h2>
+            {% endif %}
+            </div>
+        {% endfor %}
+        </div>
+        <hr class="my-5">
+        <h4>{% trans "Pathway Discussion" %}</h4>
+        {% for comment in comments %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="card-text">{{ comment.body|linebreaksbr }}</p>
+                    <footer class="blockquote-footer mb-0 d-flex justify-content-between align-items-center">
+                        <span>{{ comment.author.username }} <cite>on {{ comment.created_at|date:"F j, Y, P" }}</cite></span>
+                        {% if comment.author == user %}
+                            <div>
+                                <a href="{% url 'academy:comment-edit' comment.pk %}" class="btn btn-sm btn-outline-secondary">{% trans "Edit" %}</a>
+                                <a href="{% url 'academy:comment-delete' comment.pk %}" class="btn btn-sm btn-outline-danger">{% trans "Delete" %}</a>
+                            </div>
+                        {% endif %}
+                    </footer>
+                </div>
+            </div>
+        {% empty %}
+            <div class="alert alert-secondary">{% trans "No comments yet." %}</div>
+        {% endfor %}
+        {% if user.is_authenticated %}
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5>{% trans "Leave a Comment" %}</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ comment_form.as_p }}
+                        <button type="submit" class="btn btn-primary mt-2">{% trans "Post Comment" %}</button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <h1 class="mb-4">{% trans "Terms and Conditions" %}</h1>
+            <p class="text-muted"><small>{% trans "Last Updated: October 1, 2025" %}</small></p>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans "1. Acceptance of Terms" %}</h3>
+                    <p>
+                        {% trans "By accessing and using Kiri.ng, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to these terms, please do not use our services." %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans "2. Description of Service" %}</h3>
+                    <p>
+                        {% trans "Kiri.ng provides a platform connecting artisans with customers, offering AI-powered learning pathways, and facilitating service bookings. We provide the platform but do not directly provide services listed by artisans." %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans "3. User Accounts" %}</h3>
+                    <p>
+                        {% trans "You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account." %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans "4. Artisan Services" %}</h3>
+                    <p>
+                        {% trans "Artisans are independent service providers. Kiri.ng is not responsible for the quality, timeliness, or legality of services provided by artisans. All transactions are directly between users and artisans." %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans "5. Content and Conduct" %}</h3>
+                    <p>
+                        {% trans "Users agree not to post offensive, illegal, or harmful content. Kiri.ng reserves the right to remove content and suspend accounts that violate these terms." %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans "6. Intellectual Property" %}</h3>
+                    <p>
+                        {% trans "All content on Kiri.ng, including but not limited to text, graphics, logos, and software, is the property of Kiri.ng or its content suppliers and is protected by copyright laws." %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans "7. Limitation of Liability" %}</h3>
+                    <p>
+                        {% trans "Kiri.ng shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use our services." %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans "8. Changes to Terms" %}</h3>
+                    <p>
+                        {% trans "We reserve the right to modify these terms at any time. Continued use of Kiri.ng after changes constitutes acceptance of the modified terms." %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3>{% trans "9. Contact Information" %}</h3>
+                    <p>
+                        {% trans "For questions about these Terms and Conditions, please contact us at:" %}
+                        <strong>nwokikeonyeka@gmail.com</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

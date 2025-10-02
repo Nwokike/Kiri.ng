@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Completion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+Pro:wght@300;400;600&family=Courier+New&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS Variables for Professional Color Scheme --- */
+        :root {
+            --font-heading: 'Playfair Display', Georgia, serif;
+            --font-body: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --font-monospace: 'Courier New', monospace;
+            --color-primary: #2c5530; /* Professional green */
+            --color-secondary: #8B7355; /* Warm bronze */
+            --color-dark: #2c2c2c; /* Dark gray for text */
+            --color-accent: #d4af37; /* Gold for highlights */
+            --color-red: #8B0000; /* Blood red for stamp */
+            --border-color: #2c5530; /* Green for borders */
+            --bg-page: #f8f9fa; /* Light page background */
+        }
+
+        /* --- General Page Setup --- */
+        @page {
+            size: letter landscape;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0.5in;
+            background-color: var(--bg-page);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-body);
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+            min-height: 100vh;
+        }
+
+        .certificate-wrapper {
+            width: 10in;
+            height: 7.5in;
+            box-sizing: border-box;
+            padding: 50px;
+            background-color: white;
+            border: 15px double var(--border-color);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(44, 85, 48, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+        }
+
+        /* Decorative Corner Elements */
+        .corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+        }
+        
+        .corner-tl {
+            top: 20px;
+            left: 20px;
+            border-left: 2px solid var(--color-accent);
+            border-top: 2px solid var(--color-accent);
+        }
+        
+        .corner-tr {
+            top: 20px;
+            right: 20px;
+            border-right: 2px solid var(--color-accent);
+            border-top: 2px solid var(--color-accent);
+        }
+        
+        .corner-bl {
+            bottom: 20px;
+            left: 20px;
+            border-left: 2px solid var(--color-accent);
+            border-bottom: 2px solid var(--color-accent);
+        }
+        
+        .corner-br {
+            bottom: 20px;
+            right: 20px;
+            border-right: 2px solid var(--color-accent);
+            border-bottom: 2px solid var(--color-accent);
+        }
+        
+        /* Header Styling */
+        .header {
+            text-align: center;
+            flex-shrink: 0;
+            padding-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-family: var(--font-heading);
+            font-size: 48px;
+            color: var(--color-primary);
+            margin: 0 0 10px 0;
+            letter-spacing: 3px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .header h2 {
+            font-size: 24px;
+            color: var(--color-secondary);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            font-weight: 300;
+            border-bottom: 1px solid var(--color-secondary);
+            padding-bottom: 12px;
+            display: inline-block;
+            width: auto;
+            padding-left: 25px;
+            padding-right: 25px;
+        }
+        
+        /* Recipient Styling */
+        .recipient {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .recipient p {
+            font-size: 18px;
+            color: var(--color-dark);
+            margin: 0;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .recipient h3 {
+            font-family: var(--font-monospace);
+            font-size: 38px;
+            color: var(--color-primary);
+            margin: 20px 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 15px 0;
+            position: relative;
+        }
+
+        .recipient h3:before,
+        .recipient h3:after {
+            content: "•";
+            position: absolute;
+            font-family: var(--font-body); /* Revert for symbol */
+            color: var(--color-accent);
+            font-size: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .recipient h3:before {
+            left: 25%;
+        }
+
+        .recipient h3:after {
+            right: 25%;
+        }
+        
+        /* Course Details Styling */
+        .course-details {
+            margin: 25px auto;
+            width: 90%;
+            text-align: center;
+        }
+
+        .course-details p {
+            font-size: 16px;
+            color: var(--color-dark);
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .modules-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px 40px; /* Vertical and horizontal gap */
+            text-align: left;
+        }
+        .modules-list li {
+            padding-left: 25px;
+            position: relative;
+            font-size: 15px;
+            color: var(--color-dark);
+            line-height: 1.5;
+            flex-shrink: 0; /* Prevents items from shrinking */
+        }
+        
+        .modules-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--color-accent);
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        /* Footer Styling */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            margin-top: auto;
+            padding-top: 30px;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        /* Signature and Date Blocks */
+        .signature-block, .date-block {
+            width: 45%;
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 120px;
+        }
+
+        .signature-line, .date-line {
+            border-bottom: 1px solid var(--color-dark);
+            width: 100%;
+            margin: 0 auto 10px auto;
+            height: 90px;
+            display: flex;
+            align-items: center; 
+            justify-content: center;
+            position: relative;
+        }
+
+        .signature-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-height: 85px;
+            max-width: 100%;
+        }
+
+        .signature-block p, .date-block p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-dark);
+        }
+        
+        .date-value {
+            font-family: var(--font-monospace);
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        /* --- UPDATED: Professional & Realistic Wax Seal --- */
+        .stamp {
+            position: absolute;
+            left: 50%;
+            bottom: 40px;
+            width: 110px;
+            height: 110px;
+            z-index: 10;
+            transform: translateX(-50%) rotate(-10deg);
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .stamp-seal {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #a83232, #8B0000 80%);
+            color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+            box-shadow: 
+                inset 0px 0px 15px rgba(0,0,0,0.5),
+                2px 2px 3px rgba(0,0,0,0.3);
+            border: 3px solid #7a0000;
+            overflow: visible; /* Allow filter to show */
+        }
+
+        /* Creates the irregular, pressed-wax edge */
+        .stamp-seal::before {
+            content: '';
+            position: absolute;
+            top: -5%; left: -5%;
+            width: 110%;
+            height: 110%;
+            border-radius: 50%;
+            box-shadow: 0 0 15px 8px #8B0000;
+            filter: url(#wavy);
+        }
+
+        .stamp-text {
+            text-transform: uppercase;
+            font-weight: bold;
+            line-height: 1.5; /* Adjusted line-height for better spacing */
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stamp-text-top,
+        .stamp-text-bottom {
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            display: block;
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Watermark Effect with Kiri.ng */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            color: rgba(44, 85, 48, 0.03);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            white-space: nowrap;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Additional text under Date of Completion */
+        .date-note {
+            font-size: 12px;
+            color: var(--color-secondary);
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        /* --- Print-specific Styles --- */
+        @media print {
+            body { 
+                background-color: #fff; 
+                padding: 0; 
+            }
+            .certificate-wrapper { 
+                box-shadow: none; 
+                margin: 0 auto; 
+                border: 15px double var(--border-color);
+            }
+            .watermark {
+                color: rgba(44, 85, 48, 0.05);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SVG filter for the wavy seal edge effect -->
+    <svg width="0" height="0" style="position:absolute; top:-100%; left:-100%">
+      <filter id="wavy">
+        <feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5" seed="1" />
+        <feDisplacementMap in="SourceGraphic" scale="8" />
+      </filter>
+    </svg>
+    
+    <div class="certificate-wrapper">
+        <!-- Decorative corners -->
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+        
+        <!-- Watermark with Kiri.ng -->
+        <div class="watermark">Kiri.ng</div>
+
+        <div class="header">
+            <h1>Certificate of Completion</h1>
+            <h2>Artisan Skill Certification</h2>
+        </div>
+
+        <div class="recipient">
+            <p>This certificate is presented to</p>
+            <h3>{{ first_name }} {{ last_name }}</h3>
+            <p>for the successful completion of the Kiri.ng Academy program, demonstrating proficiency in:</p>
+        </div>
+
+        <div class="course-details">
+            <ul class="modules-list">
+                {% for module in modules %}
+                    <li>{{ module.title }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="footer">
+            <!-- UPDATED: Realistic Wax Seal without Initial -->
+            <div class="stamp">
+                <div class="stamp-seal">
+                    <div class="stamp-text">
+                        <span class="stamp-text-top">Verified</span>
+                        <span class="stamp-text-bottom">Artisan</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="signature-block">
+                <div class="signature-line">
+                    <img src="{{ signature_path }}" class="signature-img" alt="Signature">
+                </div>
+                <p><strong>Onyeka Nwokike</strong><br>Program Director, Kiri.ng</p>
+            </div>
+            <div class="date-block">
+                <div class="date-line">
+                    <span class="date-value">{{ completion_date }}</span>
+                </div>
+                <p><strong>Date of Completion</strong><br><span class="date-note">Program successfully completed</span></p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+

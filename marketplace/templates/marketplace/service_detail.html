@@ -1,0 +1,114 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            {% if service.get_all_images %}
+                <div id="serviceCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        {% for image_url in service.get_all_images %}
+                        <button type="button" data-bs-target="#serviceCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active" aria-current="true"{% endif %} aria-label="Slide {{ forloop.counter }}"></button>
+                        {% endfor %}
+                    </div>
+                    <div class="carousel-inner">
+                        {% for image_url in service.get_all_images %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ image_url }}" class="d-block w-100" alt="{{ service.title }}" style="max-height: 500px; object-fit: cover;">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if service.get_all_images|length > 1 %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#serviceCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">{% trans "Previous" %}</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#serviceCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">{% trans "Next" %}</span>
+                    </button>
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h1 class="card-title">{{ service.title }}</h1>
+                        <h4 class="card-subtitle mb-2 text-muted">₦{{ service.price|floatformat:2 }}</h4>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="shareService()">
+                        <i class="bi bi-share me-1"></i> {% trans "Share" %}
+                    </button>
+                </div>
+                <p class="card-text"><small class="text-muted">{% trans "Offered by:" %} <a href="{% url 'users:artisan-storefront' service.artisan.username %}">{{ service.artisan.first_name }} {{ service.artisan.last_name }}</a></small></p>
+                
+                {% if service.artisan.profile.phone_number %}
+                <div class="mt-2 mb-3">
+                    <button id="revealPhoneService" class="btn btn-success btn-sm" onclick="revealPhoneService()">
+                        <i class="bi bi-telephone-fill me-1"></i> {% trans "Reveal Contact Number" %}
+                    </button>
+                    <span id="phoneNumberService" class="ms-2 fw-bold" style="display: none;">{{ service.artisan.profile.phone_number }}</span>
+                </div>
+                <script>
+                function revealPhoneService() {
+                    document.getElementById('revealPhoneService').style.display = 'none';
+                    document.getElementById('phoneNumberService').style.display = 'inline';
+                }
+                </script>
+                {% endif %}
+                
+                <hr><h5 class="mt-4">{% trans "Description" %}</h5><p>{{ service.description|linebreaksbr }}</p>
+            </div>
+        </div>
+
+        {% if recommended_services %}
+        <div class="mt-5">
+            <h3 class="mb-3">{% trans "You Might Also Like" %}</h3>
+            <div class="row">
+                {% for rec_service in recommended_services %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        {% if rec_service.image %}<img src="{{ rec_service.image.url }}" class="card-img-top service-detail-img" alt="{{ rec_service.title }}">{% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ rec_service.title }}</h5>
+                            <p class="card-text"><small class="text-muted">by {{ rec_service.artisan.username }}</small></p>
+                            <a href="{% url 'marketplace:service-detail' pk=rec_service.pk %}" class="btn btn-outline-secondary mt-auto">{% trans "View Service" %}</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card position-sticky" style="top: 140px;">
+            <div class="card-header"><h4>{% trans "Book This Service" %}</h4></div>
+            <div class="card-body"><form method="post">{% csrf_token %}{{ form.as_p }}<div class="d-grid"><button type="submit" class="btn btn-primary">{% trans "Send Request" %}</button></div></form></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function shareService() {
+    const shareData = {
+        title: '{{ service.title|escapejs }}',
+        text: '{{ service.description|truncatewords:20|escapejs }} - ₦{{ service.price }}',
+        url: window.location.href
+    };
+    
+    if (navigator.share) {
+        navigator.share(shareData).catch(err => console.log('Error sharing:', err));
+    } else {
+        const shareUrl = window.location.href;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            alert('{% trans "Link copied to clipboard!" %}');
+        }).catch(err => {
+            prompt('{% trans "Copy this link:" %}', shareUrl);
+        });
+    }
+}
+</script>
+{% endblock %}

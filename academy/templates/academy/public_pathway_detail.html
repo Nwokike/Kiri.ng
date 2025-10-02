@@ -1,0 +1,42 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="mb-4">
+            <h1 class="fw-bold">{{ pathway.goal }}</h1>
+            <p class="lead text-muted">
+                {% blocktrans with username=pathway.user.username %}
+                A public learning pathway created by {{ username }} on Kiri.ng
+                {% endblocktrans %}
+            </p>
+        </div>
+        
+        <p>
+            {% trans "Interested in creating your own AI-powered learning plan? " %}
+            <a href="{% url 'users:signup' %}" class="fw-bold">{% trans "Sign up for Kiri.ng today!" %}</a>
+        </p>
+
+        <hr class="my-4">
+
+        <h3 class="mb-3">{% trans "Curriculum" %}</h3>
+        {% for module in pathway.modules.all %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</h5>
+                </div>
+                {% if module.steps.all %}
+                    <ul class="list-group list-group-flush">
+                        {% for step in module.steps.all %}
+                            <li class="list-group-item">{{ step.title }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>{% trans "The modules for this pathway are still being generated." %}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

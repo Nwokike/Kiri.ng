@@ -1,0 +1,58 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">{% trans "My Services Dashboard" %}</h2>
+    <div class="d-flex gap-2">
+        <a href="{% url 'blog:post_create' %}" class="btn btn-outline-secondary">
+            {% trans "Write a Post" %}
+        </a>
+        <a href="{% url 'marketplace:service-create' %}" class="btn btn-primary">
+            {% trans "Add New Service" %}
+        </a>
+        {% if request.user.profile.is_verified_artisan %}
+            <a href="{% url 'users:artisan-storefront' request.user.username %}" class="btn btn-outline-primary">
+                {% trans "View My Storefront" %}
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    {% for service in services %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                {% if service.image %}
+                    <img src="{{ service.image.url }}" class="card-img-top card-img-top-custom" alt="{{ service.title }}">
+                {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center card-img-top-custom">
+                        <span class="text-muted">{% trans "No Image" %}</span>
+                    </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ service.title }}</h5>
+                    <p class="card-text">{{ service.description|truncatewords:15 }}</p>
+                    <div class="mt-auto pt-3">
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'marketplace:service-detail' pk=service.pk %}" class="btn btn-outline-secondary btn-sm">
+                                {% trans "View Public Page" %}
+                            </a>
+                            <a href="{% url 'marketplace:service-update' pk=service.pk %}" class="btn btn-secondary btn-sm">
+                                {% trans "Edit Service" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col">
+            <div class="alert alert-info">
+                <h4 class="alert-heading">{% trans "No services yet!" %}</h4>
+                <p>{% trans "You haven't added any services to your profile. Click the 'Add New Service' button to get started." %}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends "core/base.html" %}
+{% load i18n marketplace_tags %}
+
+{% block content %}
+<div class="card p-4 mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-3 text-center">
+            {% if artisan.profile.profile_picture %}
+                <img src="{{ artisan.profile.profile_picture.url }}" class="img-fluid rounded-circle shadow-lg profile-picture-lg" alt="Profile picture">
+            {% endif %}
+        </div>
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h2 class="fw-bold">{{ artisan.first_name }} {{ artisan.last_name }}</h2>
+                    <h4 class="text-muted">@{{ artisan.username }}</h4>
+                    {% if artisan.profile.is_verified_artisan %}<p><span class="badge bg-success fs-6">{% trans "Verified Artisan" %}</span></p>{% endif %}
+                </div>
+                <button class="btn btn-outline-primary btn-sm" onclick="shareStorefront()">
+                    <i class="bi bi-share me-1"></i> {% trans "Share Storefront" %}
+                </button>
+            </div>
+            <p class="mt-3">{{ artisan.profile.bio|linebreaksbr }}</p>
+            
+            <!-- UPDATED: Added a flex container for location and Google Maps button -->
+            <div class="d-flex align-items-center gap-3 mt-3">
+                <p class="mb-0"><small class="text-muted"><strong>{% trans "Location:" %}</strong> {{ artisan.profile.city }}, {{ artisan.profile.state }}</small></p>
+                {% if artisan.profile.google_maps_link %}
+                    <a href="{{ artisan.profile.google_maps_link }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-geo-alt-fill me-1"></i> {% trans "Locate Store" %}
+                    </a>
+                {% endif %}
+            </div>
+
+            {% if artisan.profile.phone_number %}
+            <div class="mt-3">
+                <button id="revealPhone" class="btn btn-success btn-sm" onclick="revealPhone()">
+                    <i class="bi bi-telephone-fill me-1"></i> {% trans "Reveal Phone Number" %}
+                </button>
+                <span id="phoneNumber" class="ms-2 fw-bold" style="display: none;">{{ artisan.profile.phone_number }}</span>
+            </div>
+            <script>
+            function revealPhone() {
+                document.getElementById('revealPhone').style.display = 'none';
+                document.getElementById('phoneNumber').style.display = 'inline';
+            }
+            </script>
+            {% endif %}
+
+            {% if artisan.profile.social_links.all or artisan.profile.business_page_url %}
+            <div class="mt-3">
+                <h6 class="text-muted mb-2">{% trans "Connect on Social Media:" %}</h6>
+                <div class="d-flex gap-2 flex-wrap">
+                    {% if artisan.profile.business_page_url %}
+                        {% social_link_card artisan.profile.business_page_url %}
+                    {% endif %}
+                    {% for link in artisan.profile.social_links.all %}
+                    <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm {% if link.is_primary %}btn-primary{% else %}btn-outline-secondary{% endif %}" title="{{ link.get_platform_display }}">
+                        {% if link.platform == 'facebook' %}<i class="bi bi-facebook"></i>
+                        {% elif link.platform == 'instagram' %}<i class="bi bi-instagram"></i>
+                        {% elif link.platform == 'twitter' %}<i class="bi bi-twitter-x"></i>
+                        {% elif link.platform == 'linkedin' %}<i class="bi bi-linkedin"></i>
+                        {% elif link.platform == 'whatsapp' %}<i class="bi bi-whatsapp"></i>
+                        {% elif link.platform == 'tiktok' %}<i class="bi bi-tiktok"></i>
+                        {% elif link.platform == 'youtube' %}<i class="bi bi-youtube"></i>
+                        {% elif link.platform == 'website' %}<i class="bi bi-globe"></i>
+                        {% else %}<i class="bi bi-link-45deg"></i>
+                        {% endif %}
+                        {{ link.get_platform_display }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Certifications Section -->
+{% if artisan.profile.certificates.all or completed_pathways %}
+<div class="card p-4 mb-4 shadow-sm">
+    <h4 class="mb-4"><i class="bi bi-award-fill text-warning me-2"></i>{% trans "Certifications & Credentials" %}</h4>
+    
+    <!-- Professional Certificates -->
+    {% if artisan.profile.certificates.all %}
+    <h5 class="text-muted mb-3"><i class="bi bi-patch-check me-2"></i>{% trans "Professional Certifications" %}</h5>
+    <div class="row mb-4">
+        {% for cert in artisan.profile.certificates.all %}
+        <div class="col-md-6 mb-3">
+            <div class="card h-100 shadow-sm {% if cert.is_expired %}border-danger{% else %}border-success border-2{% endif %}">
+                {% if cert.certificate_image %}
+                <img src="{{ cert.certificate_image.url }}" class="card-img-top" alt="{{ cert.title }}" style="max-height: 200px; object-fit: contain; padding: 10px; background: #f8f9fa;">
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title fw-bold">{{ cert.title }}</h6>
+                    <p class="card-text small mb-1"><i class="bi bi-building me-1"></i><strong>{% trans "Issued by:" %}</strong> {{ cert.issuing_organization }}</p>
+                    <p class="card-text small mb-1"><i class="bi bi-calendar-event me-1"></i><strong>{% trans "Issue Date:" %}</strong> {{ cert.issue_date|date:"M Y" }}</p>
+                    {% if cert.expiry_date %}
+                    <p class="card-text small mb-1">
+                        <i class="bi bi-clock-history me-1"></i><strong>{% trans "Expires:" %}</strong> {{ cert.expiry_date|date:"M Y" }}
+                        {% if cert.is_expired %}
+                        <span class="badge bg-danger ms-1">{% trans "Expired" %}</span>
+                        {% else %}
+                        <span class="badge bg-success ms-1">{% trans "Valid" %}</span>
+                        {% endif %}
+                    </p>
+                    {% endif %}
+                    {% if cert.description %}
+                    <p class="card-text small text-muted mt-2 border-top pt-2">{{ cert.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Academy Certificates -->
+    {% if completed_pathways %}
+    <h5 class="text-muted mb-3"><i class="bi bi-mortarboard-fill me-2"></i>{% trans "Kiri.ng Academy Certificates" %}</h5>
+    <div class="row">
+        {% for pathway in completed_pathways %}
+        <div class="col-md-6 mb-3">
+            <div class="card h-100 shadow-sm border-primary border-2">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title fw-bold mb-0">{{ pathway.goal }}</h6>
+                        <span class="badge bg-success"><i class="bi bi-check-circle-fill me-1"></i>{% trans "Completed" %}</span>
+                    </div>
+                    {% if pathway.category %}
+                    <p class="card-text small text-muted mb-2">
+                        <i class="bi bi-tag-fill me-1"></i>{{ pathway.category.name }}
+                    </p>
+                    {% endif %}
+                    <p class="card-text small mb-2">
+                        <i class="bi bi-calendar-check me-1"></i><strong>{% trans "Completed:" %}</strong> {{ pathway.created_at|date:"M d, Y" }}
+                    </p>
+                    <p class="card-text small mb-3">
+                        <i class="bi bi-journal-text me-1"></i><strong>{% trans "Modules:" %}</strong> {{ pathway.total_modules }}
+                    </p>
+                    <a href="{% url 'academy:download-certificate' pk=pathway.pk %}" class="btn btn-sm btn-warning w-100" target="_blank">
+                        <i class="bi bi-download me-1"></i>{% trans "Download Certificate" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>{% trans "Services Offered" %}</h4>
+</div>
+<hr>
+<div class="row">
+    {% for service in artisan.services.all %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                {% if service.image %}<img src="{{ service.image.url }}" class="card-img-top card-img-top-custom" alt="{{ service.title }}">{% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ service.title }}</h5>
+                    <p class="card-text">{{ service.description|truncatewords:15 }}</p>
+                    <div class="mt-auto pt-3 d-flex justify-content-between align-items-center">
+                        <a href="{% url 'marketplace:service-detail' pk=service.pk %}" class="btn btn-primary">{% trans "View Details" %}</a>
+                        {% if user == artisan %}
+                        <small class="text-muted">{{ service.bookings.count }} {% trans "bookings" %}</small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>{% trans "This artisan has not listed any services yet." %}</p>
+    {% endfor %}
+</div>
+
+<script>
+function shareStorefront() {
+    const shareData = {
+        title: '{{ artisan.first_name|escapejs }} {{ artisan.last_name|escapejs }} - Kiri.ng',
+        text: '{{ artisan.profile.bio|truncatewords:20|escapejs }}',
+        url: window.location.href
+    };
+    
+    if (navigator.share) {
+        navigator.share(shareData).catch(err => console.log('Error sharing:', err));
+    } else {
+        const shareUrl = window.location.href;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            alert('{% trans "Link copied to clipboard!" %}');
+        }).catch(err => {
+            prompt('{% trans "Copy this link:" %}', shareUrl);
+        });
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <article>
+            {% if post.header_image %}
+                <figure class="mb-4">
+                    <img class="img-fluid rounded shadow-sm post-header-image" src="{{ post.header_image.url }}" alt="{{ post.title }}">
+                </figure>
+            {% endif %}
+            <header class="mb-4">
+                <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
+                <div class="text-muted fst-italic mb-2">{% blocktrans with author=post.author.username publish_date=post.publish|date:"F j, Y" %}Posted on {{ publish_date }} by {{ author }}{% endblocktrans %}</div>
+                {% if post.author == user %}<a href="{% url 'blog:post_edit' post.pk %}" class="btn btn-sm btn-secondary">{% trans "Edit Post" %}</a>{% endif %}
+            </header>
+            <section class="mb-5 markdown-content">{{ post.body|safe }}</section>
+        </article>
+        <hr class="my-5">
+        <section>
+            <h4>{% blocktrans count comment_count=comments.count %}{{ comment_count }} Comment{% plural %}{{ comment_count }} Comments{% endblocktrans %}</h4>
+            {% for comment in comments %}
+                <div class="d-flex mb-4">
+                    <div class="flex-shrink-0">
+                        {% if comment.author.profile.profile_picture %}
+                            <img class="rounded-circle profile-picture-sm" src="{{ comment.author.profile.profile_picture.url }}" alt="{{ comment.author.username }}">
+                        {% else %}
+                             <img class="rounded-circle profile-picture-sm" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="Default profile picture">
+                        {% endif %}
+                    </div>
+                    <div class="ms-3 w-100">
+                        <div class="fw-bold d-flex justify-content-between align-items-center">
+                            {{ comment.author.username }}
+                            {% if comment.author == user %}
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'blog:comment-edit' comment.pk %}" class="btn btn-outline-secondary">{% trans "Edit" %}</a>
+                                    <a href="{% url 'blog:comment-delete' comment.pk %}" class="btn btn-outline-danger">{% trans "Delete" %}</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {{ comment.body|linebreaks }}
+                    </div>
+                </div>
+            {% empty %}
+                <p>{% trans "No comments yet. Be the first to comment!" %}</p>
+            {% endfor %}
+            {% if user.is_authenticated %}
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">{% trans "Leave a Comment" %}</h5>
+                    <form method="post">
+                        {% csrf_token %}{{ comment_form.as_p }}
+                        <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </section>
+    </div>
+</div>
+{% endblock %}

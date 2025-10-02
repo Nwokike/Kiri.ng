@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>{% trans "Community Learning Pathways" %}</h2>
+    <a href="{% url 'academy:create-pathway' %}" class="btn btn-primary">{% trans "Create My Pathway" %}</a>
+</div>
+<p class="lead text-muted">{% trans "See the learning goals of other users in the community and contribute to the discussion." %}</p>
+<hr>
+<div class="list-group">
+    {% for pathway in pathways %}
+        <a href="{% url 'academy:pathway-detail' pk=pathway.pk %}" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ pathway.goal }}</h5>
+                <small>{{ pathway.created_at|timesince }} {% trans "ago" %}</small>
+            </div>
+            <p class="mb-1">{% blocktrans with username=pathway.user.username %}A personalized pathway for {{ username }}.{% endblocktrans %}</p>
+        </a>
+    {% empty %}
+        <p>{% trans "No learning pathways have been created yet." %}</p>
+    {% endfor %}
+</div>
+{% endblock %}
