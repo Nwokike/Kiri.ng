@@ -147,48 +147,92 @@ python manage.py runserver 0.0.0.0:5000
 
 Visit `http://localhost:5000` to access the application.
 
-## 🌐 Deployment (Render)
+## 🌐 Deployment (Qoddi)
 
 ### Prerequisites
-- Render account
-- GitHub repository
+- Qoddi account (free tier available at https://qoddi.com)
+- GitHub, GitLab, or Bitbucket repository
 
-### Steps
+### Step 1: Create PostgreSQL Database
 
-1. **Push to GitHub**
-   ```bash
-   git push origin main
-   ```
+1. Log into Qoddi Dashboard
+2. Go to **Marketplace** → **Databases**
+3. Select **PostgreSQL** (recommended: PostgreSQL 15 or later)
+4. Create the database instance
+5. Copy the connection details (you'll need these for environment variables)
 
-2. **Create New Web Service on Render**
-   - Connect your GitHub repository
-   - Render will automatically detect `render.yaml`
+### Step 2: Deploy Your App
 
-3. **Configure Environment Variables**
-   Set these in Render dashboard:
-   - `GEMINI_API_KEY`
-   - `YOUTUBE_API_KEY`
-   - `BREVO_API_KEY`
-   - `DEFAULT_FROM_EMAIL`
-   - `RECAPTCHA_PUBLIC_KEY`
-   - `RECAPTCHA_PRIVATE_KEY`
+1. In Qoddi Dashboard, click **Create App**
+2. Select **Deploy from Git**
+3. Connect your Git provider and authorize Qoddi
+4. Select this repository
+5. Choose the branch to deploy (e.g., `main`)
 
-4. **Database**
-   - Render will automatically create PostgreSQL database
-   - Connection string is auto-configured
+### Step 3: Configure Environment Variables
 
-5. **Deploy**
-   - Render will run `build.sh` automatically
-   - Application will start with gunicorn
+In **App Settings** → **Environment Variables**, add these variables:
+
+**Required:**
+```bash
+SECRET_KEY=your-secret-key-here-generate-a-strong-one
+DEBUG=False
+DATABASE_URL=postgres://username:password@hostname:5432/dbname
+```
+
+**Optional (for full functionality):**
+```bash
+GEMINI_API_KEY=your-google-gemini-api-key
+YOUTUBE_API_KEY=your-youtube-api-key
+BREVO_API_KEY=your-brevo-api-key
+DEFAULT_FROM_EMAIL=noreply@kiri.ng
+RECAPTCHA_PUBLIC_KEY=your-recaptcha-site-key
+RECAPTCHA_PRIVATE_KEY=your-recaptcha-secret-key
+```
+
+**Generate a new SECRET_KEY:**
+```bash
+python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+```
+
+### Step 4: Deploy
+
+1. Click **Deploy** in Qoddi Dashboard
+2. Qoddi will automatically:
+   - Clone your repository
+   - Detect Django via `requirements.txt`
+   - Install dependencies
+   - Build the application
+   - Start with the `Procfile` command
+3. Monitor build logs in real-time
+
+### Step 5: Run Post-Deployment Commands
+
+After deployment, access the SSH Console in **App Settings** → **Tools** → **SSH Console** and run:
+
+```bash
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py collectstatic --noinput
+```
 
 ### Deployment Configuration
 
 The project includes:
-- `render.yaml`: Service configuration
+- `Procfile`: Tells Qoddi how to run the app with Gunicorn
 - `build.sh`: Build script for migrations and static files
+- `requirements.txt`: All Python dependencies
 - Gunicorn WSGI server
 - WhiteNoise for static file serving
-- PostgreSQL with automatic connection
+- Automatic PostgreSQL connection via DATABASE_URL
+
+### Database Configuration
+
+The app automatically switches between:
+- **Development (Replit/Local)**: SQLite database (`db.sqlite3`)
+- **Production (Qoddi)**: PostgreSQL database (via `DATABASE_URL` environment variable)
+
+No code changes needed - the database configuration in `settings.py` handles this automatically!
 
 ## 📁 Project Structure
 
@@ -206,7 +250,7 @@ kiriong/
 ├── templates/            # HTML templates
 ├── build.sh              # Deployment build script
 ├── manage.py             # Django management script
-├── render.yaml           # Render deployment config
+├── Procfile              # Qoddi deployment config
 ├── requirements.txt      # Python dependencies
 └── README.md             # This file
 ```
