@@ -2,6 +2,7 @@ services:
   - type: web
     name: kiriong
     env: python
+    plan: free
     buildCommand: "./build.sh"
     startCommand: "gunicorn kiriong.wsgi:application --bind 0.0.0.0:$PORT"
     envVars:
@@ -12,7 +13,7 @@ services:
       - key: DJANGO_SETTINGS_MODULE
         value: kiriong.settings
       - key: WEB_CONCURRENCY
-        value: 4
+        value: 1
       - key: BREVO_API_KEY
         sync: false
       - key: DEFAULT_FROM_EMAIL
@@ -30,3 +31,4 @@ databases:
   - name: kiriong-db
     databaseName: kiriong
     user: kiriong
+    plan: free
