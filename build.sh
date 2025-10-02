@@ -5,7 +5,5 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 python manage.py collectstatic --no-input
+python manage.py makemigrations
 python manage.py migrate
-
-# One-time superuser creation (run once, then remove these lines)
-echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='Maikel').exists() or User.objects.create_superuser('Maikel', 'nwokikeonyeka@gmail.com', 'Maikel1@')" | python manage.py shell
