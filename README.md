@@ -1,7 +1,7 @@
 # Kiri.ng - Empowering Nigerian Artisans
 
 ![Kiri.ng](static/logo-light.png)
-
+### <a href="https://kiriong.onrender.com/" target="_blank" rel="noopener noreferrer">🚀 View Live Demo</a>
 A comprehensive Django-based platform designed to empower Nigerian artisans by connecting them with customers, providing educational resources through the Academy, and fostering community engagement through blogging.
 
 ## 🌟 Features
