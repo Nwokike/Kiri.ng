@@ -30,17 +30,35 @@
                 <i class="bi bi-trash me-1"></i> {% trans "Delete Account" %}
             </a>
         </div>
-        </div>
+    </div>
     <div class="col-md-8">
         <div class="card">
             <div class="card-body">
                  <h4 class="card-title">{% trans "Profile Details" %}</h4><hr>
-                 <h5>{% trans "Bio" %}</h5><p>{{ profile.bio|default:"No bio provided."|linebreaksbr }}</p><hr>
-                 <h5>{% trans "Contact Information" %}</h5><p><strong>{% trans "Email:" %}</strong> {{ profile.user.email }}</p><p><strong>{% trans "Phone:" %}</strong> {{ profile.phone_number|default:"Not provided." }}</p><hr>
-                 <h5>{% trans "Location" %}</h5><p><strong>{% trans "Address:" %}</strong> {{ profile.street_address|default:"Not provided." }}</p><p><strong>{% trans "City:" %}</strong> {{ profile.city|default:"Not provided." }}</p><p><strong>{% trans "State:" %}</strong> {{ profile.state|default:"Not provided." }}</p><hr>
-                 <h5>{% trans "Business Page" %}</h5>
-                 {% if profile.business_page_url %}<a href="{{ profile.business_page_url }}" target="_blank" rel="noopener noreferrer">{{ profile.business_page_url }}</a>
-                 {% else %}<p class="text-muted">{% trans "Not provided." %}</p>{% endif %}
+                 
+                 <h5>{% trans "Bio" %}</h5>
+                 <p>{{ profile.bio|default:"No bio provided."|linebreaksbr }}</p><hr>
+                 
+                 <h5>{% trans "Contact Information" %}</h5>
+                 <p><strong>{% trans "Email:" %}</strong> {{ profile.user.email }}</p>
+                 <p><strong>{% trans "Phone:" %}</strong> {{ profile.phone_number|default:"Not provided." }}</p><hr>
+                 
+                 <h5>{% trans "Location" %}</h5>
+                 <p><strong>{% trans "Address:" %}</strong> {{ profile.street_address|default:"Not provided." }}</p>
+                 <p><strong>{% trans "City:" %}</strong> {{ profile.city|default:"Not provided." }}</p>
+                 <p><strong>{% trans "State:" %}</strong> {{ profile.state|default:"Not provided." }}</p><hr>
+
+                 <h5>{% trans "Social Media Links" %}</h5>
+                 {% if profile.socialmedialink_set.all %}
+                    {% for link in profile.socialmedialink_set.all %}
+                        <p class="mb-1">
+                            <strong>{{ link.get_platform_display }}:</strong> 
+                            <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.url }}</a>
+                        </p>
+                    {% endfor %}
+                 {% else %}
+                    <p class="text-muted">{% trans "No social media links provided." %}</p>
+                 {% endif %}
             </div>
         </div>
     </div>
