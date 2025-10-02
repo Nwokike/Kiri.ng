@@ -47,18 +47,6 @@
                  <p><strong>{% trans "Address:" %}</strong> {{ profile.street_address|default:"Not provided." }}</p>
                  <p><strong>{% trans "City:" %}</strong> {{ profile.city|default:"Not provided." }}</p>
                  <p><strong>{% trans "State:" %}</strong> {{ profile.state|default:"Not provided." }}</p><hr>
-
-                 <h5>{% trans "Social Media Links" %}</h5>
-                 {% if profile.socialmedialink_set.all %}
-                    {% for link in profile.socialmedialink_set.all %}
-                        <p class="mb-1">
-                            <strong>{{ link.get_platform_display }}:</strong> 
-                            <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.url }}</a>
-                        </p>
-                    {% endfor %}
-                 {% else %}
-                    <p class="text-muted">{% trans "No social media links provided." %}</p>
-                 {% endif %}
             </div>
         </div>
     </div>
