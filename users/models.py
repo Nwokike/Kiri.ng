@@ -45,6 +45,7 @@ class SocialMediaLink(models.Model):
         ('instagram', 'Instagram'),
         ('twitter', 'Twitter/X'),
         ('linkedin', 'LinkedIn'),
+        ('github', 'GitHub'),
         ('whatsapp', 'WhatsApp Business'),
         ('tiktok', 'TikTok'),
         ('youtube', 'YouTube'),

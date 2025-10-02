@@ -116,9 +116,47 @@ No code changes needed!
 
 ## After Deployment
 
+### Creating a Superuser (Admin Account)
+
+**Important:** Render's free tier doesn't have shell access. Here are your options:
+
+**Option 1: Use Django Admin Registration (Recommended)**
 1. Visit your live site: `https://kiri.onrender.com`
-2. Create admin account via Render Shell:
-   ```bash
-   python manage.py createsuperuser
-   ```
-3. Access admin panel: `https://kiri.onrender.com/admin`
+2. Sign up for a regular account
+3. Verify your email
+4. Contact your database admin or use a one-time script to promote your account to superuser
+
+**Option 2: Add to build.sh (One-time Setup)**
+
+Add this to your `build.sh` BEFORE deployment:
+
+```bash
+#!/usr/bin/env bash
+set -o errexit
+
+pip install --upgrade pip
+pip install -r requirements.txt
+
+python manage.py collectstatic --no-input
+python manage.py migrate
+
+# One-time superuser creation (run once, then remove these lines)
+echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@kiri.ng', 'your-secure-password')" | python manage.py shell
+```
+
+**Then:**
+
+1. Deploy to Render
+2. Wait for build to complete
+3. Log in with username: `admin`, password: `your-secure-password`
+4. **IMPORTANT:** Remove those superuser lines from `build.sh` and redeploy
+
+**Option 3: Upgrade to Paid Plan**
+- Render paid plans ($7/month) include shell access
+- Run `python manage.py createsuperuser` directly
+
+### After Creating Superuser
+
+1. Access admin panel: `https://kiri.onrender.com/admin`
+2. Verify your artisan account to access all features
+3. Start adding services!

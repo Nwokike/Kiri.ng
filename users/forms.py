@@ -18,7 +18,7 @@ class CustomUserCreationForm(UserCreationForm):
     referral_code = forms.CharField(max_length=150, required=False, label=_('Referral Code (Optional)'))
     accept_terms = forms.BooleanField(
         required=True,
-        label=_('I accept the Terms and Conditions'),
+        label='',
         error_messages={'required': _('You must accept the terms and conditions to sign up.')}
     )
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
@@ -38,12 +38,11 @@ class ProfileUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['profile_picture', 'bio', 'phone_number', 'street_address', 'city', 'state', 'business_page_url']
+        fields = ['profile_picture', 'bio', 'phone_number', 'street_address', 'city', 'state']
         widgets = {
             'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
             'street_address': forms.TextInput(attrs={'class': 'form-control'}),
-            'business_page_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'e.g., https://instagram.com/your-business'}),
         }
 
 class SocialMediaLinkForm(forms.ModelForm):
@@ -54,4 +53,7 @@ class SocialMediaLinkForm(forms.ModelForm):
             'platform': forms.Select(attrs={'class': 'form-control'}),
             'url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://...'}),
             'is_primary': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+        help_texts = {
+            'url': _('Please include https:// at the beginning (e.g., https://instagram.com/yourprofile)'),
         }
