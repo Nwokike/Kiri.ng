@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Loading Spinner for Forms
     const formsToWatch = [
-        { formId: 'create-pathway-form', btnId: 'generate-btn', spinnerText: 'Generating...' },
-        { formId: 'complete-module-form', btnId: 'complete-module-btn', spinnerText: 'Submitting...' }
+        { formId: 'create-pathway-form', btnId: 'generate-btn', spinnerText: 'Generating your pathway... This may take up to 2 minutes' },
+        { formId: 'complete-module-form', btnId: 'complete-module-btn', spinnerText: 'Submitting...This may take up to 1 minute' }
     ];
 
     formsToWatch.forEach(item => {
