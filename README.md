@@ -267,7 +267,7 @@ This project is developed for the Nigerian artisan community.
 
 ## 📞 Support
 
-For support, email support@kiri.ng or visit our community blog.
+For support, email nwokikeonyeka@gmail.com or visit our community blog.
 
 ---
 
