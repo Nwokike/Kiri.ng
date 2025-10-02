@@ -147,92 +147,96 @@ python manage.py runserver 0.0.0.0:5000
 
 Visit `http://localhost:5000` to access the application.
 
-## 🌐 Deployment (Qoddi)
+## 🌐 Deployment (Render) - EASY SETUP!
 
-### Prerequisites
-- Qoddi account (free tier available at https://qoddi.com)
-- GitHub, GitLab, or Bitbucket repository
+### Quick Start (3 Simple Steps!)
 
-### Step 1: Create PostgreSQL Database
-
-1. Log into Qoddi Dashboard
-2. Go to **Marketplace** → **Databases**
-3. Select **PostgreSQL** (recommended: PostgreSQL 15 or later)
-4. Create the database instance
-5. Copy the connection details (you'll need these for environment variables)
-
-### Step 2: Deploy Your App
-
-1. In Qoddi Dashboard, click **Create App**
-2. Select **Deploy from Git**
-3. Connect your Git provider and authorize Qoddi
-4. Select this repository
-5. Choose the branch to deploy (e.g., `main`)
-
-### Step 3: Configure Environment Variables
-
-In **App Settings** → **Environment Variables**, add these variables:
-
-**Required:**
+**Step 1: Push to GitHub**
 ```bash
-SECRET_KEY=your-secret-key-here-generate-a-strong-one
-DEBUG=False
-DATABASE_URL=postgres://username:password@hostname:5432/dbname
+git add .
+git commit -m "Ready for deployment"
+git push origin main
 ```
 
-**Optional (for full functionality):**
-```bash
-GEMINI_API_KEY=your-google-gemini-api-key
-YOUTUBE_API_KEY=your-youtube-api-key
-BREVO_API_KEY=your-brevo-api-key
-DEFAULT_FROM_EMAIL=noreply@kiri.ng
-RECAPTCHA_PUBLIC_KEY=your-recaptcha-site-key
-RECAPTCHA_PRIVATE_KEY=your-recaptcha-secret-key
-```
+**Step 2: Deploy on Render**
+1. Go to https://render.com and sign up (free)
+2. Click **"New +"** → **"Blueprint"**
+3. Connect your GitHub account
+4. Find and select your `kiriong` repository
+5. Click **"Apply"**
 
-**Generate a new SECRET_KEY:**
-```bash
-python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
-```
+**Step 3: Add Your API Keys (Environment Variables)**
 
-### Step 4: Deploy
+Render will create the database and SECRET_KEY automatically! You only need to add these:
 
-1. Click **Deploy** in Qoddi Dashboard
-2. Qoddi will automatically:
-   - Clone your repository
-   - Detect Django via `requirements.txt`
-   - Install dependencies
-   - Build the application
-   - Start with the `Procfile` command
-3. Monitor build logs in real-time
+1. Go to your dashboard → Click on your **kiriong** service
+2. Click **"Environment"** in the left sidebar
+3. Add these 6 keys (click **"Add Environment Variable"** for each):
 
-### Step 5: Run Post-Deployment Commands
+| Key Name | Where to Get It | Required? |
+|----------|----------------|-----------|
+| `GEMINI_API_KEY` | Get free at: https://aistudio.google.com/app/apikey | Optional* |
+| `YOUTUBE_API_KEY` | Get free at: https://console.cloud.google.com/apis/credentials | Optional* |
+| `BREVO_API_KEY` | Get free at: https://app.brevo.com/settings/keys/api | Optional* |
+| `DEFAULT_FROM_EMAIL` | Your email (e.g., `noreply@yourdomain.com`) | Optional* |
+| `RECAPTCHA_PUBLIC_KEY` | Get free at: https://www.google.com/recaptcha/admin | Optional* |
+| `RECAPTCHA_PRIVATE_KEY` | Get free at: https://www.google.com/recaptcha/admin | Optional* |
 
-After deployment, access the SSH Console in **App Settings** → **Tools** → **SSH Console** and run:
+*The app will work without these, but some features (AI Academy, blog, reCAPTCHA) won't function.
 
-```bash
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py collectstatic --noinput
-```
+**That's it! Your app will automatically:**
+- ✅ Create a PostgreSQL database
+- ✅ Run migrations
+- ✅ Collect static files
+- ✅ Deploy to a live URL
 
-### Deployment Configuration
+Your site will be live at: `https://kiriong.onrender.com`
 
-The project includes:
-- `Procfile`: Tells Qoddi how to run the app with Gunicorn
-- `build.sh`: Build script for migrations and static files
-- `requirements.txt`: All Python dependencies
-- Gunicorn WSGI server
-- WhiteNoise for static file serving
-- Automatic PostgreSQL connection via DATABASE_URL
+---
+
+### Detailed Environment Variable Setup
+
+If you want ALL features to work, here's how to get each API key:
+
+#### 1. GEMINI_API_KEY (For AI-powered Academy)
+1. Go to: https://aistudio.google.com/app/apikey
+2. Sign in with Google
+3. Click **"Create API Key"**
+4. Copy the key and paste into Render
+
+#### 2. YOUTUBE_API_KEY (For video integration)
+1. Go to: https://console.cloud.google.com/apis/credentials
+2. Click **"Create Credentials"** → **"API Key"**
+3. Enable **"YouTube Data API v3"** in your project
+4. Copy the key and paste into Render
+
+#### 3. BREVO_API_KEY (For email notifications)
+1. Go to: https://app.brevo.com (formerly Sendinblue)
+2. Sign up for free account
+3. Go to **Settings** → **API Keys**
+4. Click **"Generate a new API Key"**
+5. Copy the key and paste into Render
+
+#### 4. DEFAULT_FROM_EMAIL
+- Just type your preferred sender email (e.g., `noreply@kiri.ng`)
+
+#### 5. RECAPTCHA_PUBLIC_KEY & RECAPTCHA_PRIVATE_KEY (For anti-spam)
+1. Go to: https://www.google.com/recaptcha/admin
+2. Click **"+"** to register a new site
+3. Choose **reCAPTCHA v2** → **"I'm not a robot" Checkbox**
+4. Add your domain (e.g., `kiriong.onrender.com`)
+5. Copy both the **Site Key** (public) and **Secret Key** (private)
+6. Add both to Render
+
+---
 
 ### Database Configuration
 
-The app automatically switches between:
-- **Development (Replit/Local)**: SQLite database (`db.sqlite3`)
-- **Production (Qoddi)**: PostgreSQL database (via `DATABASE_URL` environment variable)
+✅ **Automatic!** The app switches databases for you:
+- **Development (Replit/Local)**: Uses SQLite (`db.sqlite3`)
+- **Production (Render)**: Uses PostgreSQL (created automatically)
 
-No code changes needed - the database configuration in `settings.py` handles this automatically!
+No code changes needed!
 
 ## 📁 Project Structure
 
@@ -250,7 +254,7 @@ kiriong/
 ├── templates/            # HTML templates
 ├── build.sh              # Deployment build script
 ├── manage.py             # Django management script
-├── Procfile              # Qoddi deployment config
+├── render.yaml           # Render deployment config
 ├── requirements.txt      # Python dependencies
 └── README.md             # This file
 ```
