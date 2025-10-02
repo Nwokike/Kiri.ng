@@ -14,7 +14,7 @@ import urllib.parse
 from django.views import generic
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from notifications.models import Notification  # Added import
+from notifications.models import Notification
 
 
 def signup(request):
@@ -92,16 +92,8 @@ def profile_edit_view(request):
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            updated_profile = form.save(commit=False)
-
-            if updated_profile.location_verified and updated_profile.business_page_url:
-                updated_profile.is_verified_artisan = True
-                if not updated_profile.google_maps_link:
-                    query = f"{updated_profile.street_address}, {updated_profile.city}, {updated_profile.state}, Nigeria"
-                    encoded_query = urllib.parse.quote_plus(query)
-                    updated_profile.google_maps_link = f"https://www.google.com/maps/search/?api=1&query={encoded_query}"
-
-            updated_profile.save()
+            # Save the main profile form first
+            updated_profile = form.save() 
 
             # Handle multiple social media links
             social_links_count = int(request.POST.get('social_links_count', 0))
@@ -139,12 +131,30 @@ def profile_edit_view(request):
                             is_primary=is_primary
                         )
 
+            # --- 🚀 CORRECTED VERIFICATION LOGIC ---
+            # Now that all social links are saved, check the verification status.
+            has_social_link = SocialMediaLink.objects.filter(profile=updated_profile).exists()
+
+            if updated_profile.location_verified and has_social_link:
+                updated_profile.is_verified_artisan = True
+                if not updated_profile.google_maps_link:
+                    query = f"{updated_profile.street_address}, {updated_profile.city}, {updated_profile.state}, Nigeria"
+                    encoded_query = urllib.parse.quote_plus(query)
+                    updated_profile.google_maps_link = f"https://www.google.com/maps/search/?api=1&query={encoded_query}"
+            else:
+                # If conditions are no longer met, un-verify the artisan
+                updated_profile.is_verified_artisan = False
+
+            # Save the profile again to update the verification status and maps link
+            updated_profile.save()
+
             # --- CREATE NOTIFICATION FOR PROFILE UPDATE ---
             Notification.objects.create(
                 recipient=request.user,
                 message=_("Your profile was updated successfully.")
             )
 
+            # Check if the user just became verified to send the welcome email
             if updated_profile.is_verified_artisan and not was_verified_before:
                 messages.success(request, _('Congratulations! You are now a Kiri.ng Verified Artisan.'))
                 send_welcome_artisan_email(request.user, updated_profile)
