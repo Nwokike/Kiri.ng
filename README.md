@@ -147,96 +147,27 @@ python manage.py runserver 0.0.0.0:5000
 
 Visit `http://localhost:5000` to access the application.
 
-## 🌐 Deployment (Render) - EASY SETUP!
+## 🌐 Deployment
 
-### Quick Start (3 Simple Steps!)
+The application is production-ready and can be deployed to Render using the included `render.yaml` Blueprint configuration. The deployment process automatically provisions a PostgreSQL database, runs migrations, and collects static files.
 
-**Step 1: Push to GitHub**
-```bash
-git add .
-git commit -m "Ready for deployment"
-git push origin main
-```
+**Deployment Configuration:**
+- Free tier PostgreSQL database
+- Automatic SSL/TLS certificates
+- Zero-downtime deployments
+- Automatic database migrations via `build.sh`
+- WhiteNoise for efficient static file serving
 
-**Step 2: Deploy on Render**
-1. Go to https://render.com and sign up (free)
-2. Click **"New +"** → **"Blueprint"**
-3. Connect your GitHub account
-4. Find and select your `kiriong` repository
-5. Click **"Apply"**
+**Environment Variables:**
+The application requires the following optional environment variables for full functionality:
+- `GEMINI_API_KEY` - Google Gemini AI for personalized learning
+- `YOUTUBE_API_KEY` - YouTube Data API for educational videos
+- `BREVO_API_KEY` - Transactional email service
+- `DEFAULT_FROM_EMAIL` - Sender email address
+- `RECAPTCHA_PUBLIC_KEY` - reCAPTCHA site key
+- `RECAPTCHA_PRIVATE_KEY` - reCAPTCHA secret key
 
-**Step 3: Add Your API Keys (Environment Variables)**
-
-Render will create the database and SECRET_KEY automatically! You only need to add these:
-
-1. Go to your dashboard → Click on your **kiriong** service
-2. Click **"Environment"** in the left sidebar
-3. Add these 6 keys (click **"Add Environment Variable"** for each):
-
-| Key Name | Where to Get It | Required? |
-|----------|----------------|-----------|
-| `GEMINI_API_KEY` | Get free at: https://aistudio.google.com/app/apikey | Optional* |
-| `YOUTUBE_API_KEY` | Get free at: https://console.cloud.google.com/apis/credentials | Optional* |
-| `BREVO_API_KEY` | Get free at: https://app.brevo.com/settings/keys/api | Optional* |
-| `DEFAULT_FROM_EMAIL` | Your email (e.g., `noreply@yourdomain.com`) | Optional* |
-| `RECAPTCHA_PUBLIC_KEY` | Get free at: https://www.google.com/recaptcha/admin | Optional* |
-| `RECAPTCHA_PRIVATE_KEY` | Get free at: https://www.google.com/recaptcha/admin | Optional* |
-
-*The app will work without these, but some features (AI Academy, blog, reCAPTCHA) won't function.
-
-**That's it! Your app will automatically:**
-- ✅ Create a PostgreSQL database
-- ✅ Run migrations
-- ✅ Collect static files
-- ✅ Deploy to a live URL
-
-Your site will be live at: `https://kiriong.onrender.com`
-
----
-
-### Detailed Environment Variable Setup
-
-If you want ALL features to work, here's how to get each API key:
-
-#### 1. GEMINI_API_KEY (For AI-powered Academy)
-1. Go to: https://aistudio.google.com/app/apikey
-2. Sign in with Google
-3. Click **"Create API Key"**
-4. Copy the key and paste into Render
-
-#### 2. YOUTUBE_API_KEY (For video integration)
-1. Go to: https://console.cloud.google.com/apis/credentials
-2. Click **"Create Credentials"** → **"API Key"**
-3. Enable **"YouTube Data API v3"** in your project
-4. Copy the key and paste into Render
-
-#### 3. BREVO_API_KEY (For email notifications)
-1. Go to: https://app.brevo.com (formerly Sendinblue)
-2. Sign up for free account
-3. Go to **Settings** → **API Keys**
-4. Click **"Generate a new API Key"**
-5. Copy the key and paste into Render
-
-#### 4. DEFAULT_FROM_EMAIL
-- Just type your preferred sender email (e.g., `noreply@kiri.ng`)
-
-#### 5. RECAPTCHA_PUBLIC_KEY & RECAPTCHA_PRIVATE_KEY (For anti-spam)
-1. Go to: https://www.google.com/recaptcha/admin
-2. Click **"+"** to register a new site
-3. Choose **reCAPTCHA v2** → **"I'm not a robot" Checkbox**
-4. Add your domain (e.g., `kiriong.onrender.com`)
-5. Copy both the **Site Key** (public) and **Secret Key** (private)
-6. Add both to Render
-
----
-
-### Database Configuration
-
-✅ **Automatic!** The app switches databases for you:
-- **Development (Replit/Local)**: Uses SQLite (`db.sqlite3`)
-- **Production (Render)**: Uses PostgreSQL (created automatically)
-
-No code changes needed!
+See `DEPLOYMENT.md` for detailed deployment instructions.
 
 ## 📁 Project Structure
 
@@ -253,8 +184,9 @@ kiriong/
 ├── static/               # Static files (CSS, JS, images)
 ├── templates/            # HTML templates
 ├── build.sh              # Deployment build script
+├── DEPLOYMENT.md         # Deployment guide
 ├── manage.py             # Django management script
-├── render.yaml           # Render deployment config
+├── render.yaml           # Render Blueprint config
 ├── requirements.txt      # Python dependencies
 └── README.md             # This file
 ```
