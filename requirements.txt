@@ -89,3 +89,4 @@ psycopg2-binary==2.9.10
 dj-database-url==2.3.0
 whitenoise==6.11.0
 django-recaptcha==4.1.0
+python-decouple==3.8

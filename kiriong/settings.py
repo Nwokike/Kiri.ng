@@ -2,23 +2,24 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 from django.utils.translation import gettext_lazy as _
+from decouple import config  # Added for secure .env loading
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- API Keys and Secrets ---
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dev-key-change-in-production')
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
-YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY', '')
-BREVO_API_KEY = os.getenv('BREVO_API_KEY', '')
-RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI')
-RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
+GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
+YOUTUBE_API_KEY = config('YOUTUBE_API_KEY', default='')
+BREVO_API_KEY = config('BREVO_API_KEY', default='')
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', default='6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI')
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', default='6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe')
 SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 
 # --- Core Django Settings ---
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = ['*']
+DEBUG = config('DEBUG', default='True', cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=lambda v: [s.strip() for s in v.split(',')])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'django_recaptcha',
     'anymail',
     'notifications.apps.NotificationsConfig',
+    'cloudinary_storage',  # Added for Cloudinary media handling
 ]
 
 MIDDLEWARE = [
@@ -80,6 +82,7 @@ if 'DATABASE_URL' in os.environ:
         import dj_database_url
         DATABASES = {
             'default': dj_database_url.config(
+                default=config('DATABASE_URL'),
                 conn_max_age=600,
                 conn_health_checks=True,
             )
@@ -140,15 +143,23 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-MEDIA_URL = '/media/'
+MEDIA_URL = config('MEDIA_URL', default='/media/')
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # --- Email Configuration (Brevo) ---
 EMAIL_BACKEND = 'anymail.backends.brevo.EmailBackend'
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'nwokikeonyeka@gmail.com')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='nwokikeonyeka@gmail.com')
 
 ANYMAIL = {
     "BREVO_API_KEY": BREVO_API_KEY,
+}
+
+# --- Cloudinary Media Storage ---
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': config('CLOUDINARY_API_KEY'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET'),
 }
 
 # --- Django Defaults ---
