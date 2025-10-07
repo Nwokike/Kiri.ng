@@ -1,0 +1,35 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}404 - Page Not Found{% endblock %}
+
+{% block content %}
+<div class="container text-center" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+    <div>
+        <div class="mb-4">
+            <img src="{% static 'logo-light.png' %}" alt="Kiri.ng" class="logo-light" style="height: 100px; opacity: 0.7;">
+            <img src="{% static 'logo-dark.png' %}" alt="Kiri.ng" class="logo-dark" style="height: 100px; opacity: 0.7; display: none;">
+        </div>
+        <h1 class="display-1 fw-bold" style="color: var(--primary-green);">404</h1>
+        <h2 class="mb-4">{% trans "Page Not Found" %}</h2>
+        <p class="lead text-muted mb-4">
+            {% trans "Oops! The page you're looking for doesn't exist. It might have been moved or deleted." %}
+        </p>
+        <div class="d-flex gap-3 justify-content-center">
+            <a href="{% url 'marketplace:service-list' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-house-fill"></i> {% trans "Go Home" %}
+            </a>
+            <button class="btn btn-outline-primary btn-lg" onclick="history.back()">
+                <i class="bi bi-arrow-left"></i> {% trans "Go Back" %}
+            </button>
+        </div>
+        <div class="mt-4">
+            <p class="text-muted">
+                {% trans "Need help?" %} 
+                <a href="#" data-bs-toggle="modal" data-bs-target="#contactSupportModal">{% trans "Contact Support" %}</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

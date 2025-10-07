@@ -1,3 +1,34 @@
+// PWA Install Button Logic
+let deferredPrompt;
+const installButton = document.getElementById('pwa-install-btn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installButton) {
+        installButton.style.display = 'block';
+    }
+});
+
+if (installButton) {
+    installButton.addEventListener('click', async () => {
+        if (!deferredPrompt) {
+            return;
+        }
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        installButton.style.display = 'none';
+    });
+}
+
+window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    if (installButton) {
+        installButton.style.display = 'none';
+    }
+});
+
 // Dark Mode Logic
 const themeToggle = document.getElementById('theme-toggle');
 const currentTheme = localStorage.getItem('theme');
