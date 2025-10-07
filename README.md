@@ -1,4 +1,4 @@
-# Kiri.ng - Nigerian Artisan Marketplace & Learning Platform
+# Kiri.ng - Empowering Nigerian Artisans
 
 ![Kiri.ng](static/logo-light.png)
 
