@@ -18,11 +18,11 @@
     --primary-green: #4a8f52;
     --secondary-green: #5fa867;
     --accent-gold: #f0c952;
-    --light-bg: #121212;
-    --light-card: #1e1e1e;
-    --light-text: #e0e0e0;
-    --light-muted: #999;
-    --light-border: #444;
+    --light-bg: #1a1a2e;
+    --light-card: #25253a;
+    --light-text: #e8e8e8;
+    --light-muted: #a0a0a0;
+    --light-border: #3d3d56;
     --active-bg: rgba(74, 143, 82, 0.2);
     --hover-bg: rgba(74, 143, 82, 0.1);
 }
@@ -584,4 +584,148 @@ a,
 
 .card {
     animation: fadeIn 0.3s ease-out;
+}
+
+/* === PWA Install Button === */
+.pwa-install-button {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    z-index: 1000;
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(44, 85, 48, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pwa-install-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(44, 85, 48, 0.4);
+    background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
+}
+
+.pwa-install-button:active {
+    transform: translateY(0);
+}
+
+/* === Google Translate Dropdown Fix === */
+.goog-te-combo {
+    background-color: var(--light-card) !important;
+    color: var(--primary-green) !important;
+    border: 2px solid var(--primary-green) !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    font-weight: 600 !important;
+}
+
+.goog-te-combo option {
+    background-color: var(--light-card) !important;
+    color: var(--primary-green) !important;
+}
+
+#google_translate_element {
+    margin-top: 5px;
+}
+
+.goog-te-gadget {
+    font-family: inherit !important;
+}
+
+.goog-te-gadget-simple {
+    background-color: var(--light-card) !important;
+    border: 2px solid var(--primary-green) !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+}
+
+.goog-te-gadget-simple .goog-te-menu-value span {
+    color: var(--primary-green) !important;
+    font-weight: 600 !important;
+}
+
+.goog-te-gadget-icon {
+    display: none !important;
+}
+
+/* === Dark Mode Fixes for Academy Content === */
+[data-theme="dark"] .markdown-content,
+[data-theme="dark"] .accordion-body {
+    color: var(--light-text) !important;
+}
+
+[data-theme="dark"] .bg-light {
+    background-color: var(--light-card) !important;
+    color: var(--light-text) !important;
+}
+
+[data-theme="dark"] .alert-info {
+    background-color: rgba(74, 143, 82, 0.15) !important;
+    color: var(--light-text) !important;
+    border-color: var(--primary-green) !important;
+}
+
+[data-theme="dark"] .card-text,
+[data-theme="dark"] .card-title,
+[data-theme="dark"] h1, 
+[data-theme="dark"] h2, 
+[data-theme="dark"] h3, 
+[data-theme="dark"] h4, 
+[data-theme="dark"] h5, 
+[data-theme="dark"] h6 {
+    color: var(--light-text) !important;
+}
+
+[data-theme="dark"] .accordion-button {
+    background-color: var(--light-card) !important;
+    color: var(--light-text) !important;
+}
+
+[data-theme="dark"] .accordion-button:not(.collapsed) {
+    background-color: var(--active-bg) !important;
+    color: var(--primary-green) !important;
+}
+
+/* === Contact Support Modal === */
+.modal-content {
+    background-color: var(--light-card);
+    color: var(--light-text);
+    border: 1px solid var(--light-border);
+}
+
+.modal-header {
+    border-bottom-color: var(--light-border);
+}
+
+.form-control,
+.form-select {
+    background-color: var(--light-card);
+    color: var(--light-text);
+    border-color: var(--light-border);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--light-card);
+    color: var(--light-text);
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.25rem rgba(44, 85, 48, 0.25);
+}
+
+/* === Responsive PWA Install Button === */
+@media (max-width: 768px) {
+    .pwa-install-button {
+        bottom: 90px;
+        right: 15px;
+        padding: 10px 20px;
+        font-size: 0.85rem;
+    }
 }

@@ -52,22 +52,24 @@
                             </div>
                             
                             {% if module_videos %}
-                                {% with first_video=module_videos|first %}
-                                    {% if first_video %}
-                                    <div class="mb-4">
-                                        <h5 class="mb-3"><i class="bi bi-play-circle-fill text-primary"></i> {% trans "Video Tutorial 1" %}</h5>
-                                        <div class="card">
-                                            <div class="ratio ratio-16x9">
-                                                <iframe src="https://www.youtube.com/embed/{{ first_video.video_url|get_yt_id }}" title="{{ first_video.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                            </div>
-                                            <div class="card-body">
-                                                <h6 class="card-title">{{ first_video.title }}</h6>
-                                                {% if first_video.description %}<p class="card-text text-muted small">{{ first_video.description }}</p>{% endif %}
+                                <div class="mb-4">
+                                    <h5 class="mb-3"><i class="bi bi-play-circle-fill text-primary"></i> {% trans "Video Tutorials" %}</h5>
+                                    <div class="row">
+                                        {% for video in module_videos %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card h-100">
+                                                <div class="ratio ratio-16x9">
+                                                    <iframe src="https://www.youtube.com/embed/{{ video.video_url|get_yt_id }}" title="{{ video.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h6 class="card-title">{{ forloop.counter }}. {{ video.title }}</h6>
+                                                    {% if video.description %}<p class="card-text text-muted small">{{ video.description }}</p>{% endif %}
+                                                </div>
                                             </div>
                                         </div>
+                                        {% endfor %}
                                     </div>
-                                    {% endif %}
-                                {% endwith %}
+                                </div>
                             {% endif %}
                             
                             <div class="mb-4">
@@ -76,25 +78,6 @@
                                     {{ module.written_content|markdownify|safe }}
                                 </div>
                             </div>
-                            
-                            {% if module_videos|length > 1 %}
-                                {% with second_video=module_videos.1 %}
-                                    {% if second_video %}
-                                    <div class="mb-4">
-                                        <h5 class="mb-3"><i class="bi bi-play-circle-fill text-primary"></i> {% trans "Video Tutorial 2" %}</h5>
-                                        <div class="card">
-                                            <div class="ratio ratio-16x9">
-                                                <iframe src="https://www.youtube.com/embed/{{ second_video.video_url|get_yt_id }}" title="{{ second_video.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                            </div>
-                                            <div class="card-body">
-                                                <h6 class="card-title">{{ second_video.title }}</h6>
-                                                {% if second_video.description %}<p class="card-text text-muted small">{{ second_video.description }}</p>{% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% endif %}
-                                {% endwith %}
-                            {% endif %}
                             
                             <div class="card bg-warning bg-opacity-10 border-warning mb-4">
                                 <div class="card-body">
