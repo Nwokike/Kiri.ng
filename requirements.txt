@@ -90,3 +90,6 @@ dj-database-url==2.3.0
 whitenoise==6.11.0
 django-recaptcha==4.1.0
 python-decouple==3.8
+django-allauth==65.4.0
+django-cloudinary-storage==0.3.0
+PyJWT==2.10.1

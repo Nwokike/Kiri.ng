@@ -48,36 +48,53 @@
                         {% else %}
                             <div class="alert alert-info mb-4">
                                 <i class="bi bi-lightbulb-fill"></i> <strong>{% trans "Learning Resources" %}</strong>
-                                <p class="mb-0 small">{% trans "We've curated multiple video tutorials and written content to help you master this module." %}</p>
+                                <p class="mb-0 small">{% trans "Learn through a combination of video tutorials and written content designed to help you master this module." %}</p>
                             </div>
                             
                             {% if module_videos %}
-                            <div class="mb-4">
-                                <h5 class="mb-3"><i class="bi bi-play-circle-fill text-primary"></i> {% trans "Video Tutorials" %}</h5>
-                                <div class="row">
-                                    {% for video in module_videos %}
-                                    <div class="col-md-6 mb-3">
+                                {% with first_video=module_videos|first %}
+                                    {% if first_video %}
+                                    <div class="mb-4">
+                                        <h5 class="mb-3"><i class="bi bi-play-circle-fill text-primary"></i> {% trans "Video Tutorial 1" %}</h5>
                                         <div class="card">
                                             <div class="ratio ratio-16x9">
-                                                <iframe src="https://www.youtube.com/embed/{{ video.video_url|get_yt_id }}" title="{{ video.title }}" frameborder="0" allowfullscreen></iframe>
+                                                <iframe src="https://www.youtube.com/embed/{{ first_video.video_url|get_yt_id }}" title="{{ first_video.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                             </div>
                                             <div class="card-body">
-                                                <h6 class="card-title small">{{ video.title }}</h6>
-                                                {% if video.description %}<p class="card-text text-muted small">{{ video.description|truncatewords:15 }}</p>{% endif %}
+                                                <h6 class="card-title">{{ first_video.title }}</h6>
+                                                {% if first_video.description %}<p class="card-text text-muted small">{{ first_video.description }}</p>{% endif %}
                                             </div>
                                         </div>
                                     </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
+                                    {% endif %}
+                                {% endwith %}
                             {% endif %}
                             
                             <div class="mb-4">
                                 <h5 class="mb-3"><i class="bi bi-book-fill text-success"></i> {% trans "Written Lesson" %}</h5>
-                                <div class="p-3 bg-light rounded">
+                                <div class="p-3 bg-light rounded markdown-content">
                                     {{ module.written_content|markdownify|safe }}
                                 </div>
                             </div>
+                            
+                            {% if module_videos|length > 1 %}
+                                {% with second_video=module_videos.1 %}
+                                    {% if second_video %}
+                                    <div class="mb-4">
+                                        <h5 class="mb-3"><i class="bi bi-play-circle-fill text-primary"></i> {% trans "Video Tutorial 2" %}</h5>
+                                        <div class="card">
+                                            <div class="ratio ratio-16x9">
+                                                <iframe src="https://www.youtube.com/embed/{{ second_video.video_url|get_yt_id }}" title="{{ second_video.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ second_video.title }}</h6>
+                                                {% if second_video.description %}<p class="card-text text-muted small">{{ second_video.description }}</p>{% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {% endwith %}
+                            {% endif %}
                             
                             <div class="card bg-warning bg-opacity-10 border-warning mb-4">
                                 <div class="card-body">
