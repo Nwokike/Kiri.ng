@@ -21,11 +21,10 @@ SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 DEBUG = config('DEBUG', default='True', cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=lambda v: [s.strip() for s in v.split(',')])
 
-# CSRF Trusted Origins (for Replit and production)
+# CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = []
 if 'REPLIT_DEV_DOMAIN' in os.environ:
     CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ['REPLIT_DEV_DOMAIN']}")
-# Add your production domain here
 if not DEBUG:
     CSRF_TRUSTED_ORIGINS.extend([
         'https://yourdomain.com',
@@ -39,21 +38,25 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+
+    # Third-party apps
     'rest_framework',
-    'core.apps.CoreConfig',
-    'users.apps.UsersConfig',
-    'marketplace.apps.MarketplaceConfig',
-    'academy.apps.AcademyConfig',
-    'blog.apps.BlogConfig',
     'django_ckeditor_5',
     'django_recaptcha',
     'anymail',
-    'notifications.apps.NotificationsConfig',
     'cloudinary_storage',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+
+    # Local apps
+    'core.apps.CoreConfig',
+    'users.apps.UsersConfig',
+    'marketplace.apps.MarketplaceConfig',
+    'academy.apps.AcademyConfig',
+    'blog.apps.BlogConfig',
+    'notifications.apps.NotificationsConfig',
 ]
 
 SITE_ID = 1
@@ -63,20 +66,16 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+# --- Allauth / Google OAuth ---
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
         'APP': {
             'client_id': config('GOOGLE_OAUTH_CLIENT_ID', default=''),
             'secret': config('GOOGLE_OAUTH_CLIENT_SECRET', default=''),
-        }
-    }
+        },
+    },
 }
 
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
@@ -85,9 +84,13 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_LOGIN_ON_GET = True  # ✅ Skip "You are about to sign in..." screen
+
 LOGIN_REDIRECT_URL = 'core:home'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'core:home'
+LOGIN_URL = 'login'
 
+# --- Middleware ---
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -123,8 +126,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'kiriong.wsgi.application'
 
 # --- Database ---
-# Use PostgreSQL in production (via DATABASE_URL), SQLite in development
-# NOTE: Gracefully falls back to SQLite if PostgreSQL drivers unavailable (Replit development)
 if 'DATABASE_URL' in os.environ:
     try:
         import dj_database_url
@@ -136,7 +137,6 @@ if 'DATABASE_URL' in os.environ:
             )
         }
     except Exception:
-        # Fall back to SQLite if PostgreSQL drivers not available
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',
@@ -144,7 +144,6 @@ if 'DATABASE_URL' in os.environ:
             }
         }
 else:
-    # SQLite for development (Replit/local)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -152,7 +151,7 @@ else:
         }
     }
 
-# --- CKEditor Config ---
+# --- CKEditor ---
 CKEDITOR_5_CONFIGS = {
     'default': {
         'toolbar': ['heading', '|', 'bold', 'italic', 'link',
@@ -162,15 +161,9 @@ CKEDITOR_5_CONFIGS = {
 
 # --- Password Validators ---
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # --- Localization ---
@@ -194,15 +187,12 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = config('MEDIA_URL', default='/media/')
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# --- Email Configuration (Brevo) ---
+# --- Email (Brevo) ---
 EMAIL_BACKEND = 'anymail.backends.brevo.EmailBackend'
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='nwokikeonyeka@gmail.com')
+ANYMAIL = {"BREVO_API_KEY": BREVO_API_KEY}
 
-ANYMAIL = {
-    "BREVO_API_KEY": BREVO_API_KEY,
-}
-
-# --- Cloudinary Media Storage ---
+# --- Cloudinary ---
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
@@ -210,15 +200,11 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': config('CLOUDINARY_API_SECRET'),
 }
 
-# --- Django Defaults ---
+# --- Misc Defaults ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-LOGIN_REDIRECT_URL = 'core:home'
-LOGIN_URL = 'login'
-
 SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"
 
-# --- Production Security Settings ---
+# --- Production Security ---
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
