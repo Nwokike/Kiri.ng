@@ -18,11 +18,11 @@
     --primary-green: #4a8f52;
     --secondary-green: #5fa867;
     --accent-gold: #f0c952;
-    --light-bg: #121212;
-    --light-card: #1e1e1e;
-    --light-text: #e0e0e0;
-    --light-muted: #999;
-    --light-border: #444;
+    --light-bg: #1a1a2e;
+    --light-card: #25253a;
+    --light-text: #e8e8e8;
+    --light-muted: #a0a0a0;
+    --light-border: #3d3d56;
     --active-bg: rgba(74, 143, 82, 0.2);
     --hover-bg: rgba(74, 143, 82, 0.1);
 }
