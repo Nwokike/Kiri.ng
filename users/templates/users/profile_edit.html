@@ -65,6 +65,21 @@
             
             <hr class="my-4">
             
+            <h5 class="fw-bold mb-3">{% trans "Security Settings" %}</h5>
+            <div class="p-3 bg-light rounded border mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">{% trans "Password" %}</h6>
+                        <p class="small text-muted mb-0">{% trans "Update your password to keep your account secure" %}</p>
+                    </div>
+                    <a href="{% url 'password_reset' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-shield-lock"></i> {% trans "Reset Password" %}
+                    </a>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
             <h5 class="fw-bold">{% trans "Artisan Verification" %}</h5>
             <div class="p-3 bg-light rounded border">
                 <p class="small text-muted">{% trans "To become a Verified Artisan, you must verify your location and add a business page link." %}</p>
