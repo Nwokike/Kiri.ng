@@ -21,6 +21,16 @@ SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 DEBUG = config('DEBUG', default='True', cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=lambda v: [s.strip() for s in v.split(',')])
 
+# CSRF Trusted Origins (for Replit and production)
+CSRF_TRUSTED_ORIGINS = []
+if 'REPLIT_DEV_DOMAIN' in os.environ:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ['REPLIT_DEV_DOMAIN']}")
+# Add your production domain here
+if not DEBUG:
+    CSRF_TRUSTED_ORIGINS.extend([
+        'https://yourdomain.com',
+    ])
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
