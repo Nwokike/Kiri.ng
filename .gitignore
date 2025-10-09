@@ -4,6 +4,7 @@ __pycache__/
 db.sqlite3
 .env
 venv/
+Onyii/
 env/
 *.log
 staticfiles/
