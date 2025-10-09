@@ -1,69 +1,69 @@
-# Kiri.ng - Empowering Nigerian Artisans
+### Kiri.ng - Empowering Nigerian Artisans
 
-![Kiri.ng](static/logo-light.png)
+![Kiri.ng Logo](static/logo-light.png)
 
-### <a href="https://kiri.ng/" target="_blank" rel="noopener noreferrer">🚀 View Live</a>
+### [🚀 View Live Demo](https://kiri.ng/)
 
-A comprehensive Django-based Progressive Web App designed to empower Nigerian artisans by connecting them with customers, providing AI-powered educational resources through the Academy, and fostering community engagement through blogging.
+A comprehensive Django-based Progressive Web App (PWA) designed to empower Nigerian artisans by connecting them with customers, providing AI-powered educational resources through the Academy, and fostering community engagement through blogging.
 
-## 🌟 Features
+## 🌟 Key Features
 
 ### 🛒 Marketplace
-- **Service Listings**: Artisans can create and manage service listings with multiple images
-- **Category Filtering**: Browse services by trade categories
-- **Booking System**: Customers can book services with email notifications
-- **Artisan Dashboard**: Manage services, bookings, and revenue tracking
-- **Artisan Storefronts**: Beautiful public profiles showcasing services, certificates, and credentials
+- **Service Listings**: Artisans can create and manage service listings with multiple images.
+- **Category Filtering**: Browse services by trade categories.
+- **Booking System**: Customers can book services with automated email notifications.
+- **Artisan Dashboard**: Manage services, bookings, and revenue tracking.
+- **Artisan Storefronts**: Beautiful public profiles showcasing services, certificates, and credentials.
 
 ### 🎓 Academy
-- **AI-Powered Learning**: Personalized learning pathways generated using Google Gemini 2.5 Flash
-- **Enhanced Video Layout**: Only 2 carefully selected YouTube videos per module, interspersed with written content for better learning flow
-- **Progress Tracking**: Track completion of modules and learning pathways
-- **Certificates**: Download PDF certificates for completed pathways
-- **Community Pathways**: Share and discover learning resources from other artisans
-- **AI Tutor**: Ask questions and get AI-powered answers for each module
-- **Dark Mode Support**: All academy content now fully visible in dark theme
+- **AI-Powered Learning**: Personalized learning pathways generated using Google Gemini 2.5 Flash.
+- **Enhanced Video Layout**: Only 2 carefully selected YouTube videos per module, interspersed with written content for better learning flow.
+- **Progress Tracking**: Track completion of modules and learning pathways.
+- **Certificates**: Download PDF certificates for completed pathways.
+- **Community Pathways**: Share and discover learning resources from other artisans.
+- **AI Tutor**: Ask questions and get AI-powered answers for each module.
+- **Dark Mode Support**: All academy content fully visible in dark theme.
 
 ### 📝 Blog
-- **Community Blogging**: Verified artisans can write and publish blog posts
-- **Rich Text Editor**: CKEditor 5 integration for professional content creation
-- **Comments System**: Engage with the community through comments
-- **Content Discovery**: Browse posts by category and search
+- **Community Blogging**: Verified artisans can write and publish blog posts.
+- **Rich Text Editor**: CKEditor 5 integration for professional content creation.
+- **Comments System**: Engage with the community through comments.
+- **Content Discovery**: Browse posts by category and search.
 
 ### 👤 User Management & Authentication
-- **Google OAuth**: Sign in/up with Google (no email verification needed!)
-- **Traditional Signup**: Email-based registration with verification
-- **Password Reset**: Complete password recovery flow with branded email templates
-- **Modern UI**: Beautiful, animated login/signup pages with logo branding
-- **Profile Management**: Upload profile pictures, add bio, contact info, and social media links
-- **Multiple Social Links**: Connect Instagram, Facebook, WhatsApp, Twitter, LinkedIn, TikTok, YouTube
-- **Certificate Management**: Upload and display professional certifications
-- **Artisan Verification**: Location-based verification system
-- **Referral System**: Built-in referral tracking
+- **Google OAuth**: Sign in/up with Google (no email verification needed!).
+- **Traditional Signup**: Email-based registration with verification.
+- **Password Reset**: Complete password recovery flow with branded email templates.
+- **Modern UI**: Beautiful, animated login/signup pages with logo branding.
+- **Profile Management**: Upload profile pictures, add bio, contact info, and social media links.
+- **Multiple Social Links**: Connect Instagram, Facebook, WhatsApp, Twitter, LinkedIn, TikTok, YouTube.
+- **Certificate Management**: Upload and display professional certifications.
+- **Artisan Verification**: Location-based verification system.
+- **Referral System**: Built-in referral tracking.
 
 ### 🎨 User Experience
-- **PWA Install Button**: One-click installation with theme-colored button
-- **Mobile-First Design**: Optimized for mobile devices
-- **Dark/Light Mode**: Seamless theme switching with localStorage persistence
-- **Multi-Language Support**: Google Translate integration with green-themed dropdown (English, Hausa, Igbo, Yoruba)
-- **Responsive Navigation**: Bottom navigation bar with sub-navigation
-- **Contact Support Modal**: Easy-to-access support form in footer
-- **Custom Error Pages**: Branded 404 and 500 error pages
-- **Loading Animations**: Smooth transitions and loading indicators
-- **Button Feedback**: Visual feedback on all interactions
+- **PWA Install Button**: One-click installation with theme-colored button.
+- **Mobile-First Design**: Optimized for mobile devices.
+- **Dark/Light Mode**: Seamless theme switching with localStorage persistence.
+- **Multi-Language Support**: Google Translate integration with green-themed dropdown (English, Hausa, Igbo, Yoruba).
+- **Responsive Navigation**: Bottom navigation bar with sub-navigation.
+- **Contact Support Modal**: Easy-to-access support form in footer.
+- **Custom Error Pages**: Branded 404 and 500 error pages.
+- **Loading Animations**: Smooth transitions and loading indicators.
+- **Button Feedback**: Visual feedback on all interactions.
 
 ### 🔔 Real-Time Features
-- **Notifications**: Real-time notifications for bookings, verifications, and updates
-- **Email Notifications**: Automated emails via Brevo for important events
-- **PWA Support**: Progressive Web App with offline capabilities and service worker
+- **Notifications**: Real-time notifications for bookings, verifications, and updates.
+- **Email Notifications**: Automated emails via Brevo for important events.
+- **PWA Support**: Progressive Web App with offline capabilities and service worker.
 
 ### 🚀 SEO & Performance
-- **Comprehensive Meta Tags**: Full SEO meta descriptions and keywords
-- **Open Graph Tags**: Optimized for Facebook and LinkedIn sharing
-- **Twitter Cards**: Enhanced Twitter sharing with large images
-- **Canonical URLs**: Proper URL canonicalization for SEO
-- **Theme Colors**: Browser theme color matching brand
-- **Lighthouse Optimized**: Performance, accessibility, SEO scores 90+
+- **Comprehensive Meta Tags**: Full SEO meta descriptions and keywords.
+- **Open Graph Tags**: Optimized for Facebook and LinkedIn sharing.
+- **Twitter Cards**: Enhanced Twitter sharing with large images.
+- **Canonical URLs**: Proper URL canonicalization for SEO.
+- **Theme Colors**: Browser theme color matching brand.
+- **Lighthouse Optimized**: Performance, accessibility, SEO scores 90+.
 
 ## 🚀 Technology Stack
 
@@ -94,7 +94,6 @@ A comprehensive Django-based Progressive Web App designed to empower Nigerian ar
 - **Authentication**: PyJWT for Google OAuth tokens
 
 ## 📋 Requirements
-
 - Python 3.12
 - PostgreSQL (for production)
 - Google Gemini API key
@@ -108,8 +107,8 @@ A comprehensive Django-based Progressive Web App designed to empower Nigerian ar
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/nwokike/kiriong.git
-cd kiriong
+git clone https://github.com/nwokike/kiri.ng.git
+cd kiri.ng
 ```
 
 ### 2. Create Virtual Environment
@@ -179,7 +178,6 @@ python manage.py runserver 0.0.0.0:5000
 Visit `http://localhost:5000` to access the application.
 
 ## 🌐 Deployment
-
 The application is production-ready and can be deployed to Oracle Cloud, Render, or any platform supporting Django applications.
 
 **Deployment Configuration:**
@@ -200,9 +198,8 @@ SECURE_HSTS_SECONDS = 31536000
 ```
 
 ## 📁 Project Structure
-
 ```
-kiriong/
+kiri.ng/
 ├── academy/              # AI-powered learning platform
 ├── blog/                 # Community blogging app
 ├── core/                 # Core app (home, support, error pages)
@@ -244,7 +241,6 @@ kiriong/
 - `Comment`: Post comments
 
 ## 🔐 Security Features
-
 - CSRF protection enabled
 - Secure password hashing
 - Email verification (optional for OAuth)
@@ -256,7 +252,6 @@ kiriong/
 - Google OAuth2 secure authentication
 
 ## 🌍 Localization
-
 Supports multiple Nigerian languages:
 - English (default)
 - Hausa
@@ -266,7 +261,6 @@ Supports multiple Nigerian languages:
 Translation powered by Google Translate widget with theme-colored dropdown.
 
 ## 📱 Progressive Web App Features
-
 - **Installable**: One-click install button with branded styling
 - **Offline Support**: Service worker for offline capabilities
 - **App Shortcuts**: Quick access to Services and Academy
@@ -275,7 +269,6 @@ Translation powered by Google Translate widget with theme-colored dropdown.
 - **Responsive**: Mobile-first, works on all devices
 
 ## 🎨 Theme Customization
-
 The app uses a custom green color scheme:
 
 ```css
@@ -293,7 +286,6 @@ The app uses a custom green color scheme:
 ```
 
 ## 🆕 Latest Updates (October 2025)
-
 ### ✅ Completed Enhancements
 - **PWA Install Button**: Green-themed button with smooth animations
 - **Google OAuth**: Sign in/up with Google (no email verification needed)
@@ -310,7 +302,6 @@ The app uses a custom green color scheme:
 - **Performance**: Lighthouse scores 90+ for performance, accessibility, SEO
 
 ## 🤝 Contributing
-
 This is a startup project. For contributions or feature requests:
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -319,17 +310,14 @@ This is a startup project. For contributions or feature requests:
 5. Open a Pull Request
 
 ## 📄 License
-
 This project is developed for the Nigerian artisan community.
 
 ## 👨‍💻 Developer
-
 **Nwokike**
 - GitHub: [@nwokike](https://github.com/nwokike)
 - Email: nwokikeonyeka@gmail.com
 
 ## 🙏 Acknowledgments
-
 - Nigerian artisan community
 - Google Gemini AI
 - Bootstrap framework
@@ -337,7 +325,6 @@ This project is developed for the Nigerian artisan community.
 - All open-source contributors
 
 ## 📞 Support
-
 For support, use the "Contact Support" link in the footer or email nwokikeonyeka@gmail.com
 
 ---
@@ -345,3 +332,5 @@ For support, use the "Contact Support" link in the footer or email nwokikeonyeka
 **© 2025 Kiri.ng - Empowering Nigerian Artisans** 🇳🇬
 
 Made with ❤️ for Nigerian Artisans
+
+---
