@@ -2,7 +2,7 @@
 
 ![Kiri.ng Logo](static/logo-light.png)
 
-### [🚀 View Live Demo](https://kiri.ng/)
+### [🚀 Live URL](https://kiri.ng/)
 
 A comprehensive Django-based Progressive Web App (PWA) designed to empower Nigerian artisans by connecting them with customers, providing AI-powered educational resources through the Academy, and fostering community engagement through blogging.
 
