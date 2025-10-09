@@ -1,0 +1,22 @@
+name: Deploy Kiri.ng
+on:
+  push:
+    branches: [ main ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.DEPLOY_KEY }}
+        script: |
+          cd /home/ubuntu/Kiri.ng
+          git pull origin main
+          source venv/bin/activate
+          pip install -r requirements.txt --quiet
+          python manage.py migrate --noinput
+          python manage.py collectstatic --noinput
+          sudo systemctl restart kiri
