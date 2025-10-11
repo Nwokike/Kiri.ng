@@ -1,126 +1,151 @@
 /* static/css/custom.css
-   Improved, semantic, accessible, and backwards-compatible.
-   - Preserves original variables (for compatibility),
-   - Adds semantic tokens and systemized styles,
-   - Integrates Google Translate glass/ash final design,
-   - Adds focus/keyboard accessibility & reduced-motion support.
+   Refined for maximum readability, consistency, and maintainability.
+   - Leverages a layered token system (raw values -> semantic tokens).
+   - Enforces a one-property-per-line format for clarity.
+   - Centralizes interactive transitions for a consistent user experience.
+   - Consolidates all dark mode overrides into a single, scoped block.
 */
 
 /* ===========================
-   Base: Original color tokens
+   1. Design Token System
    =========================== */
-:root{
-  --primary-green: #2c5530;
-  --secondary-green: #3d7242;
-  --accent-gold: #d4af37;
+:root {
+  /* RAW COLOR VALUES (Light Theme) */
+  --green-primary-raw: #2c5530;
+  --green-secondary-raw: #3d7242;
+  --gold-accent-raw: #d4af37;
+  --bg-raw: #f8f9fa;
+  --surface-raw: #ffffff;
+  --text-raw: #212529;
+  --muted-raw: #6c757d;
+  --border-raw: #dee2e6;
+  --active-bg-raw: rgba(44, 85, 48, 0.1);
+  --hover-bg-raw: rgba(44, 85, 48, 0.05);
 
-  --light-bg: #f8f9fa;
-  --light-card: #ffffff;
-  --light-text: #212529;
-  --light-muted: #6c757d;
-  --light-border: #dee2e6;
-  --active-bg: rgba(44,85,48,0.1);
-  --hover-bg: rgba(44,85,48,0.05);
-
-  /* semantic tokens (map to above by default for compatibility) */
-  --surface: var(--light-card);
+  /* SEMANTIC TOKENS (Used throughout the app) */
+  --bg: var(--bg-raw);
+  --surface: var(--surface-raw);
   --surface-2: #f6f7f8;
-  --bg: var(--light-bg);
-  --text: var(--light-text);
-  --muted: var(--light-muted);
-  --border: var(--light-border);
-  --accent: var(--primary-green);
-  --accent-2: var(--secondary-green);
+  --text: var(--text-raw);
+  --muted: var(--muted-raw);
+  --border: var(--border-raw);
+  --accent: var(--green-primary-raw);
+  --accent-2: var(--green-secondary-raw);
+  --active-bg: var(--active-bg-raw);
+  --hover-bg: var(--hover-bg-raw);
 
-  /* sizes & scale (easy to tweak) */
+  /* SIZING & SCALE */
   --radius-sm: 4px;
   --radius-md: 8px;
-  --radius: 12px;
-  --radius-lg: 16px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 999px;
+  --radius-round: 50%;
+
+  /* SPACING */
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;
   --space-lg: 24px;
 
-  /* shadows */
+  /* SHADOWS */
   --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
 
-  /* focus ring */
-  --focus-ring: 0 0 0 3px rgba(44,85,48,0.12);
+  /* TYPOGRAPHY & TRANSITIONS */
+  --font-stack-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --transition-fast: 0.18s ease;
+  --transition-base: 0.2s ease;
+  --transition-interactive: all 0.15s ease-in-out;
+  --focus-ring: 0 0 0 3px rgba(44,85,48,0.12);
 }
 
-/* Dark theme remapping (keeps original var names so nothing breaks) */
-[data-theme="dark"]{
-  --primary-green: #4a8f52;
-  --secondary-green: #5fa867;
-  --accent-gold: #f0c952;
+/* Dark theme remapping (only raw values need to change) */
+[data-theme="dark"] {
+  --green-primary-raw: #4a8f52;
+  --green-secondary-raw: #5fa867;
+  --gold-accent-raw: #f0c952;
+  --bg-raw: #0a0a0a;
+  --surface-raw: #1a1a1a;
+  --text-raw: #e8e8e8;
+  --muted-raw: #a0a0a0;
+  --border-raw: #333333;
+  --active-bg-raw: rgba(74, 143, 82, 0.2);
+  --hover-bg-raw: rgba(74, 143, 82, 0.1);
 
-  --light-bg: #0a0a0a;
-  --light-card: #1a1a1a;
-  --light-text: #e8e8e8;
-  --light-muted: #a0a0a0;
-  --light-border: #333333;
-  --active-bg: rgba(74,143,82,0.2);
-  --hover-bg: rgba(74,143,82,0.1);
-
-  /* semantic mappings */
-  --surface: var(--light-card);
   --surface-2: #121212;
-  --bg: var(--light-bg);
-  --text: var(--light-text);
-  --muted: var(--light-muted);
-  --border: var(--light-border);
-
   --shadow-xs: 0 1px 2px rgba(0,0,0,0.35);
   --shadow-sm: 0 2px 6px rgba(0,0,0,0.45);
   --shadow-md: 0 4px 10px rgba(0,0,0,0.5);
-
   --focus-ring: 0 0 0 3px rgba(74,143,82,0.12);
 }
 
 /* ===========================
-   Global reset & accessibility
+   2. Global Reset & Accessibility
    =========================== */
 *,
 *::before,
-*::after { box-sizing: border-box; }
+*::after {
+  box-sizing: border-box;
+}
 
-html, body { height: 100%; }
+html,
+body {
+  height: 100%;
+}
 
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  line-height: 1.45;
+  font-family: var(--font-stack-system);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color var(--transition-fast), color var(--transition-fast);
-  padding-top: 140px; /* preserved from original */
+  padding-top: 140px;
   padding-bottom: 80px;
 }
 
-/* Respect reduced motion */
+/* Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-/* improved focus for keyboard users */
-:focus { outline: none; }
-:focus-visible {
-  box-shadow: var(--focus-ring);
-  border-radius: var(--radius-sm);
+/*
+  Improved focus for keyboard users without disrupting mouse users.
+  :focus-visible is a pseudo-class that applies only when the browser
+  determines the focus indicator should be visible (e.g., keyboard navigation).
+*/
+:focus:not(:focus-visible) {
   outline: none;
 }
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
 
-/* small utilities */
-.sr-only{ position: absolute !important; width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* ===========================
-   Dropdowns, tooltips & global components
+   3. Core Components
    =========================== */
 .dropdown-menu {
   z-index: 1050;
@@ -132,32 +157,33 @@ body {
 
 .dropdown-item {
   color: var(--text);
-  padding: .5rem .75rem;
-  transition: background-color var(--transition-fast);
+  padding: var(--space-sm) 12px;
+  transition: var(--transition-interactive);
+}
+.dropdown-item:hover {
+  background: var(--hover-bg);
 }
 
-.dropdown-item:hover{ background: var(--hover-bg); }
-
-/* ===========================
-   Cards
-   =========================== */
 .card {
   background: var(--surface);
   border: none;
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
   overflow: hidden;
   animation: fadeIn 0.3s ease-out;
 }
-.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
 
 .card-header {
   background: var(--surface);
   border-bottom: 2px solid var(--accent);
   font-weight: 600;
   color: var(--text);
-  padding: .75rem 1rem;
+  padding: 12px var(--space-md);
 }
 
 .alert {
@@ -167,7 +193,7 @@ body {
 }
 
 /* ===========================
-   Header / logo
+   4. Layout & Navigation
    =========================== */
 #main-header {
   background: var(--surface) !important;
@@ -176,15 +202,17 @@ body {
   transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
-/* logo images are present in DOM; keep display toggles */
-.logo-light, .logo-dark{ display:inline-block; height:60px; max-width:180px; object-fit:contain; }
-.logo-dark{ display:none; }
-[data-theme="dark"] .logo-light{ display:none; }
-[data-theme="dark"] .logo-dark{ display:inline-block !important; }
+.logo-light,
+.logo-dark {
+  display: inline-block;
+  height: 60px;
+  max-width: 180px;
+  object-fit: contain;
+}
+.logo-dark {
+  display: none;
+}
 
-/* ===========================
-   Bottom nav (mobile PWA)
-   =========================== */
 .navbar.fixed-bottom {
   background: var(--surface) !important;
   border-top: 2px solid var(--border);
@@ -192,271 +220,370 @@ body {
 }
 
 .bottom-nav-item {
-  color: var(--muted);
-  transition: color 0.2s ease, background 0.2s ease;
   position: relative;
-  padding: .5rem 1rem;
+  text-align: center;
+  color: var(--muted);
+  padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-md);
-  text-align:center;
+  transition: var(--transition-interactive);
 }
-.bottom-nav-item:hover { background: var(--hover-bg); color: var(--accent); }
-.bottom-nav-item.active, .bottom-nav-item.text-primary {
+.bottom-nav-item:hover {
+  background: var(--hover-bg);
+  color: var(--accent);
+}
+.bottom-nav-item.active,
+.bottom-nav-item.text-primary {
   color: var(--accent) !important;
   background: var(--active-bg);
   font-weight: 600;
 }
 .bottom-nav-item.active::before {
-  content: ""; position:absolute; top:0; left:50%; transform:translateX(-50%); width:60%; height:3px; background:var(--accent); border-radius:0 0 3px 3px;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 0 0 3px 3px;
 }
 
-/* ===========================
-   Navigation tabs
-   =========================== */
-#sub-header-container { background: var(--surface); border-bottom: 1px solid var(--border); }
+#sub-header-container {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
 .nav-tabs .nav-link {
   color: var(--muted);
   border: none;
-  padding:.75rem 1.25rem;
-  transition: color .18s ease, background .18s ease;
+  padding: 12px 20px;
+  transition: var(--transition-interactive);
 }
-.nav-tabs .nav-link:hover{ background: var(--hover-bg); color: var(--accent); }
-.nav-tabs .nav-link.active { color: var(--accent) !important; background: var(--active-bg); font-weight:600; border-bottom:3px solid var(--accent); }
+.nav-tabs .nav-link:hover {
+  background: var(--hover-bg);
+  color: var(--accent);
+}
+.nav-tabs .nav-link.active {
+  color: var(--accent) !important;
+  background: var(--active-bg);
+  font-weight: 600;
+  border-bottom: 3px solid var(--accent);
+}
 
 /* ===========================
-   Buttons
+   5. Buttons, Forms & Badges
    =========================== */
-.btn { border-radius: var(--radius-md); transition: all .12s ease; }
-.btn-primary{
+.btn {
+  border-radius: var(--radius-md);
+  transition: var(--transition-interactive);
+}
+.btn-primary {
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
 }
-.btn-primary:hover { background: var(--accent-2); border-color: var(--accent-2); transform: translateY(-1px); box-shadow: 0 6px 14px rgba(44,85,48,0.12); }
-.btn-outline-primary { border-color: var(--accent); color: var(--accent); }
-.btn-outline-primary:hover { background: var(--accent); color: #fff; }
+.btn-primary:hover {
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(44,85,48,0.12);
+}
+.btn-outline-primary {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn-outline-primary:hover {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-success {
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+}
+.btn-success:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
 
-/* Success */
-.btn-success { background: var(--accent-2); border-color: var(--accent-2); }
-.btn-success:hover { background: var(--accent); border-color: var(--accent); }
+.badge {
+  font-weight: 500;
+  padding: .35em .65em;
+  border-radius: var(--radius-pill);
+}
 
-/* ===========================
-   Badges
-   =========================== */
-.badge { font-weight:500; padding:.35em .65em; border-radius: 999px; }
-
-/* ===========================
-   Form controls (inputs, selects, textarea)
-   =========================== */
-input, textarea, select, .form-control {
+.form-control,
+input,
+textarea,
+select {
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
-  padding: .5rem .75rem;
+  padding: var(--space-sm) 12px;
   border-radius: var(--radius-md);
-  transition: box-shadow .12s ease, border-color .12s ease, background-color .18s ease, color .18s ease;
+  transition: box-shadow .12s ease, border-color .12s ease, background-color var(--transition-fast), color var(--transition-fast);
 }
-input:focus, textarea:focus, select:focus, .form-control:focus {
+.form-control:focus,
+input:focus,
+textarea:focus,
+select:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: var(--focus-ring);
 }
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+  opacity: .85;
+}
 
-/* placeholders */
-input::placeholder, textarea::placeholder { color: var(--muted); opacity: .85; }
-
-/* ===========================
-   Back button (preserve your class)
-   =========================== */
 .back-btn {
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
-  padding:.35rem .5rem;
+  padding: .35rem .5rem;
   border-radius: var(--radius-md);
+  transition: var(--transition-interactive);
 }
 
 /* ===========================
-   Google Translate (final glass/ash style)
-   - compact pre-click box under logo
-   - glass dropdown (dark mode translucent ash)
-   - fallback .goog-te-combo preserved
+   6. Third-Party Widgets
    =========================== */
-
-/* container */
-#google_translate_element{ text-align:center; margin-top:6px; font-family:inherit; }
-
-/* pre-click compact box */
-#google_translate_element .goog-te-gadget-simple{
-  background: #ffffff !important;           /* always light-ish so text remains black */
+/* Google Translate */
+#google_translate_element {
+  text-align: center;
+  margin-top: 6px;
+  font-family: inherit;
+}
+#google_translate_element .goog-te-gadget-simple {
+  background: #ffffff !important;
   border: 1px solid #d0d0d0 !important;
   border-radius: var(--radius-sm) !important;
   padding: 4px 8px !important;
   font-size: 0.75rem !important;
-  color: #000000 !important;
-  display:inline-flex !important;
-  align-items:center !important;
-  gap:6px !important;
-  cursor:pointer !important;
-  transition: background .18s ease, box-shadow .18s ease;
+  color: #000 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
   box-shadow: var(--shadow-xs);
 }
-
-/* hide google logo that sometimes appears */
-#google_translate_element .goog-te-gadget-icon{ display:none !important; }
-
-/* menu text */
-#google_translate_element .goog-te-menu-value,
-#google_translate_element .goog-te-menu-value span{ color:#000 !important; font-weight:500 !important; }
-
-/* hover on the compact box */
-#google_translate_element .goog-te-gadget-simple:hover{ background:#f6f6f6 !important; }
-
-/* dark-mode pre-click: gentle translucent ash (soft, not glaring) */
-[data-theme="dark"] #google_translate_element .goog-te-gadget-simple{
-  background: rgba(240,240,240,0.94) !important; /* soft ash glass */
-  border: 1px solid rgba(200,200,200,0.45) !important;
+#google_translate_element .goog-te-gadget-icon {
+  display: none !important;
+}
+#google_translate_element .goog-te-menu-value span {
   color: #000 !important;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  font-weight: 500 !important;
+}
+#google_translate_element .goog-te-gadget-simple:hover {
+  background: #f6f6f6 !important;
 }
 
-/* Fallbacks for select-style render (combo) */
-.goog-te-combo{
-  background: var(--surface) !important;
-  color: var(--accent) !important;
-  border: 2px solid var(--accent) !important;
-  border-radius: 6px !important;
-  padding: 6px 8px !important;
-  font-weight:600 !important;
+iframe.goog-te-menu-frame {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
-.goog-te-combo option{ background: var(--surface) !important; color:var(--accent) !important; }
-
-/* main dropdown: container iframe - make transparent and style inner .goog-te-menu2 */
-iframe.goog-te-menu-frame{ background: transparent !important; border:none !important; box-shadow:none !important; }
-
-/* inner list: styled box */
-.goog-te-menu2{
+.goog-te-menu2 {
   background: #ffffff !important;
   border-radius: var(--radius-md) !important;
   border: 1px solid #cfcfcf !important;
   overflow: hidden !important;
   box-shadow: var(--shadow-md) !important;
 }
-
-/* dark-mode dropdown glass effect */
-[data-theme="dark"] .goog-te-menu2{
-  background: rgba(240,240,240,0.93) !important;
-  border: 1px solid rgba(200,200,200,0.4) !important;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.35) !important;
-}
-
-/* dropdown items */
-.goog-te-menu2-item div,
-.goog-te-menu2-item:link div,
-.goog-te-menu2-item:visited div{
+.goog-te-menu2-item div {
   color: #000 !important;
   background: transparent !important;
   font-size: 0.86rem !important;
   padding: 8px 12px !important;
   white-space: nowrap;
 }
-.goog-te-menu2-item:hover div{ background: rgba(220,220,220,0.7) !important; color: #000 !important; }
+.goog-te-menu2-item:hover div {
+  background: rgba(220,220,220,0.7) !important;
+}
+.skiptranslate iframe {
+  display: none !important;
+}
+body.skiptranslate {
+  top: 0 !important;
+}
 
-/* hide global translate overlay */
-.skiptranslate iframe{ display:none !important; }
-body.skiptranslate{ top:0 !important; }
-
-/* ===========================
-   CKEditor / markdown / blog content (preserved but tuned)
-   =========================== */
-.markdown-content table{ width:100%; margin-bottom:1rem; color:var(--text); border-color:var(--border); }
-.markdown-content th, .markdown-content td{ padding:.75rem; border-bottom:1px solid var(--border); }
-.markdown-content thead{ background: var(--hover-bg); }
-.markdown-content img{ max-width:100%; height:auto; border-radius: var(--radius-md); }
-
-/* ckeditor editable block */
-.ck-editor__editable_inline{
-  border:1px solid var(--border) !important;
+/* CKEditor & Markdown */
+.markdown-content table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: var(--text);
+  border-color: var(--border);
+}
+.markdown-content th,
+.markdown-content td {
+  padding: .75rem;
+  border-bottom: 1px solid var(--border);
+}
+.markdown-content thead {
+  background: var(--hover-bg);
+}
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+.ck-editor__editable_inline {
+  border: 1px solid var(--border) !important;
   border-radius: var(--radius-md) !important;
-  padding:1rem !important;
-  min-height:250px;
+  padding: var(--space-md) !important;
+  min-height: 250px;
   background: var(--surface) !important;
   color: var(--text) !important;
 }
 
 /* ===========================
-   Images & utility classes (preserved)
+   7. Images & Utilities
    =========================== */
-.profile-picture-lg{ width:150px; height:150px; object-fit:cover; border:3px solid var(--accent); border-radius:50%; }
-.profile-picture-sm{ width:50px; height:50px; object-fit:cover; border-radius:var(--radius-md); }
-.card-img-top-custom{ height:200px; object-fit:cover; }
-.service-detail-img{ height:150px; object-fit:cover; }
-.post-header-image{ width:100%; max-height:400px; object-fit:cover; border-radius:var(--radius-md); }
-.post-list-image{ max-height:250px; object-fit:cover; }
+.profile-picture-lg {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 3px solid var(--accent);
+  border-radius: var(--radius-round);
+}
+.profile-picture-sm {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+.card-img-top-custom,
+.service-detail-img,
+.post-header-image,
+.post-list-image {
+  object-fit: cover;
+}
+.card-img-top-custom { height: 200px; }
+.service-detail-img { height: 150px; }
+.post-header-image { width: 100%; max-height: 400px; border-radius: var(--radius-md); }
+.post-list-image { max-height: 250px; }
+
+.pwa-install-button {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: .95rem;
+  box-shadow: 0 4px 12px rgba(44,85,48,0.3);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+.pwa-install-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(44,85,48,0.38);
+  background: linear-gradient(135deg, var(--accent-2), var(--accent));
+}
 
 /* ===========================
-   Dark-mode overrides (kept & simplified)
+   8. Links & Footer
    =========================== */
-[data-theme="dark"] #main-header,
-[data-theme="dark"] footer,
-[data-theme="dark"] .navbar{
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: var(--transition-interactive);
 }
-[data-theme="dark"] .text-muted{ color: var(--muted) !important; }
+a:hover {
+  color: var(--accent-2);
+}
+
+footer a {
+  color: var(--accent);
+}
+footer a:hover {
+  color: var(--accent-2);
+}
+
+/* ===========================
+   9. Animations
+   =========================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================
+   10. Dark Mode Overrides
+   =========================== */
+[data-theme="dark"] .logo-light {
+  display: none;
+}
+[data-theme="dark"] .logo-dark {
+  display: inline-block !important;
+}
+[data-theme="dark"] #google_translate_element .goog-te-gadget-simple {
+  background: rgba(240,240,240,0.94) !important;
+  border: 1px solid rgba(200,200,200,0.45) !important;
+  color: #000 !important;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+[data-theme="dark"] .goog-te-menu2 {
+  background: rgba(240,240,240,0.93) !important;
+  border: 1px solid rgba(200,200,200,0.4) !important;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35) !important;
+}
+[data-theme="dark"] .text-muted {
+  color: var(--muted) !important;
+}
 [data-theme="dark"] .list-group-item,
 [data-theme="dark"] .modal-content,
-[data-theme="dark"] .pagination .page-link{
+[data-theme="dark"] .pagination .page-link {
   background: var(--surface) !important;
   border-color: var(--border) !important;
   color: var(--text) !important;
 }
-
-/* tables, forms, elements */
-[data-theme="dark"] table, [data-theme="dark"] .table{ color: var(--text) !important; border-color: var(--border) !important; }
-[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd){ background: rgba(255,255,255,0.02) !important; }
-
-/* modal / close button */
-[data-theme="dark"] .btn-close{ filter: invert(1) grayscale(100%) brightness(200%); }
-
-/* ===========================
-   Links / footer / misc
-   =========================== */
-a{ color: var(--accent); text-decoration: none; transition: color .18s ease; }
-a:hover{ color: var(--accent-2); }
-footer a{ color: var(--accent); }
-footer a:hover{ color: var(--accent-2); }
-
-/* ===========================
-   PWA install button (preserved)
-   =========================== */
-.pwa-install-button{
-  position:fixed; bottom:100px; right:20px; z-index:1000;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color:#fff; border:none; padding:12px 24px; border-radius:50px; font-weight:600;
-  font-size:.95rem; box-shadow: 0 4px 12px rgba(44,85,48,0.3); cursor:pointer; display:flex; gap:8px; align-items:center;
-  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+[data-theme="dark"] .table,
+[data-theme="dark"] table {
+  color: var(--text) !important;
+  border-color: var(--border) !important;
 }
-.pwa-install-button:hover{ transform: translateY(-2px); box-shadow: 0 6px 18px rgba(44,85,48,0.38); background: linear-gradient(135deg, var(--accent-2), var(--accent)); }
-@media (max-width:768px){ .pwa-install-button{ bottom:90px; right:15px; padding:10px 20px; font-size:.85rem; } }
-
-/* ===========================
-   Small responsive tweaks preserved
-   =========================== */
-@media (max-width:768px){
-  body{ padding-top:130px; }
-  .card{ margin-bottom:1rem; }
-  .bottom-nav-item{ padding:.5rem .5rem; }
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) {
+  background: rgba(255,255,255,0.02) !important;
+}
+[data-theme="dark"] .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 /* ===========================
-   Transitions & animation helper
+   11. Responsive Design
    =========================== */
-@keyframes fadeIn{ from{ opacity:0; transform: translateY(10px);} to{ opacity:1; transform:translateY(0);} }
-
-/* ===========================
-   Legacy google combo fallback (kept safe)
-   =========================== */
-.goog-te-combo{ background: var(--surface) !important; color: var(--accent) !important; border: 2px solid var(--accent) !important; border-radius:6px !important; padding:6px 8px !important; font-weight:600 !important; }
-.goog-te-combo option{ background: var(--surface) !important; color: var(--accent) !important; }
+@media (max-width: 768px) {
+  body {
+    padding-top: 130px;
+  }
+  .card {
+    margin-bottom: var(--space-md);
+  }
+  .bottom-nav-item {
+    padding: var(--space-sm);
+  }
+  .pwa-install-button {
+    bottom: 90px;
+    right: 15px;
+    padding: 10px 20px;
+    font-size: .85rem;
+  }
+}
