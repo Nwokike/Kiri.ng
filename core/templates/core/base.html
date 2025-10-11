@@ -8,13 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Kiri.ng - Nigerian Artisan Marketplace & Learning Platform{% endblock %}</title>
     
-    <!-- SEO Meta Tags -->
     <meta name="description" content="{% block description %}Kiri.ng connects you with skilled Nigerian artisans and provides AI-powered learning pathways. Find quality services, learn new trades, and grow your business.{% endblock %}">
     <meta name="keywords" content="Nigerian artisans, marketplace, learning platform, trade skills, vocational training, business services, artisan directory">
     <meta name="author" content="Kiri.ng">
     <meta name="robots" content="index, follow">
     
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{% block og_url %}https://kiri.ng/{% endblock %}">
     <meta property="og:title" content="{% block og_title %}Kiri.ng - Empowering Nigerian Artisans{% endblock %}">
@@ -23,72 +21,58 @@
     <meta property="og:locale" content="en_US">
     <meta property="og:site_name" content="Kiri.ng">
     
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{% block twitter_title %}Kiri.ng - Empowering Nigerian Artisans{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}Connect with skilled Nigerian artisans and learn trades through AI-powered pathways{% endblock %}">
     <meta name="twitter:image" content="{% block twitter_image %}{% static 'logo-light.png' %}{% endblock %}">
     
-    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
     <link rel="apple-touch-icon" href="{% static 'logo-light.png' %}">
     
-    <!-- Theme Color -->
     <meta name="theme-color" content="#2c5530">
     <meta name="msapplication-TileColor" content="#2c5530">
     
-    <!-- Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
     <link rel="manifest" href="{% static 'manifest.json' %}">
     
-    <!-- Canonical URL -->
     <link rel="canonical" href="{% block canonical_url %}https://kiri.ng{{ request.path }}{% endblock %}">
     
-    {% if GOOGLE_ANALYTICS_ID %}
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8DSDW7CV38"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', '{{ GOOGLE_ANALYTICS_ID }}');
-    </script>
-    {% endif %}
 
-    {% if GOOGLE_ADSENSE_CLIENT_ID %}
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ GOOGLE_ADSENSE_CLIENT_ID }}" crossorigin="anonymous"></script>
-    {% endif %}
+      gtag('config', 'G-8DSDW7CV38');
+    </script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5679949845754640"
+         crossorigin="anonymous"></script>
     
     {% block extra_head %}{% endblock %}
 </head>
 <body{% if user.is_authenticated %} data-user-authenticated="true"{% endif %}>
 
-<!-- Top Header -->
 <div class="fixed-top">
     <header id="main-header" class="d-flex justify-content-between align-items-center p-3 border-bottom">
 
-        <!-- Back Button -->
         <div style="flex: 1 1 0;">
             <div id="back-button-container"></div>
         </div>
 
-        <!-- Logo and Language Selector (Center) -->
         <div class="text-center" style="flex: 1 1 0;">
             <a href="{% url 'core:home' %}" class="text-decoration-none d-block">
                 <img src="{% static 'logo-light.png' %}" alt="Kiri.ng" class="logo-light" style="height: 60px; max-width: 180px; object-fit: contain;">
                 <img src="{% static 'logo-dark.png' %}" alt="Kiri.ng" class="logo-dark" style="height: 60px; max-width: 180px; object-fit: contain; display: none;">
             </a>
-            <!-- Google Translate - Under Logo -->
             <div id="google_translate_element"></div>
         </div>
 
-        <!-- Right Section -->
         <div class="d-flex justify-content-end align-items-center gap-2" style="flex: 1 1 0;">
-            <!-- Dark Mode Toggle (Visible to ALL users) -->
             <div class="form-check form-switch me-2">
                 <input class="form-check-input" type="checkbox" role="switch" id="theme-toggle" title="{% trans 'Toggle Dark Mode' %}">
                 <label class="form-check-label d-none d-md-inline ms-1" for="theme-toggle">
@@ -97,7 +81,6 @@
             </div>
 
             {% if user.is_authenticated %}
-                <!-- Notifications Dropdown -->
                 <div class="dropdown me-1">
                     <a href="#" class="text-secondary" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-bell-fill fs-4 position-relative">
@@ -133,7 +116,6 @@
                     </ul>
                 </div>
 
-                <!-- User Profile Dropdown -->
                 <div class="dropdown">
                     <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {% if user.profile.profile_picture %}
@@ -189,7 +171,6 @@
     <div id="sub-header-container"></div>
 </div>
 
-<!-- Main Content -->
 <main class="container py-4" id="main-content-wrapper">
     {% if messages %}
         {% for message in messages %}
@@ -202,7 +183,6 @@
     {% block content %}{% endblock %}
 </main>
 
-<!-- Bottom Navigation -->
 <nav class="navbar navbar-light border-top fixed-bottom">
     <div class="container-fluid d-flex justify-content-around">
         <a href="{% url 'marketplace:service-list' %}" class="nav-link text-center bottom-nav-item" data-nav="services">
@@ -220,7 +200,6 @@
     </div>
 </nav>
 
-<!-- Sub-Navigation Definitions -->
 <div id="sub-nav-definitions" style="display: none;">
     <div id="sub-nav-services">
         <div class="container-fluid border-bottom">
@@ -256,17 +235,14 @@
     </div>
 </div>
 
-<!-- PWA Install Button -->
 <button id="pwa-install-btn" class="pwa-install-button" style="display: none;">
     <i class="bi bi-download"></i> {% trans "Install App" %}
 </button>
 
-<!-- Floating AI Support Button -->
 <a href="{% url 'core:ai-support' %}" class="floating-ai-button" title="{% trans 'AI Customer Support' %}">
     <i class="bi bi-robot fs-4"></i>
 </a>
 
-<!-- Contact Support Modal -->
 <div class="modal fade" id="contactSupportModal" tabindex="-1" aria-labelledby="contactSupportModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -296,7 +272,6 @@
     </div>
 </div>
 
-<!-- Footer -->
 <footer class="border-top mt-5 py-3" style="margin-bottom: 80px; background-color: var(--light-card);">
     <div class="container text-center">
         <div class="row">
@@ -317,12 +292,10 @@
     </div>
 </footer>
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script src="{% static 'js/custom.js' %}"></script>
 
-<!-- PWA Service Worker Registration -->
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
