@@ -1,7 +1,6 @@
 from django import forms
-from .models import Comment
 from django.utils.translation import gettext_lazy as _
-from .models import Comment 
+from .models import Comment
 from marketplace.models import Category
 
 # --- Restoring the full list of states from your version ---

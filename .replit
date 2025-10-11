@@ -36,3 +36,8 @@ externalPort = 80
 [[ports]]
 localPort = 44829
 externalPort = 3000
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["gunicorn", "--bind=0.0.0.0:5000", "--reuse-port", "--workers=4", "kiriong.wsgi:application"]
+build = ["python", "manage.py", "collectstatic", "--noinput"]

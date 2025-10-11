@@ -95,6 +95,6 @@ class Certificate(models.Model):
     @property
     def is_expired(self):
         if self.expiry_date:
-            from datetime.date import today
-            return self.expiry_date < today()
+            from datetime import date
+            return self.expiry_date < date.today()
         return False
