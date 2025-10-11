@@ -290,6 +290,52 @@ textarea::placeholder {
     color: var(--primary-green);
 }
 
+/* === Google Translate Widget - Compact Under Logo === */
+.skiptranslate iframe {
+    display: none !important;
+}
+
+body.skiptranslate {
+    top: 0 !important;
+}
+
+#google_translate_element {
+    text-align: center;
+    margin-top: 4px;
+}
+
+#google_translate_element .goog-te-gadget-simple {
+    background-color: transparent !important;
+    border: 1px solid var(--primary-green) !important;
+    padding: 2px 6px !important;
+    font-size: 0.75rem !important;
+    border-radius: 4px !important;
+    display: inline-block !important;
+}
+
+#google_translate_element .goog-te-gadget-simple .goog-te-menu-value {
+    color: var(--primary-green) !important;
+}
+
+#google_translate_element .goog-te-gadget-simple .goog-te-menu-value span {
+    color: var(--primary-green) !important;
+    text-decoration: none !important;
+}
+
+#google_translate_element .goog-te-gadget-simple .goog-te-menu-value span:hover {
+    text-decoration: underline !important;
+}
+
+#google_translate_element .goog-te-gadget-icon {
+    display: none !important;
+}
+
+.goog-te-combo {
+    background-color: var(--light-card) !important;
+    color: var(--primary-green) !important;
+    border-color: var(--primary-green) !important;
+}
+
 /* ==========================================
    Google Translate Styling (Dark/Light Mode)
    ========================================== */
