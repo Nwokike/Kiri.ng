@@ -46,7 +46,19 @@
                  <h5>{% trans "Location" %}</h5>
                  <p><strong>{% trans "Address:" %}</strong> {{ profile.street_address|default:"Not provided." }}</p>
                  <p><strong>{% trans "City:" %}</strong> {{ profile.city|default:"Not provided." }}</p>
-                 <p><strong>{% trans "State:" %}</strong> {{ profile.state|default:"Not provided." }}</p><hr>
+                 <p><strong>{% trans "State:" %}</strong> {{ profile.state|default:"Not provided." }}</p>
+                 
+                 <!-- 🚀 ADDED REFERRAL SECTION 🚀 -->
+                 <hr>
+                 <h5>{% trans "Referral Link" %}</h5>
+                 <p class="small text-muted">{% trans "Share this link to invite new users and grow the community." %}</p>
+                 <div class="input-group mb-3">
+                     <input type="text" class="form-control" value="https://kiri.ng/users/signup/?ref={{ profile.referral_code }}" id="referralCode" readonly>
+                     <button class="btn btn-outline-secondary" type="button" onclick="copyReferralCode()">
+                         <i class="bi bi-clipboard"></i> {% trans "Copy" %}
+                     </button>
+                 </div>
+                 <p class="mb-0"><strong>{% trans "Successful Referrals:" %}</strong> {{ profile.successful_referrals_count }}</p>
             </div>
         </div>
     </div>
