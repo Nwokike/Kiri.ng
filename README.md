@@ -17,7 +17,7 @@ A comprehensive Django PWA connecting Nigerian artisans with customers, featurin
 ### 🎓 Academy
 - AI-powered personalized learning pathways (Google Gemini 2.5 Flash)
 - Progress tracking and certificates
-- PDF certificate download
+- PDF certificate download ✅ (WeasyPrint)
 - AI Tutor for module questions
 - Community pathway sharing
 
@@ -49,7 +49,7 @@ A comprehensive Django PWA connecting Nigerian artisans with customers, featurin
 - Google OAuth & traditional signup
 - Profile management with social links
 - Certificate uploads
-- Referral system with URL tracking
+- Referral system with shareable URLs (works with username or code)
 - Location verification
 
 ## 🛠 Tech Stack

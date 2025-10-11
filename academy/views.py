@@ -17,7 +17,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View, generic
 from django.views.decorators.http import require_POST
 
-# from weasyprint import HTML  # Temporarily disabled due to cffi import issues
+from weasyprint import HTML
 
 from .forms import GoalForm, CommentForm, QuestionForm
 from .ai_services import (

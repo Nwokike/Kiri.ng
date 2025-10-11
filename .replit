@@ -4,6 +4,7 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
+packages = ["pango", "cairo", "gdk-pixbuf", "libffi"]
 
 [workflows]
 runButton = "Project"
@@ -34,5 +35,5 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 41231
+localPort = 36421
 externalPort = 3000
