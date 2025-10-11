@@ -1,55 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Welcome to Kiri.ng! Your Next Step Awaits.</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <style>
-        :root {
-            --color-primary: #2c5530;
-            --color-accent: #d4af37;
-            --color-dark: #2c2c2c;
-            --bg-page: #f8f9fa;
-        }
-    </style>
-</head>
-<body style="font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 20px; color: #2c2c2c; background-color: #f8f9fa;">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-        <tr>
-            <td style="background-color: #2c5530; padding: 20px; text-align: center; color: #fff;">
-                <h1 style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 28px; letter-spacing: 2px;">Kiri.ng</h1>
-            </td>
-        </tr>
-        <tr>
-            <td style="padding: 30px;">
-                <h2 style="color: #2c5530; font-family: 'Playfair Display', Georgia, serif;">Congratulations, {{ user.first_name }}! You're a Verified Artisan!</h2>
-                <p style="font-size: 16px; line-height: 1.6;">Welcome to the Kiri.ng community of trusted professionals. Your profile is now marked as "Verified" with a badge, helping you stand out and attract more customers.</p>
-                
-                <div style="text-align: center; margin: 30px 0;">
-                    <img src="https://placehold.co/100x100/2c5530/d4af37?text=✓" alt="Verified Badge" style="border-radius: 50%;">
-                </div>
+{% extends "email_base.html" %}
+{% load i18n %}
 
-                <h3 style="color: #2c5530; font-family: 'Playfair Display', Georgia, serif; margin-top: 30px;">Your Next Step: Get Found on Google</h3>
-                <p style="font-size: 16px; line-height: 1.6;">To maximize your visibility, it's crucial to have a Google Business Profile. This allows local customers to find you on Google Maps and Search when they need your skills. We've made it easy for you to get started.</p>
-                <p style="font-size: 16px; line-height: 1.6;">Click the button below to pre-fill your business information and create your free Google Business Profile:</p>
-                
-                <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                    <tr>
-                        <td align="center" style="padding: 20px 0;">
-                            <a href="{{ google_link }}" target="_blank" style="background-color: #d4af37; color: #2c2c2c; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;">Create My Google Business Profile</a>
-                        </td>
-                    </tr>
-                </table>
-                
-                <p style="font-size: 16px; line-height: 1.6;">If you have any questions, just reply to this email. We're here to help.</p>
-                <p style="font-size: 16px; line-height: 1.6;">We're excited to see your business grow!</p>
-                <p style="font-size: 16px; line-height: 1.6;"><strong>The Kiri.ng Team</strong></p>
-            </td>
-        </tr>
-        <tr>
-            <td style="background-color: #f8f9fa; padding: 20px; text-align: center; color: #8B7355; font-size: 12px;">
-                <p style="margin:0;">&copy; 2025 Kiri.ng | Connecting Artisans, Building Trust.</p>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>
+{% block title %}{% trans "Welcome to Kiri.ng - Verified Artisan!" %}{% endblock %}
+
+{% block content %}
+<h2 style="color: #2c5530; font-family: Arial, sans-serif; font-size: 24px; margin: 0 0 20px 0;">{% trans "Congratulations," %} {{ user.first_name }}!</h2>
+
+<p style="font-family: Arial, sans-serif; font-size: 16px; line-height: 24px; color: #333333; margin: 0 0 15px 0;">
+    {% trans "You are now a" %} <strong>{% trans "Kiri.ng Verified Artisan" %}</strong>! {% trans "Your profile now displays a verification badge, helping you stand out and attract more customers." %}
+</p>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 20px 0;">
+    <tr>
+        <td align="center">
+            <div style="display: inline-block; background-color: #2c5530; color: white; border-radius: 50%; width: 80px; height: 80px; line-height: 80px; font-size: 40px; text-align: center;">✓</div>
+        </td>
+    </tr>
+</table>
+
+<h3 style="color: #2c5530; font-family: Arial, sans-serif; font-size: 20px; margin: 30px 0 15px 0;">{% trans "Next Step: Get Found on Google" %}</h3>
+
+<p style="font-family: Arial, sans-serif; font-size: 16px; line-height: 24px; color: #333333; margin: 0 0 15px 0;">
+    {% trans "To maximize your visibility, create a Google Business Profile. This allows local customers to find you on Google Maps and Search." %}
+</p>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 25px 0;">
+    <tr>
+        <td align="center">
+            <a href="{{ google_link }}" style="background-color: #d4af37; color: #2c2c2c; padding: 15px 35px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block; font-family: Arial, sans-serif;">
+                {% trans "Create My Google Business Profile" %}
+            </a>
+        </td>
+    </tr>
+</table>
+
+<p style="font-family: Arial, sans-serif; font-size: 16px; line-height: 24px; color: #333333; margin: 20px 0 0 0;">
+    {% trans "We're excited to see your business grow!" %}<br>
+    <strong>{% trans "The Kiri.ng Team" %}</strong>
+</p>
+{% endblock %}

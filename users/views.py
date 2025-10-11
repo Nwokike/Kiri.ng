@@ -6,6 +6,7 @@ from .forms import CustomUserCreationForm, ProfileUpdateForm
 from .models import Profile, User, SocialMediaLink
 from django.http import JsonResponse
 import json
+import logging
 import requests
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -15,6 +16,8 @@ from django.views import generic
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from notifications.models import Notification
+
+logger = logging.getLogger(__name__)
 
 
 def signup(request):
@@ -95,7 +98,7 @@ def send_welcome_artisan_email(user, profile):
     context = {'user': user, 'google_link': google_link}
     html_message = render_to_string('registration/welcome_artisan_email.html', context)
     plain_message = strip_tags(html_message)
-    print(f"--- SENDING WELCOME ARTISAN EMAIL to {user.email} ---")
+    logger.info(f"Sending welcome artisan email to {user.email}")
     send_mail(
         _('Welcome to Kiri.ng!'),
         plain_message,

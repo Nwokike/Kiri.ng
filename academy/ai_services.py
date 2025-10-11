@@ -1,7 +1,10 @@
 import os
 import json
+import logging
 import requests
 from googleapiclient.discovery import build
+
+logger = logging.getLogger(__name__)
 
 def fetch_multiple_youtube_videos(search_query, num_videos=5, used_ids=None):
     """Fetch multiple YouTube videos for a module."""
@@ -37,7 +40,7 @@ def fetch_multiple_youtube_videos(search_query, num_videos=5, used_ids=None):
                 videos.append(video_info)
                 used_ids.add(video_id)
     except Exception as e:
-        print(f"YouTube API Error: {e}")
+        logger.error(f"YouTube API Error: {e}")
     
     return videos
 
@@ -89,7 +92,7 @@ def generate_module_content(module_title, previous_module_title=None, video_titl
         return result_json['candidates'][0]['content']['parts'][0]['text']
         
     except Exception as e:
-        print(f"Error generating lesson content for '{module_title}': {e}")
+        logger.error(f"Error generating lesson content for '{module_title}': {e}")
         return "Content could not be generated. Please try refreshing the page."
 
 
@@ -128,7 +131,7 @@ def answer_module_question(question, module_title, module_content=None):
         return result_json['candidates'][0]['content']['parts'][0]['text']
         
     except Exception as e:
-        print(f"Error generating answer: {e}")
+        logger.error(f"Error generating answer: {e}")
         return "I'm sorry, I couldn't generate an answer. Please try again later."
 
 
@@ -201,5 +204,5 @@ def generate_pathway_outline(goal, location, category=None):
         pathway_data = json.loads(json_response_text)
         return pathway_data
     except Exception as e:
-        print(f"Error generating pathway outline: {e}")
+        logger.error(f"Error generating pathway outline: {e}")
         return None

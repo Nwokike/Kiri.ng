@@ -1,6 +1,9 @@
+import logging
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from core.models import Service
+
+logger = logging.getLogger(__name__)
 
 def get_similar_services(service, num_recommendations=4):
     """
@@ -47,5 +50,5 @@ def get_similar_services(service, num_recommendations=4):
 
     except Exception as e:
         # In case of any error, just return an empty list to prevent crashes.
-        print(f"Error in recommendation engine: {e}")
+        logger.error(f"Error in recommendation engine: {e}")
         return []

@@ -22,6 +22,11 @@ class Service(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name = 'Service'
+        verbose_name_plural = 'Services'
+        ordering = ['-created_at']
+
     def __str__(self):
         return self.title
     
@@ -53,6 +58,11 @@ class Booking(models.Model):
     message = models.TextField()
     requested_at = models.DateTimeField(auto_now_add=True)
     # --- The 'is_confirmed' field has been removed ---
+
+    class Meta:
+        verbose_name = 'Booking'
+        verbose_name_plural = 'Bookings'
+        ordering = ['-requested_at']
 
     def __str__(self):
         return f"Booking for {self.service.title} by {self.customer_name}"

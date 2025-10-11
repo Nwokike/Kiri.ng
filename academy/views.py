@@ -1,8 +1,11 @@
 import base64
+import logging
 from pathlib import Path
 from datetime import date
 
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -115,7 +118,7 @@ class CreatePathwayView(LoginRequiredMixin, View):
             try:
                 pathway_outline = generate_pathway_outline(goal, location, category.name if category else None)
             except Exception as e:
-                print(f"Error generating pathway: {e}")
+                logger.error(f"Error generating pathway: {e}")
                 pathway_outline = None
 
             if pathway_outline and "modules" in pathway_outline:
@@ -137,8 +140,9 @@ class CreatePathwayView(LoginRequiredMixin, View):
                         youtube_search_query=module_data.get("youtube_search_query", ""),
                         order=order,
                     )
-                    for step_order, step_title in enumerate(module_data.get("steps", [])):
-                        ModuleStep.objects.create(module=module, title=step_title, order=step_order)
+                    # ModuleStep creation removed - steps not displayed in UI
+                    # for step_order, step_title in enumerate(module_data.get("steps", [])):
+                    #     ModuleStep.objects.create(module=module, title=step_title, order=step_order)
                 
                 messages.success(request, _("Your personalized learning pathway has been generated! Start learning now."))
                 return redirect("academy:pathway-detail", pk=pathway.pk)
@@ -206,7 +210,7 @@ class PathwayDetailView(LoginRequiredMixin, generic.DetailView):
                             order=idx
                         )
             except Exception as e:
-                print(f"Error generating content/videos: {e}")
+                logger.error(f"Error generating content/videos: {e}")
                 module_content = unlocked_module.written_content or "Content could not be generated. Please refresh the page."
 
             unlocked_module.written_content = module_content
@@ -310,7 +314,7 @@ def ask_question(request, module_id):
             
             messages.success(request, _("Your question has been answered by the AI instructor!"))
         except Exception as e:
-            print(f"Error answering question: {e}")
+            logger.error(f"Error answering question: {e}")
             messages.error(request, _("Sorry, couldn't generate an answer. Please try again."))
     
     return redirect("academy:pathway-detail", pk=module.pathway.pk)

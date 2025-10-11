@@ -38,6 +38,10 @@ class Profile(models.Model):
             self.referral_code = str(uuid.uuid4())[:8].upper()
         super().save(*args, **kwargs)
 
+    class Meta:
+        verbose_name = 'User Profile'
+        verbose_name_plural = 'User Profiles'
+    
     def __str__(self):
         return f'{self.user.username} Profile'
     
