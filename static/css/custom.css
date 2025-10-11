@@ -18,11 +18,11 @@
     --primary-green: #4a8f52;
     --secondary-green: #5fa867;
     --accent-gold: #f0c952;
-    --light-bg: #1a1a2e;
-    --light-card: #25253a;
+    --light-bg: #0a0a0a;
+    --light-card: #1a1a1a;
     --light-text: #e8e8e8;
     --light-muted: #a0a0a0;
-    --light-border: #3d3d56;
+    --light-border: #333333;
     --active-bg: rgba(74, 143, 82, 0.2);
     --hover-bg: rgba(74, 143, 82, 0.1);
 }
@@ -88,7 +88,10 @@ body {
 
 .logo-light,
 .logo-dark {
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    filter: none;
+    padding: 0;
+    margin: 0;
+    border: none;
 }
 
 /* === Logo Visibility for Dark/Light Mode === */
@@ -303,7 +306,7 @@ body.skiptranslate {
 
 #google_translate_element .goog-te-gadget-simple {
     background-color: transparent !important;
-    border: 1px solid var(--light-border) !important;
+    border: 1px solid var(--primary-green) !important;
     padding: 2px 6px !important;
     font-size: 0.75rem !important;
     border-radius: 4px !important;
@@ -311,11 +314,11 @@ body.skiptranslate {
 }
 
 #google_translate_element .goog-te-gadget-simple .goog-te-menu-value {
-    color: var(--light-text) !important;
+    color: var(--primary-green) !important;
 }
 
 #google_translate_element .goog-te-gadget-simple .goog-te-menu-value span {
-    color: var(--light-text) !important;
+    color: var(--primary-green) !important;
     text-decoration: none !important;
 }
 
@@ -329,8 +332,8 @@ body.skiptranslate {
 
 .goog-te-combo {
     background-color: var(--light-card) !important;
-    color: var(--light-text) !important;
-    border-color: var(--light-border) !important;
+    color: var(--primary-green) !important;
+    border-color: var(--primary-green) !important;
 }
 
 /* === Force Google Translate dropdown and text color in both modes === */
@@ -339,7 +342,7 @@ body.skiptranslate {
 .goog-te-banner-frame,
 select.goog-te-combo,
 .goog-te-combo option {
-    color: var(--light-text) !important;
+    color: var(--primary-green) !important;
     background-color: var(--light-card) !important;
 }
 
@@ -348,7 +351,7 @@ select.goog-te-combo,
 [data-theme="dark"] .goog-te-menu-value *,
 [data-theme="dark"] select.goog-te-combo,
 [data-theme="dark"] .goog-te-combo option {
-    color: var(--light-text) !important;
+    color: var(--primary-green) !important;
     background-color: var(--light-card) !important;
 }
 

@@ -18,24 +18,45 @@ from notifications.models import Notification
 
 
 def signup(request):
+    referral_code = request.GET.get('ref', request.session.get('referral_code'))
+    if referral_code:
+        request.session['referral_code'] = referral_code
+    
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            referral_code = form.cleaned_data.get('referral_code')
+            form_referral_code = form.cleaned_data.get('referral_code')
+            session_referral_code = request.session.get('referral_code')
+            
+            referral_code_to_use = form_referral_code or session_referral_code
             referred_by_user = None
 
-            if referral_code:
+            if referral_code_to_use:
                 try:
-                    referred_by_user = User.objects.get(username__iexact=referral_code)
+                    referrer_profile = Profile.objects.get(referral_code=referral_code_to_use)
+                    referred_by_user = referrer_profile.user
                     Notification.objects.create(
                         recipient=referred_by_user,
-                        message=_(f"Congratulations! {user.username} signed up using your referral code.")
+                        message=_(f"Congratulations! {user.username} signed up using your referral link.")
                     )
-                except User.DoesNotExist:
-                    pass
+                except Profile.DoesNotExist:
+                    try:
+                        referred_by_user = User.objects.get(username__iexact=referral_code_to_use)
+                        Notification.objects.create(
+                            recipient=referred_by_user,
+                            message=_(f"Congratulations! {user.username} signed up using your referral code.")
+                        )
+                    except User.DoesNotExist:
+                        pass
 
-            profile = Profile.objects.create(user=user, referred_by=referred_by_user)
+            profile, created = Profile.objects.get_or_create(user=user)
+            if referred_by_user and not profile.referred_by:
+                profile.referred_by = referred_by_user
+                profile.save()
+            
+            if 'referral_code' in request.session:
+                del request.session['referral_code']
             
             verification_url = request.build_absolute_uri(
                 f'/users/verify-email/{profile.email_verification_token}/'

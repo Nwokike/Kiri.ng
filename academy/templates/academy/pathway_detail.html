@@ -43,7 +43,7 @@
                             <div id="loading-indicator" class="p-5 text-center">
                                 <div class="spinner-border text-primary" role="status"></div>
                                 <p class="mt-3"><strong>{% trans "Generating your personalized lesson and finding the best tutorial videos..." %}</strong></p>
-                                <p class="text-muted small">{% trans "This may take 10-15 seconds" %}</p>
+                                <p class="text-muted small">{% trans "This may take up to 30 seconds" %}</p>
                             </div>
                         {% else %}
                             <div class="alert alert-info mb-4">
@@ -86,7 +86,7 @@
                                     <form action="{% url 'academy:ask-question' module.id %}" method="POST">
                                         {% csrf_token %}
                                         <div class="mb-3">
-                                            <textarea name="question" class="form-control" rows="3" placeholder="{% trans 'Ask a question about this module...' %}" required minlength="10"></textarea>
+                                            <textarea name="question" class="form-control" rows="3" placeholder="{% trans 'Ask a question about this module...' %}" minlength="10"></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-warning">
                                             <i class="bi bi-send-fill"></i> {% trans "Ask Question" %}

@@ -27,7 +27,8 @@ if 'REPLIT_DEV_DOMAIN' in os.environ:
     CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ['REPLIT_DEV_DOMAIN']}")
 if not DEBUG:
     CSRF_TRUSTED_ORIGINS.extend([
-        'https://yourdomain.com',
+        'https://kiri.ng',
+        'https://www.kiri.ng',
     ])
 
 INSTALLED_APPS = [
@@ -84,7 +85,9 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_LOGIN_METHODS = {'email', 'username'}
 ACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
-SOCIALACCOUNT_LOGIN_ON_GET = True  # ✅ Skip "You are about to sign in..." screen
+SOCIALACCOUNT_LOGIN_ON_GET = True
+ACCOUNT_ADAPTER = 'users.adapters.CustomAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'users.adapters.CustomSocialAccountAdapter'
 
 LOGIN_REDIRECT_URL = 'core:home'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'core:home'

@@ -146,12 +146,14 @@
                             <i class="bi bi-list-ul me-2"></i>{% trans "Browse Pathways" %}
                         </a>
                     {% else %}
-                        <a href="{% url 'users:signup' %}" class="btn btn-light btn-lg me-2">
-                            <i class="bi bi-person-plus me-2"></i>{% trans "Sign Up Free" %}
-                        </a>
-                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>{% trans "Log In" %}
-                        </a>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a href="{% url 'users:signup' %}" class="btn btn-light btn-lg">
+                                <i class="bi bi-person-plus me-2"></i>{% trans "Sign Up Free" %}
+                            </a>
+                            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>{% trans "Log In" %}
+                            </a>
+                        </div>
                     {% endif %}
                 </div>
             </div>
