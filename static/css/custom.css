@@ -278,90 +278,80 @@ textarea::placeholder {
 }
 
 /* === Google Translate Widget (Always White Box, Compact) === */
-/* container */
-#google_translate_element{ text-align:center; margin-top:6px; font-family:inherit; }
+#google_translate_element {
+  text-align: center;
+  margin-top: 6px;
+}
 
-/* pre-click compact box */
-#google_translate_element .goog-te-gadget-simple{
-  background: #ffffff !important;           /* always light-ish so text remains black */
-  border: 1px solid #d0d0d0 !important;
-  border-radius: var(--radius-sm) !important;
-  padding: 4px 8px !important;
+/* Force consistent white box look */
+#google_translate_element .goog-te-gadget-simple {
+  background-color: #ffffff !important;
+  border: 1px solid #dcdcdc !important;
+  border-radius: 4px !important;
+  padding: 2px 6px !important;
   font-size: 0.75rem !important;
   color: #000000 !important;
-  display:inline-flex !important;
-  align-items:center !important;
-  gap:6px !important;
-  cursor:pointer !important;
-  transition: background .18s ease, box-shadow .18s ease;
-  box-shadow: var(--shadow-xs);
+  display: inline-block !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* hide google logo that sometimes appears */
-#google_translate_element .goog-te-gadget-icon{ display:none !important; }
-
-/* menu text */
-#google_translate_element .goog-te-menu-value,
-#google_translate_element .goog-te-menu-value span{ color:#000 !important; font-weight:500 !important; }
-
-/* hover on the compact box */
-#google_translate_element .goog-te-gadget-simple:hover{ background:#f6f6f6 !important; }
-
-/* dark-mode pre-click: gentle translucent ash (soft, not glaring) */
-[data-theme="dark"] #google_translate_element .goog-te-gadget-simple{
-  background: rgba(240,240,240,0.94) !important; /* soft ash glass */
-  border: 1px solid rgba(200,200,200,0.45) !important;
-  color: #000 !important;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+/* Remove Google icon */
+#google_translate_element .goog-te-gadget-icon {
+  display: none !important;
 }
 
-/* Fallbacks for select-style render (combo) */
-.goog-te-combo{
-  background: var(--surface) !important;
-  color: var(--accent) !important;
-  border: 2px solid var(--accent) !important;
-  border-radius: 6px !important;
-  padding: 6px 8px !important;
-  font-weight:600 !important;
+/* Ensure text inside stays black */
+#google_translate_element .goog-te-menu-value span {
+  color: #000000 !important;
+  font-weight: 500 !important;
 }
-.goog-te-combo option{ background: var(--surface) !important; color:var(--accent) !important; }
 
-/* main dropdown: container iframe - make transparent and style inner .goog-te-menu2 */
-iframe.goog-te-menu-frame{ background: transparent !important; border:none !important; box-shadow:none !important; }
+/* Hover effect (subtle gray) */
+#google_translate_element .goog-te-gadget-simple:hover {
+  background-color: #f8f8f8 !important;
+}
 
-/* inner list: styled box */
-.goog-te-menu2{
+/* Force same style in dark mode */
+[data-theme="dark"] #google_translate_element .goog-te-gadget-simple {
+  background-color: #ffffff !important;
+  border: 1px solid #dcdcdc !important;
+  color: #000000 !important;
+}
+
+[data-theme="dark"] #google_translate_element .goog-te-menu-value span {
+  color: #000000 !important;
+}
+
+/* Dropdown frame (white too) */
+iframe.goog-te-menu-frame {
   background: #ffffff !important;
-  border-radius: var(--radius-md) !important;
-  border: 1px solid #cfcfcf !important;
-  overflow: hidden !important;
-  box-shadow: var(--shadow-md) !important;
+  border: 1px solid #dcdcdc !important;
+  border-radius: 6px !important;
+  overflow: hidden;
 }
 
-/* dark-mode dropdown glass effect */
-[data-theme="dark"] .goog-te-menu2{
-  background: rgba(240,240,240,0.93) !important;
-  border: 1px solid rgba(200,200,200,0.4) !important;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.35) !important;
-}
-
-/* dropdown items */
-.goog-te-menu2-item div,
-.goog-te-menu2-item:link div,
-.goog-te-menu2-item:visited div{
-  color: #000 !important;
+/* Dropdown items */
+.goog-te-menu2-item div {
+  color: #000000 !important;
   background: transparent !important;
-  font-size: 0.86rem !important;
-  padding: 8px 12px !important;
-  white-space: nowrap;
+  font-size: 0.85rem !important;
 }
-.goog-te-menu2-item:hover div{ background: rgba(220,220,220,0.7) !important; color: #000 !important; }
 
-/* hide global translate overlay */
-.skiptranslate iframe{ display:none !important; }
-body.skiptranslate{ top:0 !important; }
+.goog-te-menu2-item:hover div {
+  background: #f0f0f0 !important;
+  color: #000000 !important;
+}
+
+/* Fix unwanted iframe overlay */
+.skiptranslate iframe {
+  display: none !important;
+}
+
+body.skiptranslate {
+  top: 0 !important;
+}
 
 /* === AI-Generated Content & Blog Post Styling === */
 .markdown-content table {
@@ -739,4 +729,4 @@ a,
         padding: 10px 20px;
         font-size: 0.85rem;
     }
-   }
+        }
