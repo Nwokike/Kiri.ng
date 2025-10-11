@@ -392,9 +392,21 @@ class DownloadCertificateView(LoginRequiredMixin, View):
         }
 
         html_string = render_to_string("academy/certificate.html", context)
-        html = HTML(string=html_string, base_url=request.build_absolute_uri())
         
-        response = HttpResponse(content_type="application/pdf")
-        response["Content-Disposition"] = f'attachment; filename="Kiri_ng_Certificate_{pathway.slug}.pdf"'
-        html.write_pdf(target=response)
-        return response
+        try:
+            # Attempt to generate PDF certificate
+            html = HTML(string=html_string, base_url=request.build_absolute_uri())
+            response = HttpResponse(content_type="application/pdf")
+            response["Content-Disposition"] = f'attachment; filename="Kiri_ng_Certificate_{pathway.slug}.pdf"'
+            html.write_pdf(target=response)
+            logger.info(f"Successfully generated PDF certificate for pathway {pathway.slug}")
+            return response
+        except Exception as e:
+            # Fallback to HTML certificate if PDF generation fails
+            logger.error(f"PDF certificate generation failed: {str(e)}")
+            messages.warning(
+                request, 
+                _("PDF generation temporarily unavailable. Displaying certificate in browser instead.")
+            )
+            response = HttpResponse(html_string, content_type="text/html")
+            return response
