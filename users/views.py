@@ -35,48 +35,47 @@ def signup(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             try:
-                # Use a transaction to ensure all database operations succeed or fail together.
                 with transaction.atomic():
                     user = form.save()
                     
-                    # Consolidate referral code logic
                     form_referral_code = form.cleaned_data.get('referral_code')
                     session_referral_code = request.session.get('referral_code')
                     referral_code_to_use = form_referral_code or session_referral_code
                     
-                    referred_by_user = None
                     if referral_code_to_use:
                         try:
-                            # 🚀 MODIFIED: Now ONLY checks for the unique Profile referral_code.
-                            # The fallback check for a username has been removed for consistency.
+                            # --- 🚀 CORRECTED AND ROBUST REFERRAL LOGIC 🚀 ---
+                            
+                            # 1. Find the user who made the referral.
                             referrer_profile = Profile.objects.get(referral_code=referral_code_to_use)
                             referred_by_user = referrer_profile.user
-                            Notification.objects.create(
-                                recipient=referred_by_user,
-                                message=_(f"Congratulations! {user.username} signed up using your referral link.")
-                            )
-                        except Profile.DoesNotExist:
-                            # If the unique code is not found, no referral is credited.
-                            pass
 
-                    # Create user profile and link the referrer if found
-                    profile, created = Profile.objects.get_or_create(user=user)
-                    if referred_by_user and not profile.referred_by:
-                        profile.referred_by = referred_by_user
-                        profile.save()
+                            # 2. Get the new user's profile and link the referrer.
+                            profile, created = Profile.objects.get_or_create(user=user)
+                            if not profile.referred_by:
+                                profile.referred_by = referred_by_user
+                                profile.save() # The referral is now saved to the database.
+
+                                # 3. ONLY NOW, after a successful save, send the notification.
+                                Notification.objects.create(
+                                    recipient=referred_by_user,
+                                    message=_(f"Congratulations! {user.username} signed up using your referral link.")
+                                )
+                        except Profile.DoesNotExist:
+                            # If the referral code is invalid, do nothing.
+                            pass
                     
+                    # Clean up the session regardless of success
                     if 'referral_code' in request.session:
                         del request.session['referral_code']
 
             except Exception as e:
-                # If any part of the signup process fails, the transaction is rolled back.
                 logger.error(f"Signup transaction failed and was rolled back for user {form.cleaned_data.get('username')}: {e}")
                 messages.error(request, _("An unexpected error occurred during signup. Please try again."))
                 return render(request, 'registration/signup.html', {'form': form})
 
-            # --- Operations to perform AFTER successful transaction ---
-            
-            # Send verification email
+            # Get or create the profile again to ensure it exists for the email step
+            profile, created = Profile.objects.get_or_create(user=user)
             verification_url = request.build_absolute_uri(f'/users/verify-email/{profile.email_verification_token}/')
             context = {'user': user, 'verification_url': verification_url}
             html_message = render_to_string('registration/email_verification.html', context)
@@ -89,7 +88,6 @@ def signup(request):
                 html_message=html_message,
             )
             
-            # Log the user in, explicitly providing the backend.
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             
             messages.info(request, _('Please check your email to verify your account.'))
@@ -155,7 +153,6 @@ def profile_edit_view(request):
             if updated_profile.location_verified and has_social_link:
                 updated_profile.is_verified_artisan = True
                 if not updated_profile.google_maps_link:
-                    # Use a standard, reliable Google Maps search URL format.
                     query = f"{updated_profile.street_address}, {updated_profile.city}, {updated_profile.state}, Nigeria"
                     encoded_query = urllib.parse.quote_plus(query)
                     updated_profile.google_maps_link = f"https://www.google.com/maps/search/?api=1&query={encoded_query}"
@@ -233,7 +230,6 @@ class ArtisanStorefrontView(generic.DetailView):
             incomplete_modules=Count('modules', filter=Q(modules__is_completed=False))
         )
         
-        # Let the database filter completed pathways for better performance.
         context['completed_pathways'] = pathways_qs.filter(total_modules__gt=0, incomplete_modules=0)
         
         return context
@@ -262,20 +258,17 @@ def verify_email(request, token):
 
 @login_required
 def delete_account(request):
-    # SECURED: Now requires password confirmation to delete an account.
     if request.method == 'POST':
         form = AccountDeleteForm(request.POST)
         if form.is_valid():
             user = request.user
             password = form.cleaned_data['password']
             if user.check_password(password):
-                # Password is correct, proceed with deletion
                 logout(request)
                 user.delete()
                 messages.success(request, _("Your account has been permanently deleted."))
                 return redirect('core:home')
             else:
-                # Password was incorrect
                 messages.error(request, _("Incorrect password. Your account was not deleted."))
     else:
         form = AccountDeleteForm()
