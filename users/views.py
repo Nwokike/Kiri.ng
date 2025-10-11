@@ -1,21 +1,27 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .forms import CustomUserCreationForm, ProfileUpdateForm
-from .models import Profile, User, SocialMediaLink
-from django.http import JsonResponse
 import json
 import logging
-import requests
+import urllib.parse
+
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from django.db import transaction
+from django.db.models import Count, Q
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-import urllib.parse
-from django.views import generic
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
+from django.views import generic
+
+from academy.models import LearningPathway
 from notifications.models import Notification
+
+from .forms import (AccountDeleteForm, CustomUserCreationForm,
+                    ProfileUpdateForm)
+from .models import Profile, SocialMediaLink, User
 
 logger = logging.getLogger(__name__)
 
@@ -28,49 +34,59 @@ def signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            form_referral_code = form.cleaned_data.get('referral_code')
-            session_referral_code = request.session.get('referral_code')
-            
-            referral_code_to_use = form_referral_code or session_referral_code
-            referred_by_user = None
+            try:
+                # Use a transaction to ensure all database operations succeed or fail together.
+                with transaction.atomic():
+                    user = form.save()
+                    
+                    # Consolidate referral code logic
+                    form_referral_code = form.cleaned_data.get('referral_code')
+                    session_referral_code = request.session.get('referral_code')
+                    referral_code_to_use = form_referral_code or session_referral_code
+                    
+                    referred_by_user = None
+                    if referral_code_to_use:
+                        try:
+                            # Try to find a referrer by their profile referral code first
+                            referrer_profile = Profile.objects.get(referral_code=referral_code_to_use)
+                            referred_by_user = referrer_profile.user
+                            Notification.objects.create(
+                                recipient=referred_by_user,
+                                message=_(f"Congratulations! {user.username} signed up using your referral link.")
+                            )
+                        except Profile.DoesNotExist:
+                            try:
+                                # Fallback to finding by username
+                                referred_by_user = User.objects.get(username__iexact=referral_code_to_use)
+                                Notification.objects.create(
+                                    recipient=referred_by_user,
+                                    message=_(f"Congratulations! {user.username} signed up using your referral code.")
+                                )
+                            except User.DoesNotExist:
+                                pass # No referrer found
 
-            if referral_code_to_use:
-                try:
-                    referrer_profile = Profile.objects.get(referral_code=referral_code_to_use)
-                    referred_by_user = referrer_profile.user
-                    Notification.objects.create(
-                        recipient=referred_by_user,
-                        message=_(f"Congratulations! {user.username} signed up using your referral link.")
-                    )
-                except Profile.DoesNotExist:
-                    try:
-                        referred_by_user = User.objects.get(username__iexact=referral_code_to_use)
-                        Notification.objects.create(
-                            recipient=referred_by_user,
-                            message=_(f"Congratulations! {user.username} signed up using your referral code.")
-                        )
-                    except User.DoesNotExist:
-                        pass
+                    # Create user profile and link the referrer if found
+                    profile, created = Profile.objects.get_or_create(user=user)
+                    if referred_by_user and not profile.referred_by:
+                        profile.referred_by = referred_by_user
+                        profile.save()
+                    
+                    if 'referral_code' in request.session:
+                        del request.session['referral_code']
 
-            profile, created = Profile.objects.get_or_create(user=user)
-            if referred_by_user and not profile.referred_by:
-                profile.referred_by = referred_by_user
-                profile.save()
+            except Exception as e:
+                # If any part of the signup process fails, the transaction is rolled back.
+                logger.error(f"Signup transaction failed and was rolled back for user {form.cleaned_data.get('username')}: {e}")
+                messages.error(request, _("An unexpected error occurred during signup. Please try again."))
+                return render(request, 'registration/signup.html', {'form': form})
+
+            # --- Operations to perform AFTER successful transaction ---
             
-            if 'referral_code' in request.session:
-                del request.session['referral_code']
-            
-            verification_url = request.build_absolute_uri(
-                f'/users/verify-email/{profile.email_verification_token}/'
-            )
-            context = {
-                'user': user,
-                'verification_url': verification_url
-            }
+            # Send verification email
+            verification_url = request.build_absolute_uri(f'/users/verify-email/{profile.email_verification_token}/')
+            context = {'user': user, 'verification_url': verification_url}
             html_message = render_to_string('registration/email_verification.html', context)
             plain_message = strip_tags(html_message)
-            
             send_mail(
                 _('Verify Your Email - Kiri.ng'),
                 plain_message,
@@ -79,7 +95,9 @@ def signup(request):
                 html_message=html_message,
             )
             
-            login(request, user)
+            # 🚀 FIXED: Log the user in, explicitly providing the backend.
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            
             messages.info(request, _('Please check your email to verify your account.'))
             return redirect('core:home')
     else:
@@ -116,19 +134,15 @@ def profile_edit_view(request):
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            # Save the main profile form first
             updated_profile = form.save() 
-
-            # Handle multiple social media links
+            
+            # Handle social media links
             social_links_count = int(request.POST.get('social_links_count', 0))
             removed_links = request.POST.get('removed_social_links', '')
-            
-            # Remove deleted links
             if removed_links:
                 link_ids = [int(lid) for lid in removed_links.split(',') if lid]
                 SocialMediaLink.objects.filter(id__in=link_ids, profile=profile).delete()
             
-            # Update or create social links
             for i in range(social_links_count):
                 platform = request.POST.get(f'social_platform_{i}')
                 url = request.POST.get(f'social_url_{i}')
@@ -136,59 +150,38 @@ def profile_edit_view(request):
                 link_id = request.POST.get(f'social_id_{i}')
                 
                 if platform and url:
+                    link_data = {'platform': platform, 'url': url, 'is_primary': is_primary}
                     if link_id:
-                        # Update existing link
-                        try:
-                            link = SocialMediaLink.objects.get(id=int(link_id), profile=profile)
-                            link.platform = platform
-                            link.url = url
-                            link.is_primary = is_primary
-                            link.save()
-                        except SocialMediaLink.DoesNotExist:
-                            pass
+                        SocialMediaLink.objects.filter(id=int(link_id), profile=profile).update(**link_data)
                     else:
-                        # Create new link
-                        SocialMediaLink.objects.create(
-                            profile=profile,
-                            platform=platform,
-                            url=url,
-                            is_primary=is_primary
-                        )
+                        SocialMediaLink.objects.create(profile=profile, **link_data)
 
-            # --- 🚀 CORRECTED VERIFICATION LOGIC ---
-            # Now that all social links are saved, check the verification status.
+            # Verification logic
             has_social_link = SocialMediaLink.objects.filter(profile=updated_profile).exists()
-
             if updated_profile.location_verified and has_social_link:
                 updated_profile.is_verified_artisan = True
                 if not updated_profile.google_maps_link:
+                    # 🚀 IMPROVED: Use a standard, reliable Google Maps search URL format.
                     query = f"{updated_profile.street_address}, {updated_profile.city}, {updated_profile.state}, Nigeria"
                     encoded_query = urllib.parse.quote_plus(query)
                     updated_profile.google_maps_link = f"https://www.google.com/maps/search/?api=1&query={encoded_query}"
             else:
-                # If conditions are no longer met, un-verify the artisan
                 updated_profile.is_verified_artisan = False
-
-            # Save the profile again to update the verification status and maps link
             updated_profile.save()
 
-            # --- CREATE NOTIFICATION FOR PROFILE UPDATE ---
             Notification.objects.create(
                 recipient=request.user,
                 message=_("Your profile was updated successfully.")
             )
 
-            # Check if the user just became verified to send the welcome email
             if updated_profile.is_verified_artisan and not was_verified_before:
                 messages.success(request, _('Congratulations! You are now a Kiri.ng Verified Artisan.'))
                 send_welcome_artisan_email(request.user, updated_profile)
             else:
                 messages.success(request, _('Your profile has been updated successfully!'))
-
             return redirect('users:profile-detail')
     else:
         form = ProfileUpdateForm(instance=profile)
-
     return render(request, 'users/profile_edit.html', {'form': form})
 
 
@@ -206,34 +199,25 @@ def verify_location_view(request):
                 address_data = response.json().get('address', {})
 
                 city = (
-                    address_data.get('city')
-                    or address_data.get('village')
-                    or address_data.get('county')
-                    or address_data.get('town')
-                    or address_data.get('locality')
-                    or address_data.get('municipality')
-                    or address_data.get('district')
-                    or address_data.get('suburb')
-                    or ''
+                    address_data.get('city') or address_data.get('village') or
+                    address_data.get('county') or address_data.get('town') or
+                    address_data.get('locality') or address_data.get('municipality') or
+                    address_data.get('district') or address_data.get('suburb') or ''
                 )
                 state = (
-                    address_data.get('state')
-                    or address_data.get('region')
-                    or address_data.get('state_district')
-                    or ''
+                    address_data.get('state') or address_data.get('region') or
+                    address_data.get('state_district') or ''
                 )
 
                 profile.city, profile.state = city, state
                 profile.verified_city, profile.verified_state = city, state
                 profile.location_verified = True
                 profile.save()
-
                 return JsonResponse({'status': 'success', 'city': city, 'state': state})
             else:
                 return JsonResponse({'status': 'error', 'message': 'Coordinates missing.'}, status=400)
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
-
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 
 
@@ -246,22 +230,18 @@ class ArtisanStorefrontView(generic.DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        from academy.models import LearningPathway
-        from django.db.models import Count, Q
         artisan = self.get_object()
         
-        pathways = LearningPathway.objects.filter(
+        pathways_qs = LearningPathway.objects.filter(
             user=artisan
         ).prefetch_related('modules').annotate(
             total_modules=Count('modules'),
             incomplete_modules=Count('modules', filter=Q(modules__is_completed=False))
         )
         
-        completed_pathways = [
-            p for p in pathways 
-            if p.total_modules > 0 and p.incomplete_modules == 0
-        ]
-        context['completed_pathways'] = completed_pathways
+        # 🚀 IMPROVED: Let the database filter completed pathways for better performance.
+        context['completed_pathways'] = pathways_qs.filter(total_modules__gt=0, incomplete_modules=0)
+        
         return context
 
 
@@ -288,10 +268,22 @@ def verify_email(request, token):
 
 @login_required
 def delete_account(request):
+    # 🔒 SECURED: Now requires password confirmation to delete an account.
     if request.method == 'POST':
-        user = request.user
-        logout(request)
-        user.delete()
-        messages.success(request, _("Your account has been permanently deleted."))
-        return redirect('core:home')
-    return render(request, 'users/delete_account_confirm.html')
+        form = AccountDeleteForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            password = form.cleaned_data['password']
+            if user.check_password(password):
+                # Password is correct, proceed with deletion
+                logout(request)
+                user.delete()
+                messages.success(request, _("Your account has been permanently deleted."))
+                return redirect('core:home')
+            else:
+                # Password was incorrect
+                messages.error(request, _("Incorrect password. Your account was not deleted."))
+    else:
+        form = AccountDeleteForm()
+        
+    return render(request, 'users/delete_account_confirm.html', {'form': form})
