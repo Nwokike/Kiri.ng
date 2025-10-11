@@ -47,7 +47,8 @@ def signup(request):
                     referred_by_user = None
                     if referral_code_to_use:
                         try:
-                            # Try to find a referrer by their profile referral code first
+                            # 🚀 MODIFIED: Now ONLY checks for the unique Profile referral_code.
+                            # The fallback check for a username has been removed for consistency.
                             referrer_profile = Profile.objects.get(referral_code=referral_code_to_use)
                             referred_by_user = referrer_profile.user
                             Notification.objects.create(
@@ -55,15 +56,8 @@ def signup(request):
                                 message=_(f"Congratulations! {user.username} signed up using your referral link.")
                             )
                         except Profile.DoesNotExist:
-                            try:
-                                # Fallback to finding by username
-                                referred_by_user = User.objects.get(username__iexact=referral_code_to_use)
-                                Notification.objects.create(
-                                    recipient=referred_by_user,
-                                    message=_(f"Congratulations! {user.username} signed up using your referral code.")
-                                )
-                            except User.DoesNotExist:
-                                pass # No referrer found
+                            # If the unique code is not found, no referral is credited.
+                            pass
 
                     # Create user profile and link the referrer if found
                     profile, created = Profile.objects.get_or_create(user=user)
@@ -95,7 +89,7 @@ def signup(request):
                 html_message=html_message,
             )
             
-            # 🚀 FIXED: Log the user in, explicitly providing the backend.
+            # Log the user in, explicitly providing the backend.
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             
             messages.info(request, _('Please check your email to verify your account.'))
@@ -161,7 +155,7 @@ def profile_edit_view(request):
             if updated_profile.location_verified and has_social_link:
                 updated_profile.is_verified_artisan = True
                 if not updated_profile.google_maps_link:
-                    # 🚀 IMPROVED: Use a standard, reliable Google Maps search URL format.
+                    # Use a standard, reliable Google Maps search URL format.
                     query = f"{updated_profile.street_address}, {updated_profile.city}, {updated_profile.state}, Nigeria"
                     encoded_query = urllib.parse.quote_plus(query)
                     updated_profile.google_maps_link = f"https://www.google.com/maps/search/?api=1&query={encoded_query}"
@@ -239,7 +233,7 @@ class ArtisanStorefrontView(generic.DetailView):
             incomplete_modules=Count('modules', filter=Q(modules__is_completed=False))
         )
         
-        # 🚀 IMPROVED: Let the database filter completed pathways for better performance.
+        # Let the database filter completed pathways for better performance.
         context['completed_pathways'] = pathways_qs.filter(total_modules__gt=0, incomplete_modules=0)
         
         return context
@@ -268,7 +262,7 @@ def verify_email(request, token):
 
 @login_required
 def delete_account(request):
-    # 🔒 SECURED: Now requires password confirmation to delete an account.
+    # SECURED: Now requires password confirmation to delete an account.
     if request.method == 'POST':
         form = AccountDeleteForm(request.POST)
         if form.is_valid():
