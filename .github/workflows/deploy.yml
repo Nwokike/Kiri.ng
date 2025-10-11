@@ -18,7 +18,7 @@ jobs:
           cd /home/ubuntu/Kiri.ng
           git pull origin main
           source venv/bin/activate
-          pip install -r requirements.txt --quiet
+          pip install --cache-dir ~/.cache/pip -r requirements.txt
           python manage.py generate_referral_codes
           python manage.py migrate --noinput
           python manage.py collectstatic --noinput
