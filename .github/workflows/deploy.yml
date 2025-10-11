@@ -13,9 +13,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
-            set -e  # Stop immediately if a command exits with a non-zero status
-            set -o pipefail  # Catch errors in piped commands
-
+            set -o errexit
             cd /home/ubuntu/Kiri.ng
 
             # Pull latest code
