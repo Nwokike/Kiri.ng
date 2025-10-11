@@ -27,6 +27,94 @@ window.addEventListener('appinstalled', () => {
 
 
 // =============================
+// Push Notifications
+// =============================
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+function requestNotificationPermission() {
+    if (!('Notification' in window)) {
+        console.log('This browser does not support notifications');
+        return;
+    }
+    
+    if (Notification.permission === 'granted') {
+        subscribeToPushNotifications();
+    } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                subscribeToPushNotifications();
+            }
+        });
+    }
+}
+
+function subscribeToPushNotifications() {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+        navigator.serviceWorker.ready.then(registration => {
+            const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDhVxRr6-sWBkGGk0kqMG8dUG0gk5cGfE1RmJqzqBQqg';
+            
+            registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+            }).then(subscription => {
+                sendSubscriptionToServer(subscription);
+            }).catch(err => {
+                console.log('Failed to subscribe:', err);
+            });
+        });
+    }
+}
+
+function sendSubscriptionToServer(subscription) {
+    fetch('/api/push-subscribe/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(subscription)
+    }).then(response => {
+        if (response.ok) {
+            console.log('Push subscription sent to server');
+        }
+    }).catch(err => {
+        console.error('Error sending subscription:', err);
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Auto-request notification permission for logged-in users
+if (document.querySelector('[data-user-authenticated="true"]')) {
+    setTimeout(requestNotificationPermission, 3000);
+}
+
+
+// =============================
 // Dark Mode Logic
 // =============================
 const themeToggle = document.getElementById('theme-toggle');

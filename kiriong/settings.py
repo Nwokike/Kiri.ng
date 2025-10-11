@@ -17,6 +17,10 @@ RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', default='6LeIxAcTAAAAAJcZV
 RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', default='6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe')
 SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 
+# Google Analytics and AdSense
+GOOGLE_ANALYTICS_ID = config('GOOGLE_ANALYTICS_ID', default='')
+GOOGLE_ADSENSE_CLIENT_ID = config('GOOGLE_ADSENSE_CLIENT_ID', default='')
+
 # --- Core Django Settings ---
 DEBUG = config('DEBUG', default='True', cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=lambda v: [s.strip() for s in v.split(',')])

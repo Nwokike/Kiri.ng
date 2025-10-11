@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kiri-v1';
+const CACHE_NAME = 'kiri-v2';
 const urlsToCache = [
   '/',
   '/static/css/custom.css',
@@ -48,5 +48,67 @@ self.addEventListener('activate', (event) => {
         })
       );
     })
+  );
+});
+
+// Push notification handlers
+self.addEventListener('push', (event) => {
+  let data = {};
+  
+  if (event.data) {
+    data = event.data.json();
+  }
+  
+  const title = data.title || 'Kiri.ng Notification';
+  const options = {
+    body: data.body || 'You have a new notification',
+    icon: '/static/logo-light.png',
+    badge: '/static/favicon-48x48.png',
+    vibrate: [200, 100, 200],
+    data: {
+      url: data.url || '/',
+      timestamp: Date.now()
+    },
+    actions: [
+      {
+        action: 'open',
+        title: 'View'
+      },
+      {
+        action: 'close',
+        title: 'Close'
+      }
+    ],
+    requireInteraction: false,
+    tag: data.tag || 'notification'
+  };
+  
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  
+  if (event.action === 'close') {
+    return;
+  }
+  
+  const urlToOpen = event.notification.data.url || '/';
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        for (let i = 0; i < clientList.length; i++) {
+          const client = clientList[i];
+          if (client.url === urlToOpen && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        if (clients.openWindow) {
+          return clients.openWindow(urlToOpen);
+        }
+      })
   );
 });

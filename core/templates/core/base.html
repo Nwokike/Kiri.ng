@@ -48,6 +48,21 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="{% block canonical_url %}https://kiri.ng{{ request.path }}{% endblock %}">
     
+    {% if GOOGLE_ANALYTICS_ID %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ GOOGLE_ANALYTICS_ID }}');
+    </script>
+    {% endif %}
+
+    {% if GOOGLE_ADSENSE_CLIENT_ID %}
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ GOOGLE_ADSENSE_CLIENT_ID }}" crossorigin="anonymous"></script>
+    {% endif %}
+    
     {% block extra_head %}{% endblock %}
 </head>
 <body>

@@ -4,7 +4,7 @@ from notifications.models import Notification
 def google_analytics(request):
     return {
         'GOOGLE_ANALYTICS_ID': settings.GOOGLE_ANALYTICS_ID,
-        'GOOGLE_ADSENSE_ID': settings.GOOGLE_ADSENSE_ID,
+        'GOOGLE_ADSENSE_CLIENT_ID': settings.GOOGLE_ADSENSE_CLIENT_ID,
     }
 
 # --- THIS IS THE NEW FUNCTION ---
