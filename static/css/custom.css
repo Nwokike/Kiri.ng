@@ -277,115 +277,91 @@ textarea::placeholder {
     opacity: 0.7;
 }
 
-/* === Back Button Dark Mode Support === */
-.back-btn {
-    background-color: var(--light-card);
-    border-color: var(--light-border);
-    color: var(--light-text);
-}
-
-.back-btn:hover {
-    background-color: var(--hover-bg);
-    border-color: var(--primary-green);
-    color: var(--primary-green);
-}
-
-/* === Google Translate Widget - Compact Under Logo === */
-.skiptranslate iframe {
-    display: none !important;
-}
-
-body.skiptranslate {
-    top: 0 !important;
-}
-
+/* === Google Translate Widget (Compact, Light/Dark Balanced) === */
 #google_translate_element {
-    text-align: center;
-    margin-top: 4px;
+  text-align: center;
+  margin-top: 6px;
 }
 
-#google_translate_element .goog-te-gadget-simple {
-    background-color: transparent !important;
-    border: 1px solid var(--primary-green) !important;
-    padding: 2px 6px !important;
-    font-size: 0.75rem !important;
-    border-radius: 4px !important;
-    display: inline-block !important;
-}
-
-#google_translate_element .goog-te-gadget-simple .goog-te-menu-value {
-    color: var(--primary-green) !important;
-}
-
-#google_translate_element .goog-te-gadget-simple .goog-te-menu-value span {
-    color: var(--primary-green) !important;
-    text-decoration: none !important;
-}
-
-#google_translate_element .goog-te-gadget-simple .goog-te-menu-value span:hover {
-    text-decoration: underline !important;
-}
-
-#google_translate_element .goog-te-gadget-icon {
-    display: none !important;
-}
-
-.goog-te-combo {
-    background-color: var(--light-card) !important;
-    color: var(--primary-green) !important;
-    border-color: var(--primary-green) !important;
-}
-
-/* ==========================================
-   Google Translate Styling (Dark/Light Mode)
-   ========================================== */
-.goog-te-gadget {
+#google_translate_element .goog-te-gadget {
   font-family: inherit !important;
+  font-size: 0.75rem !important;
   color: var(--primary-green) !important;
 }
 
-.goog-te-gadget-simple {
+/* Light mode look: subtle green border */
+#google_translate_element .goog-te-gadget-simple {
+  background-color: transparent !important;
   border: 1px solid var(--primary-green) !important;
-  background: var(--light-card) !important;
   color: var(--primary-green) !important;
-  border-radius: 6px !important;
-  padding: 6px 10px !important;
+  border-radius: 4px !important;
+  padding: 2px 6px !important;
+  display: inline-block !important;
   cursor: pointer !important;
+  transition: all 0.3s ease;
 }
 
-[data-theme="dark"] .goog-te-gadget-simple {
-  background: var(--dark-card) !important;
+/* Remove Google icon */
+#google_translate_element .goog-te-gadget-icon {
+  display: none !important;
+}
+
+/* Text inside */
+#google_translate_element .goog-te-menu-value span {
+  color: var(--primary-green) !important;
+  font-weight: 500 !important;
+}
+
+/* Hover state */
+#google_translate_element .goog-te-gadget-simple:hover {
+  background-color: var(--hover-bg) !important;
+}
+
+/* Dark mode: no green border, neutral tones */
+[data-theme="dark"] #google_translate_element .goog-te-gadget-simple {
+  background-color: var(--light-card) !important;
+  border: 1px solid var(--light-border) !important; /* ash/neutral border */
   color: var(--light-text) !important;
-  border: 1px solid var(--primary-green) !important;
 }
 
-/* Fix the translate dropdown iframe */
+[data-theme="dark"] #google_translate_element .goog-te-menu-value span {
+  color: var(--light-text) !important;
+}
+
+/* Dropdown styling */
 iframe.goog-te-menu-frame {
   background: var(--light-card) !important;
   border: 1px solid var(--primary-green) !important;
-  color: var(--light-text) !important;
-  transition: background 0.3s ease, color 0.3s ease;
   border-radius: 6px !important;
   overflow: hidden;
+  transition: background 0.3s ease, border 0.3s ease;
 }
 
+/* Dark mode dropdown */
 [data-theme="dark"] iframe.goog-te-menu-frame {
   background: #1a1a1a !important;
-  border: 1px solid #2c5530 !important;
-  color: #e8e8e8 !important;
+  border: 1px solid var(--light-border) !important;
 }
 
-/* Optional: adjust hover color for dropdown items */
-.goog-te-menu2-item div,
-.goog-te-menu2-item:link div,
-.goog-te-menu2-item:visited div {
+/* Dropdown items */
+.goog-te-menu2-item div {
   color: inherit !important;
   background: transparent !important;
+  font-size: 0.85rem !important;
 }
 
 .goog-te-menu2-item:hover div {
-  background: rgba(44, 85, 48, 0.15) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
   color: var(--primary-green) !important;
+}
+
+/* Hide big iframe glitch */
+.skiptranslate iframe {
+  display: none !important;
+}
+
+body.skiptranslate {
+  top: 0 !important;
 }
 
 /* === AI-Generated Content & Blog Post Styling === */
