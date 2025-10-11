@@ -12,17 +12,36 @@ The application is built with mobile-first design principles, supports Progressi
 
 ## Recent Changes (October 2025)
 
-### UI/UX Improvements
+### Latest Update (October 11, 2025)
+- **Comprehensive Dark Mode Audit**: Fixed all dark mode responsiveness issues across the entire application
+  - AI-generated Academy content now properly displays in dark mode
+  - Fixed hardcoded `bg-white`, `bg-light`, and `text-dark` classes throughout templates
+  - Marketplace service cards, profile edit sections, and navigation now fully responsive
+  - All CSS now uses CSS custom properties (--light-bg, --light-card, --light-text) for proper theming
+- **Referral System Overhaul**: Implemented URL-based referral system working for ALL signup methods
+  - Added unique `referral_code` field to Profile model (UUID-based, auto-generated)
+  - Referral links format: `https://kiri.ng/users/signup/?ref=CODE`
+  - Works for both form signup AND Google OAuth signup via custom adapters
+  - Backward compatible with username-based referrals
+  - Created database migration for existing users
+- **Account Linking**: Google OAuth users and form users can now link accounts using the same email
+- **Ask AI Enhancement**: Added JavaScript loading indicator showing "20 seconds" for AI question submissions
+- **PWA Theme**: Changed manifest theme color from blue to green (#2c5530)
+- **Authentication Improvements**: Custom Django Allauth adapters for OAuth and account management
+
+### Previous Updates
+
+#### UI/UX Improvements  
 - **Dark Mode Enhancement**: Updated dark mode color scheme from pure black (#121212) to a softer dark blue-gray (#1a1a2e) for better eye comfort and integration with Google Translate widget
 - **Academy Video Layout**: Reorganized YouTube video placement in learning pathways - all videos now appear at the top in a clean grid layout before written content, instead of being scattered throughout
 - **Logo Update**: Replaced light mode logo and regenerated all favicons (16x16, 32x32, 48x48) and PWA icons
 
-### Authentication & Security
+#### Authentication & Security
 - **Password Reset**: Redesigned password reset email template to match the professional branded style of other transactional emails
 - **Profile Security Settings**: Added dedicated "Security Settings" section in profile edit page with password reset option for easier access
 - **Django Allauth Update**: Fixed deprecation warning by updating from ACCOUNT_AUTHENTICATION_METHOD to ACCOUNT_LOGIN_METHODS
 
-### Technical Updates
+#### Technical Updates
 - **Python 3.12.11**: Confirmed running on Python 3.12+ as required
 - **Favicon Generation**: Automated favicon creation using Pillow library for consistent branding across all platforms
 - **Code Quality**: Fixed Django Allauth configuration deprecation warning for future compatibility
