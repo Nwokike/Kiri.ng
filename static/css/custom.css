@@ -58,6 +58,7 @@ body {
     border-radius: 0.75rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    animation: fadeIn 0.3s ease-out;
 }
 
 .card:hover {
@@ -111,7 +112,7 @@ body {
     display: inline-block !important;
 }
 
-/* === Bottom Navigation with Improved Active States === */
+/* === Bottom Navigation === */
 .navbar.fixed-bottom {
     background-color: var(--light-card) !important;
     border-top: 2px solid var(--light-border);
@@ -151,142 +152,15 @@ body {
     border-radius: 0 0 3px 3px;
 }
 
-/* === Sub Navigation with Active States === */
-#sub-header-container {
-    background-color: var(--light-card);
-    border-bottom: 1px solid var(--light-border);
-}
-
-.nav-tabs .nav-link {
-    color: var(--light-muted);
-    border: none;
-    transition: all 0.2s ease;
-    position: relative;
-    padding: 0.75rem 1.25rem;
-}
-
-.nav-tabs .nav-link:hover {
-    background-color: var(--hover-bg);
-    color: var(--primary-green);
-}
-
-.nav-tabs .nav-link.active {
-    color: var(--primary-green) !important;
-    background-color: var(--active-bg);
-    font-weight: 600;
-    border-bottom: 3px solid var(--primary-green);
-}
-
-/* === Buttons with Logo Colors === */
-.btn-primary {
-    background-color: var(--primary-green);
-    border-color: var(--primary-green);
-    color: white;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: var(--secondary-green);
-    border-color: var(--secondary-green);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(44, 85, 48, 0.2);
-}
-
-.btn-outline-primary {
-    border-color: var(--primary-green);
-    color: var(--primary-green);
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--primary-green);
-    border-color: var(--primary-green);
-    color: white;
-}
-
-.btn-success {
-    background-color: var(--secondary-green);
-    border-color: var(--secondary-green);
-}
-
-.btn-success:hover {
-    background-color: var(--primary-green);
-    border-color: var(--primary-green);
-}
-
-/* === Badge Styling === */
-.badge {
-    font-weight: 500;
-    padding: 0.35em 0.65em;
-}
-
-.badge.bg-success {
-    background-color: var(--secondary-green) !important;
-}
-
-.badge.bg-warning {
-    background-color: var(--accent-gold) !important;
-    color: #212529 !important;
-}
-
-/* === Form Controls === */
-input,
-textarea,
-select {
-    background-color: var(--light-card);
-    border-color: var(--light-border);
-    color: var(--light-text);
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-    background-color: var(--light-card);
-    border-color: var(--primary-green);
-    color: var(--light-text);
-    box-shadow: 0 0 0 0.2rem rgba(44, 85, 48, 0.15);
-}
-
-.form-control {
-    background-color: var(--light-card);
-    border-color: var(--light-border);
-    color: var(--light-text);
-}
-
-.form-control:focus {
-    background-color: var(--light-card);
-    border-color: var(--primary-green);
-    color: var(--light-text);
-}
-
-.form-label,
-label {
-    color: var(--light-text);
-}
-
-.form-check-label {
-    color: var(--light-text);
-}
-
-.form-text {
-    color: var(--light-muted);
-}
-
-input::placeholder,
-textarea::placeholder {
-    color: var(--light-muted);
-    opacity: 0.7;
-}
-
-/* === Google Translate Widget (Always White Box, Compact) === */
+/* === Google Translate Widget (Always White Compact Box) === */
 #google_translate_element {
   text-align: center;
   margin-top: 6px;
 }
 
-/* Force consistent white box look */
 #google_translate_element .goog-te-gadget-simple {
   background-color: #ffffff !important;
-  border: 1px solid #dcdcdc !important;
+  border: 1px solid #d0d0d0 !important;
   border-radius: 4px !important;
   padding: 2px 6px !important;
   font-size: 0.75rem !important;
@@ -297,26 +171,23 @@ textarea::placeholder {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Remove Google icon */
 #google_translate_element .goog-te-gadget-icon {
   display: none !important;
 }
 
-/* Ensure text inside stays black */
 #google_translate_element .goog-te-menu-value span {
   color: #000000 !important;
   font-weight: 500 !important;
 }
 
-/* Hover effect (subtle gray) */
 #google_translate_element .goog-te-gadget-simple:hover {
-  background-color: #f8f8f8 !important;
+  background-color: #f6f6f6 !important;
 }
 
-/* Force same style in dark mode */
+/* Force same look in dark mode */
 [data-theme="dark"] #google_translate_element .goog-te-gadget-simple {
   background-color: #ffffff !important;
-  border: 1px solid #dcdcdc !important;
+  border: 1px solid #bfbfbf !important;
   color: #000000 !important;
 }
 
@@ -324,15 +195,13 @@ textarea::placeholder {
   color: #000000 !important;
 }
 
-/* Dropdown frame (white too) */
+/* Dropdown styling */
 iframe.goog-te-menu-frame {
   background: #ffffff !important;
-  border: 1px solid #dcdcdc !important;
+  border: 1px solid #d0d0d0 !important;
   border-radius: 6px !important;
-  overflow: hidden;
 }
 
-/* Dropdown items */
 .goog-te-menu2-item div {
   color: #000000 !important;
   background: transparent !important;
@@ -344,7 +213,6 @@ iframe.goog-te-menu-frame {
   color: #000000 !important;
 }
 
-/* Fix unwanted iframe overlay */
 .skiptranslate iframe {
   display: none !important;
 }
@@ -353,175 +221,24 @@ body.skiptranslate {
   top: 0 !important;
 }
 
-/* === AI-Generated Content & Blog Post Styling === */
-.markdown-content table {
-    width: 100%;
-    margin-bottom: 1rem;
-    color: var(--light-text);
-    border-color: var(--light-border);
-}
-
-.markdown-content th,
-.markdown-content td {
-    padding: 0.75rem;
-    border-bottom: 1px solid var(--light-border);
-}
-
-.markdown-content thead {
-    background-color: var(--hover-bg);
-}
-
-.markdown-content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 0.5rem;
-}
-
-/* === CKEditor Custom Styles === */
-.ck-editor__editable_inline {
-    border: 1px solid var(--light-border) !important;
-    border-radius: 0.5rem !important;
-    padding: 1rem !important;
-    min-height: 250px;
-    background-color: var(--light-card) !important;
-    color: var(--light-text) !important;
-}
-
-/* === Reusable Image Utility Classes === */
-.profile-picture-lg {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border: 3px solid var(--primary-green);
-}
-
-.profile-picture-sm {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-}
-
-.card-img-top-custom {
-    height: 200px;
-    object-fit: cover;
-}
-
-.service-detail-img {
-    height: 150px;
-    object-fit: cover;
-}
-
-.post-header-image {
-    width: 100%;
-    max-height: 400px;
-    object-fit: cover;
-    border-radius: 0.5rem;
-}
-
-.post-list-image {
-    max-height: 250px;
-    object-fit: cover;
-}
-
 /* === Dark Mode Specific Overrides === */
-[data-theme="dark"] #main-header {
-    background-color: var(--light-card) !important;
-    border-bottom-color: var(--light-border) !important;
-}
-
-[data-theme="dark"] footer {
-    background-color: var(--light-card) !important;
-    border-top-color: var(--light-border) !important;
-}
-
+[data-theme="dark"] #main-header,
+[data-theme="dark"] footer,
 [data-theme="dark"] .navbar {
     background-color: var(--light-card) !important;
-    border-top-color: var(--light-border) !important;
+    border-color: var(--light-border) !important;
 }
 
 [data-theme="dark"] .text-muted {
     color: var(--light-muted) !important;
 }
 
-[data-theme="dark"] .text-dark {
-    color: var(--light-text) !important;
-}
-
-[data-theme="dark"] .bg-light {
-    background-color: var(--light-bg) !important;
-}
-
-[data-theme="dark"] .bg-white {
-    background-color: var(--light-card) !important;
-}
-
-[data-theme="dark"] .border {
-    border-color: var(--light-border) !important;
-}
-
-[data-theme="dark"] .list-group-item {
-    background-color: var(--light-card) !important;
-    border-color: var(--light-border) !important;
-    color: var(--light-text) !important;
-}
-
+[data-theme="dark"] .list-group-item,
+[data-theme="dark"] .modal-content,
 [data-theme="dark"] .pagination .page-link {
     background-color: var(--light-card) !important;
     border-color: var(--light-border) !important;
     color: var(--light-text) !important;
-}
-
-[data-theme="dark"] .pagination .page-item.active .page-link {
-    background-color: var(--primary-green) !important;
-    border-color: var(--primary-green) !important;
-}
-
-[data-theme="dark"] table {
-    color: var(--light-text) !important;
-}
-
-[data-theme="dark"] .table {
-    color: var(--light-text) !important;
-    border-color: var(--light-border) !important;
-}
-
-[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) {
-    background-color: rgba(255, 255, 255, 0.02) !important;
-}
-
-[data-theme="dark"] .modal-content {
-    background-color: var(--light-card) !important;
-    color: var(--light-text) !important;
-}
-
-[data-theme="dark"] .modal-header {
-    border-bottom-color: var(--light-border) !important;
-}
-
-[data-theme="dark"] .modal-footer {
-    border-top-color: var(--light-border) !important;
-}
-
-[data-theme="dark"] .close {
-    color: var(--light-text) !important;
-}
-
-[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3, 
-[data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6 {
-    color: var(--light-text) !important;
-}
-
-[data-theme="dark"] p {
-    color: var(--light-text);
-}
-
-[data-theme="dark"] .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
-}
-
-[data-theme="dark"] hr {
-    border-color: var(--light-border) !important;
-    opacity: 0.3;
 }
 
 /* === Links === */
@@ -534,27 +251,16 @@ a:hover {
     color: var(--secondary-green);
 }
 
-/* === Footer === */
-footer a {
-    color: var(--primary-green);
-}
-
-footer a:hover {
-    color: var(--secondary-green);
-}
-
-/* === Responsive Improvements === */
+/* === Responsive === */
 @media (max-width: 768px) {
-    body {
-        padding-top: 130px;
-    }
-    
-    .card {
-        margin-bottom: 1rem;
-    }
-    
-    .bottom-nav-item {
-        padding: 0.5rem 0.5rem;
+    body { padding-top: 130px; }
+    .card { margin-bottom: 1rem; }
+    .bottom-nav-item { padding: 0.5rem 0.5rem; }
+    .pwa-install-button {
+        bottom: 90px;
+        right: 15px;
+        padding: 10px 20px;
+        font-size: 0.85rem;
     }
 }
 
@@ -565,26 +271,14 @@ footer a:hover {
     transition-timing-function: ease;
 }
 
-button,
-a,
-.btn {
+button, a, .btn {
     transition-property: all;
 }
 
-/* === Loading Animations === */
+/* === Animation === */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.card {
-    animation: fadeIn 0.3s ease-out;
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* === PWA Install Button === */
@@ -617,116 +311,3 @@ a,
 .pwa-install-button:active {
     transform: translateY(0);
 }
-
-/* === Google Translate Dropdown Fix === */
-.goog-te-combo {
-    background-color: var(--light-card) !important;
-    color: var(--primary-green) !important;
-    border: 2px solid var(--primary-green) !important;
-    border-radius: 4px !important;
-    padding: 4px 8px !important;
-    font-weight: 600 !important;
-}
-
-.goog-te-combo option {
-    background-color: var(--light-card) !important;
-    color: var(--primary-green) !important;
-}
-
-#google_translate_element {
-    margin-top: 5px;
-}
-
-.goog-te-gadget {
-    font-family: inherit !important;
-}
-
-.goog-te-gadget-simple {
-    background-color: var(--light-card) !important;
-    border: 2px solid var(--primary-green) !important;
-    border-radius: 4px !important;
-    padding: 4px 8px !important;
-}
-
-.goog-te-gadget-simple .goog-te-menu-value span {
-    color: var(--primary-green) !important;
-    font-weight: 600 !important;
-}
-
-.goog-te-gadget-icon {
-    display: none !important;
-}
-
-/* === Dark Mode Fixes for Academy Content === */
-[data-theme="dark"] .markdown-content,
-[data-theme="dark"] .accordion-body {
-    color: var(--light-text) !important;
-}
-
-[data-theme="dark"] .bg-light {
-    background-color: var(--light-card) !important;
-    color: var(--light-text) !important;
-}
-
-[data-theme="dark"] .alert-info {
-    background-color: rgba(74, 143, 82, 0.15) !important;
-    color: var(--light-text) !important;
-    border-color: var(--primary-green) !important;
-}
-
-[data-theme="dark"] .card-text,
-[data-theme="dark"] .card-title,
-[data-theme="dark"] h1, 
-[data-theme="dark"] h2, 
-[data-theme="dark"] h3, 
-[data-theme="dark"] h4, 
-[data-theme="dark"] h5, 
-[data-theme="dark"] h6 {
-    color: var(--light-text) !important;
-}
-
-[data-theme="dark"] .accordion-button {
-    background-color: var(--light-card) !important;
-    color: var(--light-text) !important;
-}
-
-[data-theme="dark"] .accordion-button:not(.collapsed) {
-    background-color: var(--active-bg) !important;
-    color: var(--primary-green) !important;
-}
-
-/* === Contact Support Modal === */
-.modal-content {
-    background-color: var(--light-card);
-    color: var(--light-text);
-    border: 1px solid var(--light-border);
-}
-
-.modal-header {
-    border-bottom-color: var(--light-border);
-}
-
-.form-control,
-.form-select {
-    background-color: var(--light-card);
-    color: var(--light-text);
-    border-color: var(--light-border);
-}
-
-.form-control:focus,
-.form-select:focus {
-    background-color: var(--light-card);
-    color: var(--light-text);
-    border-color: var(--primary-green);
-    box-shadow: 0 0 0 0.25rem rgba(44, 85, 48, 0.25);
-}
-
-/* === Responsive PWA Install Button === */
-@media (max-width: 768px) {
-    .pwa-install-button {
-        bottom: 90px;
-        right: 15px;
-        padding: 10px 20px;
-        font-size: 0.85rem;
-    }
-   }
