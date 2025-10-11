@@ -1,16 +1,19 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.utils.translation import gettext_lazy as _
-from .models import Profile, SocialMediaLink
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from django_recaptcha.fields import ReCaptchaField
 from django_recaptcha.widgets import ReCaptchaV2Checkbox
+
+from .models import Profile, SocialMediaLink
+
 
 # --- This is our reusable size validator ---
 def validate_image_size(value):
     limit = 2 * 1024 * 1024  # 2MB
     if value and value.size > limit:
         raise ValidationError(_('File too large. Size should not exceed 2 MB.'))
+
 
 class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
@@ -25,6 +28,7 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "email",)
+
 
 class ProfileUpdateForm(forms.ModelForm):
     profile_picture = forms.ImageField(
@@ -45,6 +49,7 @@ class ProfileUpdateForm(forms.ModelForm):
             'street_address': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
+
 class SocialMediaLinkForm(forms.ModelForm):
     class Meta:
         model = SocialMediaLink
@@ -57,3 +62,15 @@ class SocialMediaLinkForm(forms.ModelForm):
         help_texts = {
             'url': _('Please include https:// at the beginning (e.g., https://instagram.com/yourprofile)'),
         }
+
+
+# 🚀 ADDED THIS NEW FORM
+class AccountDeleteForm(forms.Form):
+    """
+    A simple form to confirm account deletion by requiring the user's password.
+    """
+    password = forms.CharField(
+        label=_("Confirm Password"),
+        strip=False, # Important for passwords not to have whitespace stripped
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password', 'class': 'form-control'}),
+    )
