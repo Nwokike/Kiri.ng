@@ -68,20 +68,20 @@
                         {% trans "To create a new pathway, you must refer at least one new user." %}
                     </div>
                 {% endif %}
-                <h5 class="card-title">{% trans "Referral Code" %}</h5>
+                <h5 class="card-title">{% trans "Referral URL" %}</h5>
                 <p>
-                    {% trans "Share your username with friends. When they sign up using it, you help the community grow!" %}
+                    {% trans "Share your referral link with friends. When they sign up using it, you help the community grow!" %}
                 </p>
                 <div id="referralCodeSection" style="display: none;">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" value="{{ user.username }}" id="referralCode" readonly>
+                        <input type="text" class="form-control" value="https://kiri.ng/?ref={{ user.username }}" id="referralCode" readonly>
                         <button class="btn btn-outline-secondary" type="button" onclick="copyReferralCode()">
                             {% trans "Copy" %}
                         </button>
                     </div>
                 </div>
                 <button class="btn btn-primary mb-3" id="generateReferralBtn" onclick="showReferralCode()">
-                    <i class="bi bi-plus-circle"></i> {% trans "Generate Referral Code" %}
+                    <i class="bi bi-link-45deg"></i> {% trans "Generate Referral URL" %}
                 </button>
                 <p class="mb-0">
                     <strong>{% trans "Successful Referrals:" %}</strong>

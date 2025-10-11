@@ -729,4 +729,42 @@ a,
         padding: 10px 20px;
         font-size: 0.85rem;
     }
-        }
+}
+
+/* === Floating AI Support Button === */
+.floating-ai-button {
+    position: fixed;
+    bottom: 170px;
+    right: 20px;
+    z-index: 1000;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(44, 85, 48, 0.3);
+    transition: all 0.3s ease;
+}
+
+.floating-ai-button:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(44, 85, 48, 0.4);
+    color: white;
+}
+
+.floating-ai-button:active {
+    transform: translateY(0) scale(1);
+}
+
+@media (max-width: 768px) {
+    .floating-ai-button {
+        bottom: 160px;
+        right: 15px;
+        width: 55px;
+        height: 55px;
+    }
+}

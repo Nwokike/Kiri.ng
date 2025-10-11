@@ -7,8 +7,8 @@ from django.utils.translation import gettext_lazy as _
 from .models import Service, Booking, Category, ServiceImage
 from .forms import ServiceForm, BookingForm
 from django.db.models import Count, Q
-# from sklearn.feature_extraction.text import TfidfVectorizer  # Temporarily disabled due to Python version mismatch
-# from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -54,24 +54,26 @@ class ServiceDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         context['form'] = BookingForm()
 
-        # --- recommender logic (temporarily disabled due to sklearn import issues) ---
+        # ML-based recommender logic
         service = self.get_object()
         all_services = Service.objects.filter(category=service.category).exclude(pk=service.pk)
 
-        # Simple recommendation: show random services from same category
-        if all_services.exists():
+        if all_services.count() > 1:
+            try:
+                descriptions = [s.description for s in all_services]
+                vectorizer = TfidfVectorizer(stop_words='english')
+                tfidf_matrix = vectorizer.fit_transform(descriptions)
+                service_tfidf = vectorizer.transform([service.description])
+                cosine_similarities = cosine_similarity(service_tfidf, tfidf_matrix).flatten()
+        
+                related_indices = cosine_similarities.argsort()[-2:][::-1]
+                recommended_pks = [all_services[i].pk for i in related_indices if cosine_similarities[i] > 0.1]
+                context['recommended_services'] = Service.objects.filter(pk__in=recommended_pks)
+            except Exception:
+                # Fallback to random services if ML fails
+                context['recommended_services'] = all_services.order_by('?')[:2]
+        elif all_services.exists():
             context['recommended_services'] = all_services.order_by('?')[:2]
-
-        # if all_services.count() > 1:
-        #     descriptions = [s.description for s in all_services]
-        #     vectorizer = TfidfVectorizer(stop_words='english')
-        #     tfidf_matrix = vectorizer.fit_transform(descriptions)
-        #     service_tfidf = vectorizer.transform([service.description])
-        #     cosine_similarities = cosine_similarity(service_tfidf, tfidf_matrix).flatten()
-        #
-        #     related_indices = cosine_similarities.argsort()[-2:][::-1]
-        #     recommended_pks = [all_services[i].pk for i in related_indices if cosine_similarities[i] > 0.1]
-        #     context['recommended_services'] = Service.objects.filter(pk__in=recommended_pks)
 
         return context
 

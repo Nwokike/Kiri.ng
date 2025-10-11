@@ -1,0 +1,221 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}AI Customer Support - Kiri.ng{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-robot"></i> {% trans "AI Customer Support" %}
+                    </h4>
+                    <small>{% trans "24/7 intelligent assistance powered by Gemini AI" %}</small>
+                </div>
+                
+                <div class="card-body" id="chat-container" style="height: 500px; overflow-y: auto;">
+                    <!-- Welcome message -->
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle-fill"></i>
+                        {% trans "Hello! I'm Kiri AI, your 24/7 customer support assistant. I can help you with:" %}
+                        <ul class="mb-0 mt-2">
+                            <li>{% trans "Finding and booking artisan services" %}</li>
+                            <li>{% trans "Creating learning pathways" %}</li>
+                            <li>{% trans "Managing your profile and account" %}</li>
+                            <li>{% trans "Understanding platform features" %}</li>
+                            <li>{% trans "Troubleshooting issues" %}</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Quick action buttons -->
+                    <div class="mb-3">
+                        <p class="fw-bold">{% trans "Quick Help:" %}</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-sm btn-outline-success" onclick="quickHelp('find_service')">
+                                <i class="bi bi-search"></i> {% trans "Find Service" %}
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" onclick="quickHelp('create_pathway')">
+                                <i class="bi bi-mortarboard"></i> {% trans "Create Pathway" %}
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" onclick="quickHelp('list_service')">
+                                <i class="bi bi-plus-circle"></i> {% trans "List Service" %}
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" onclick="quickHelp('refer_friend')">
+                                <i class="bi bi-people"></i> {% trans "Refer Friend" %}
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" onclick="quickHelp('edit_profile')">
+                                <i class="bi bi-person-gear"></i> {% trans "Edit Profile" %}
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Chat messages will appear here -->
+                    <div id="chat-messages"></div>
+                </div>
+                
+                <div class="card-footer">
+                    <form id="chat-form">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="user-message" 
+                                   placeholder="{% trans 'Type your question here...' %}" 
+                                   required>
+                            <button class="btn btn-success" type="submit">
+                                <i class="bi bi-send"></i> {% trans "Send" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.chat-message {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+}
+
+.user-message {
+    background-color: #e3f2fd;
+    margin-left: 20%;
+    text-align: right;
+}
+
+.ai-message {
+    background-color: #f1f8e9;
+    margin-right: 20%;
+}
+
+.chat-message .message-header {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.chat-message .message-content {
+    white-space: pre-wrap;
+}
+</style>
+
+<script>
+let conversationHistory = [];
+
+document.getElementById('chat-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const messageInput = document.getElementById('user-message');
+    const message = messageInput.value.trim();
+    
+    if (!message) return;
+    
+    // Display user message
+    addMessage(message, 'user');
+    messageInput.value = '';
+    
+    // Show typing indicator
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'typing-indicator';
+    typingDiv.className = 'text-muted small';
+    typingDiv.innerHTML = '<i class="bi bi-three-dots"></i> AI is typing...';
+    document.getElementById('chat-messages').appendChild(typingDiv);
+    scrollToBottom();
+    
+    // Send to backend
+    try {
+        const response = await fetch('{% url "core:ai-chat" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                message: message,
+                history: conversationHistory
+            })
+        });
+        
+        const data = await response.json();
+        
+        // Remove typing indicator
+        document.getElementById('typing-indicator')?.remove();
+        
+        // Display AI response
+        addMessage(data.response, 'ai');
+        
+        // Update conversation history
+        conversationHistory.push(`User: ${message}`);
+        conversationHistory.push(`AI: ${data.response}`);
+        
+        // Keep only last 10 exchanges
+        if (conversationHistory.length > 20) {
+            conversationHistory = conversationHistory.slice(-20);
+        }
+        
+    } catch (error) {
+        document.getElementById('typing-indicator')?.remove();
+        addMessage('Sorry, I encountered an error. Please try again.', 'ai');
+        console.error('Error:', error);
+    }
+});
+
+function addMessage(content, type) {
+    const messagesDiv = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${type}-message`;
+    
+    const header = type === 'user' ? '{% trans "You" %}' : '{% trans "Kiri AI" %}';
+    const icon = type === 'user' ? '<i class="bi bi-person-circle"></i>' : '<i class="bi bi-robot"></i>';
+    
+    messageDiv.innerHTML = `
+        <div class="message-header">${icon} ${header}</div>
+        <div class="message-content">${content}</div>
+    `;
+    
+    messagesDiv.appendChild(messageDiv);
+    scrollToBottom();
+}
+
+function scrollToBottom() {
+    const container = document.getElementById('chat-container');
+    container.scrollTop = container.scrollHeight;
+}
+
+async function quickHelp(taskType) {
+    // Show typing indicator
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'typing-indicator';
+    typingDiv.className = 'text-muted small';
+    typingDiv.innerHTML = '<i class="bi bi-three-dots"></i> AI is typing...';
+    document.getElementById('chat-messages').appendChild(typingDiv);
+    scrollToBottom();
+    
+    try {
+        const response = await fetch('{% url "core:ai-quick-help" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ task_type: taskType })
+        });
+        
+        const data = await response.json();
+        document.getElementById('typing-indicator')?.remove();
+        addMessage(data.response, 'ai');
+    } catch (error) {
+        document.getElementById('typing-indicator')?.remove();
+        console.error('Error:', error);
+    }
+}
+</script>
+{% endblock %}

@@ -65,7 +65,7 @@
     
     {% block extra_head %}{% endblock %}
 </head>
-<body>
+<body{% if user.is_authenticated %} data-user-authenticated="true"{% endif %}>
 
 <!-- Top Header -->
 <div class="fixed-top">
@@ -169,6 +169,11 @@
                         {% endif %}
                         <li><hr class="dropdown-divider"></li>
                         <li>
+                            <a class="dropdown-item" href="{% url 'core:ai-support' %}">
+                                <i class="bi bi-robot"></i> {% trans "AI Support" %}
+                            </a>
+                        </li>
+                        <li>
                             <form action="{% url 'users:logout' %}" method="post">
                                 {% csrf_token %}
                                 <button type="submit" class="dropdown-item">{% trans "Logout" %}</button>
@@ -255,6 +260,11 @@
 <button id="pwa-install-btn" class="pwa-install-button" style="display: none;">
     <i class="bi bi-download"></i> {% trans "Install App" %}
 </button>
+
+<!-- Floating AI Support Button -->
+<a href="{% url 'core:ai-support' %}" class="floating-ai-button" title="{% trans 'AI Customer Support' %}">
+    <i class="bi bi-robot fs-4"></i>
+</a>
 
 <!-- Contact Support Modal -->
 <div class="modal fade" id="contactSupportModal" tabindex="-1" aria-labelledby="contactSupportModalLabel" aria-hidden="true">

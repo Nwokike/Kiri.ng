@@ -391,17 +391,10 @@ class DownloadCertificateView(LoginRequiredMixin, View):
             "signature_path": signature_data_uri,
         }
 
-        # Temporarily disabled due to weasyprint/cffi import issues
-        # TODO: Re-enable PDF certificate generation after fixing Python version compatibility
         html_string = render_to_string("academy/certificate.html", context)
-        # html = HTML(string=html_string, base_url=request.build_absolute_uri())
+        html = HTML(string=html_string, base_url=request.build_absolute_uri())
         
-        # Temporary workaround: return HTML instead of PDF
-        response = HttpResponse(html_string)
-        response["Content-Type"] = "text/html"
+        response = HttpResponse(content_type="application/pdf")
+        response["Content-Disposition"] = f'attachment; filename="Kiri_ng_Certificate_{pathway.slug}.pdf"'
+        html.write_pdf(target=response)
         return response
-        
-        # response = HttpResponse(content_type="application/pdf")
-        # response["Content-Disposition"] = f'attachment; filename="Kiri_ng_Certificate_{pathway.slug}.pdf"'
-        # html.write_pdf(target=response)
-        # return response

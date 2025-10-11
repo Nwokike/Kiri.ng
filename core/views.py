@@ -3,6 +3,10 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .ai_customer_service import AICustomerService
 
 def home(request):
     return render(request, 'core/home.html', {'title': 'Kiri.ng – Empowering Artisans'})
@@ -32,3 +36,46 @@ def contact_support(request):
         messages.error(request, 'There was an error sending your message. Please try again later.')
     
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def ai_support(request):
+    """AI customer support chat interface"""
+    return render(request, 'core/ai_support.html', {'title': 'AI Customer Support'})
+
+
+@require_POST
+def ai_chat(request):
+    """Handle AI chat messages"""
+    try:
+        data = json.loads(request.body)
+        user_message = data.get('message', '')
+        conversation_history = data.get('history', [])
+        
+        ai_service = AICustomerService()
+        response = ai_service.get_chat_response(
+            user_message, 
+            user=request.user if request.user.is_authenticated else None,
+            conversation_history=conversation_history
+        )
+        
+        return JsonResponse({'response': response})
+    except Exception as e:
+        return JsonResponse({'response': f'Sorry, I encountered an error: {str(e)}'}, status=500)
+
+
+@require_POST  
+def ai_quick_help(request):
+    """Handle quick help requests"""
+    try:
+        data = json.loads(request.body)
+        task_type = data.get('task_type', '')
+        
+        ai_service = AICustomerService()
+        response = ai_service.help_with_task(
+            task_type,
+            user=request.user if request.user.is_authenticated else None
+        )
+        
+        return JsonResponse({'response': response})
+    except Exception as e:
+        return JsonResponse({'response': f'Error: {str(e)}'}, status=500)
