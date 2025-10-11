@@ -146,6 +146,42 @@ function googleTranslateElementInit() {
     }, 'google_translate_element');
 }
 
+// 🚀 ADDED THIS NEW SECTION 🚀
+// =============================
+// Reusable Referral Code Logic
+// =============================
+function copyReferralCode() {
+    const referralCodeInput = document.getElementById('referralCode');
+    
+    if (referralCodeInput) {
+        const referralCode = referralCodeInput.value;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(referralCode)
+                .then(() => {
+                    alert("Referral link copied to clipboard!");
+                })
+                .catch(() => {
+                    fallbackCopy(referralCodeInput);
+                });
+        } else {
+            fallbackCopy(referralCodeInput);
+        }
+    } else {
+        console.error("Could not find element with ID 'referralCode'");
+    }
+}
+
+function fallbackCopy(inputElement) {
+    inputElement.select();
+    inputElement.setSelectionRange(0, 99999);
+    try {
+        document.execCommand('copy');
+        alert("Referral link copied to clipboard!");
+    } catch (err) {
+        alert("Failed to copy. Please select and copy manually.");
+    }
+}
+
 
 // =============================
 // Main App Logic (after DOM load)
