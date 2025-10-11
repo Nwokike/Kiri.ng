@@ -5,35 +5,33 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="card shadow">
-            <div class="card-body">
-                <h3 class="card-title text-danger mb-4">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    {% trans "Delete Account" %}
-                </h3>
-                
+                    {% trans "Confirm Account Deletion" %}
+                </h4>
+            </div>
+            <div class="card-body">
                 <div class="alert alert-danger">
-                    <h5>{% trans "Warning: This action cannot be undone!" %}</h5>
-                    <p class="mb-0">
-                        {% trans "Deleting your account will permanently remove:" %}
-                    </p>
-                    <ul class="mt-2">
-                        <li>{% trans "Your profile and all personal information" %}</li>
-                        <li>{% trans "All your learning pathways and progress" %}</li>
-                        <li>{% trans "Your services and bookings" %}</li>
-                        <li>{% trans "All your blog posts and comments" %}</li>
-                    </ul>
+                    <h5 class="alert-heading">{% trans "Warning: This Action is Permanent" %}</h5>
+                    <p>{% trans "Deleting your account will permanently remove all your data, including your profile, learning pathways, services, and blog posts." %}</p>
                 </div>
 
-                <p class="text-muted">
-                    {% trans "Are you absolutely sure you want to delete your account?" %}
+                <p class="mb-3">
+                    {% trans "To confirm that you want to permanently delete your account, please enter your password." %}
                 </p>
 
                 <form method="post">
                     {% csrf_token %}
+
+                    <div class="mb-3">
+                        {{ form.as_p }}
+                    </div>
+
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-danger btn-lg">
-                            <i class="bi bi-trash me-2"></i>
-                            {% trans "Yes, Delete My Account Permanently" %}
+                            <i class="bi bi-trash-fill me-2"></i>
+                            {% trans "Confirm and Delete My Account" %}
                         </button>
                         <a href="{% url 'users:profile-detail' %}" class="btn btn-secondary btn-lg">
                             <i class="bi bi-x-circle me-2"></i>
