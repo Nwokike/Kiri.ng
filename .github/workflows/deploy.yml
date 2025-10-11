@@ -22,3 +22,4 @@ jobs:
           python manage.py migrate --noinput
           python manage.py collectstatic --noinput
           sudo systemctl restart kiri
+          sudo systemctl reload nginx
