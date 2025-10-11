@@ -1,6 +1,7 @@
 import json
 import logging
 import urllib.parse
+import requests  # 🚀 FIX ADDED: This line was missing
 
 from django.conf import settings
 from django.contrib import messages
@@ -44,28 +45,22 @@ def signup(request):
                     
                     if referral_code_to_use:
                         try:
-                            # --- 🚀 CORRECTED AND ROBUST REFERRAL LOGIC 🚀 ---
-                            
-                            # 1. Find the user who made the referral.
+                            # This is the corrected referral logic from before
                             referrer_profile = Profile.objects.get(referral_code=referral_code_to_use)
                             referred_by_user = referrer_profile.user
 
-                            # 2. Get the new user's profile and link the referrer.
                             profile, created = Profile.objects.get_or_create(user=user)
                             if not profile.referred_by:
                                 profile.referred_by = referred_by_user
-                                profile.save() # The referral is now saved to the database.
+                                profile.save()
 
-                                # 3. ONLY NOW, after a successful save, send the notification.
                                 Notification.objects.create(
                                     recipient=referred_by_user,
                                     message=_(f"Congratulations! {user.username} signed up using your referral link.")
                                 )
                         except Profile.DoesNotExist:
-                            # If the referral code is invalid, do nothing.
                             pass
                     
-                    # Clean up the session regardless of success
                     if 'referral_code' in request.session:
                         del request.session['referral_code']
 
@@ -74,7 +69,6 @@ def signup(request):
                 messages.error(request, _("An unexpected error occurred during signup. Please try again."))
                 return render(request, 'registration/signup.html', {'form': form})
 
-            # Get or create the profile again to ensure it exists for the email step
             profile, created = Profile.objects.get_or_create(user=user)
             verification_url = request.build_absolute_uri(f'/users/verify-email/{profile.email_verification_token}/')
             context = {'user': user, 'verification_url': verification_url}
@@ -274,3 +268,4 @@ def delete_account(request):
         form = AccountDeleteForm()
         
     return render(request, 'users/delete_account_confirm.html', {'form': form})
+
