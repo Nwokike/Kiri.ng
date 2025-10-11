@@ -72,17 +72,14 @@
                 <p>
                     {% trans "Share your referral link with friends. When they sign up using it, you help the community grow!" %}
                 </p>
-                <div id="referralCodeSection" style="display: none;">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" value="https://kiri.ng/users/signup/?ref={{ user.profile.referral_code }}" id="referralCode" readonly>
-                        <button class="btn btn-outline-secondary" type="button" onclick="copyReferralCode()">
-                            {% trans "Copy" %}
-                        </button>
-                    </div>
+                
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" value="https://kiri.ng/users/signup/?ref={{ user.profile.referral_code }}" id="referralCode" readonly>
+                    <button class="btn btn-outline-secondary" type="button" onclick="copyReferralCode()">
+                        <i class="bi bi-clipboard"></i> {% trans "Copy" %}
+                    </button>
                 </div>
-                <button class="btn btn-primary mb-3" id="generateReferralBtn" onclick="showReferralCode()">
-                    <i class="bi bi-link-45deg"></i> {% trans "Generate Referral URL" %}
-                </button>
+
                 <p class="mb-0">
                     <strong>{% trans "Successful Referrals:" %}</strong>
                     {{ user.profile.successful_referrals_count }}
