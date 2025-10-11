@@ -1,7 +1,9 @@
 name: Deploy Kiri.ng
+
 on:
   push:
     branches: [ main ]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,7 +20,6 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt --quiet
           python manage.py generate_referral_codes
-          python manage.py makemigrations
           python manage.py migrate --noinput
           python manage.py collectstatic --noinput
           sudo systemctl restart kiri
