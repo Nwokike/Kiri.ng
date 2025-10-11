@@ -6,17 +6,38 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USER }}
-        key: ${{ secrets.DEPLOY_KEY }}
-        script: |
-          cd /home/ubuntu/Kiri.ng
-          git pull origin main
-          source venv/bin/activate
-          pip install -r requirements.txt --quiet
-          python manage.py migrate --noinput
-          python manage.py collectstatic --noinput
-          sudo systemctl restart kiri
+      - uses: actions/checkout@v4
+      - uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            set -e  # Stop immediately if a command exits with a non-zero status
+            set -o pipefail  # Catch errors in piped commands
+
+            cd /home/ubuntu/Kiri.ng
+
+            # Pull latest code
+            git pull origin main
+
+            # Activate virtual environment and upgrade/install dependencies
+            source venv/bin/activate
+            pip install --upgrade pip --quiet
+            pip install -r requirements.txt --quiet
+
+            # Run custom Django commands
+            python manage.py generate_referral_codes
+
+            # Make migrations before applying them
+            python manage.py makemigrations --noinput
+            python.manage.py migrate --noinput
+
+            # Collect static files
+            python manage.py collectstatic --noinput
+
+            # Restart the application service
+            sudo systemctl restart kiri
+
+            # Reload Nginx to pick up any changes
+            sudo systemctl reload nginx
