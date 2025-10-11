@@ -50,11 +50,11 @@
     
     {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-light">
+<body>
 
 <!-- Top Header -->
 <div class="fixed-top">
-    <header id="main-header" class="d-flex justify-content-between align-items-center p-3 bg-white border-bottom">
+    <header id="main-header" class="d-flex justify-content-between align-items-center p-3 border-bottom">
 
         <!-- Back Button -->
         <div style="flex: 1 1 0;">
@@ -166,7 +166,7 @@
             {% endif %}
         </div>
     </header>
-    <div id="sub-header-container" class="bg-white"></div>
+    <div id="sub-header-container"></div>
 </div>
 
 <!-- Main Content -->
@@ -183,7 +183,7 @@
 </main>
 
 <!-- Bottom Navigation -->
-<nav class="navbar navbar-light bg-white border-top fixed-bottom">
+<nav class="navbar navbar-light border-top fixed-bottom">
     <div class="container-fluid d-flex justify-content-around">
         <a href="{% url 'marketplace:service-list' %}" class="nav-link text-center bottom-nav-item" data-nav="services">
             <i class="bi bi-shop fs-3"></i>
@@ -205,9 +205,9 @@
     <div id="sub-nav-services">
         <div class="container-fluid border-bottom">
             <div class="d-flex justify-content-around nav nav-tabs border-0">
-                <a class="nav-link text-dark" href="{% url 'marketplace:service-list' %}">{% trans "Browse All" %}</a>
+                <a class="nav-link" href="{% url 'marketplace:service-list' %}">{% trans "Browse All" %}</a>
                 {% if user.is_authenticated and user.profile.is_verified_artisan %}
-                    <a class="nav-link text-dark" href="{% url 'marketplace:artisan-dashboard' %}">{% trans "My Services" %}</a>
+                    <a class="nav-link" href="{% url 'marketplace:artisan-dashboard' %}">{% trans "My Services" %}</a>
                 {% endif %}
             </div>
         </div>
@@ -215,22 +215,22 @@
     <div id="sub-nav-academy">
         <div class="container-fluid border-bottom">
             <div class="d-flex justify-content-around nav nav-tabs border-0">
-                <a class="nav-link text-dark" href="{% url 'academy:dashboard' %}">{% trans "My Dashboard" %}</a>
-                <a class="nav-link text-dark" href="{% url 'academy:pathway-list' %}">{% trans "Community" %}</a>
+                <a class="nav-link" href="{% url 'academy:dashboard' %}">{% trans "My Dashboard" %}</a>
+                <a class="nav-link" href="{% url 'academy:pathway-list' %}">{% trans "Community" %}</a>
             </div>
         </div>
     </div>
     <div id="sub-nav-blog">
         <div class="container-fluid border-bottom">
             <div class="d-flex justify-content-around nav nav-tabs border-0">
-                <a class="nav-link text-dark" href="{% url 'blog:post_list' %}">{% trans "Community Blog" %}</a>
+                <a class="nav-link" href="{% url 'blog:post_list' %}">{% trans "Community Blog" %}</a>
             </div>
         </div>
     </div>
     <div id="sub-nav-profile">
         <div class="container-fluid border-bottom">
             <div class="d-flex justify-content-around nav nav-tabs border-0">
-                <a class="nav-link text-dark" href="{% url 'users:profile-detail' %}">{% trans "My Profile" %}</a>
+                <a class="nav-link" href="{% url 'users:profile-detail' %}">{% trans "My Profile" %}</a>
             </div>
         </div>
     </div>
@@ -272,7 +272,7 @@
 </div>
 
 <!-- Footer -->
-<footer class="bg-light border-top mt-5 py-3" style="margin-bottom: 80px;">
+<footer class="border-top mt-5 py-3" style="margin-bottom: 80px; background-color: var(--light-card);">
     <div class="container text-center">
         <div class="row">
             <div class="col-12">

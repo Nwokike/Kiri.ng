@@ -121,7 +121,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Loading Spinner for Forms
     const formsToWatch = [
         { formId: 'create-pathway-form', btnId: 'generate-btn', spinnerText: 'Generating your pathway... This may take up to 30 seconds' },
-        { formId: 'complete-module-form', btnId: 'complete-module-btn', spinnerText: 'Submitting... This may take up to 20 seconds' }
+        { formId: 'complete-module-form', btnId: 'complete-module-btn', spinnerText: 'Submitting... This may take up to 20 seconds' },
+        { formId: 'ask-ai-form', btnId: 'ask-ai-btn', spinnerText: 'AI is thinking...', loadingId: 'ask-ai-loading' }
     ];
 
     formsToWatch.forEach(item => {
@@ -136,6 +137,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (spinner) spinner.classList.remove('d-none');
                     if (btnText) btnText.innerText = item.spinnerText;
                     if (btn) btn.disabled = true;
+                    
+                    if (item.loadingId) {
+                        const loadingMsg = document.getElementById(item.loadingId);
+                        if (loadingMsg) loadingMsg.classList.remove('d-none');
+                    }
                 }
             });
         }

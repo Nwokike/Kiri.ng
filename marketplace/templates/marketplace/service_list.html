@@ -9,7 +9,7 @@
                 {% if service.image %}
                     <img src="{{ service.image.url }}" class="card-img-top card-img-top-custom" alt="{{ service.title }}">
                 {% else %}
-                    <div class="bg-light d-flex align-items-center justify-content-center card-img-top-custom">
+                    <div class="d-flex align-items-center justify-content-center card-img-top-custom" style="background-color: var(--light-bg);">
                         <span class="text-muted">{% trans "No Image" %}</span>
                     </div>
                 {% endif %}

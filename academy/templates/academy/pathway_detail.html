@@ -74,7 +74,7 @@
                             
                             <div class="mb-4">
                                 <h5 class="mb-3"><i class="bi bi-book-fill text-success"></i> {% trans "Written Lesson" %}</h5>
-                                <div class="p-3 bg-light rounded markdown-content">
+                                <div class="p-3 rounded markdown-content" style="background-color: var(--light-card); border: 1px solid var(--light-border);">
                                     {{ module.written_content|markdownify|safe }}
                                 </div>
                             </div>
@@ -83,14 +83,18 @@
                                 <div class="card-body">
                                     <h5 class="card-title"><i class="bi bi-robot"></i> {% trans "Ask the AI Instructor" %}</h5>
                                     <p class="card-text">{% trans "Have questions about this module? Ask our AI instructor for instant help!" %}</p>
-                                    <form action="{% url 'academy:ask-question' module.id %}" method="POST">
+                                    <form id="ask-ai-form" action="{% url 'academy:ask-question' module.id %}" method="POST">
                                         {% csrf_token %}
                                         <div class="mb-3">
                                             <textarea name="question" class="form-control" rows="3" placeholder="{% trans 'Ask a question about this module...' %}" minlength="10"></textarea>
                                         </div>
-                                        <button type="submit" class="btn btn-warning">
-                                            <i class="bi bi-send-fill"></i> {% trans "Ask Question" %}
+                                        <button id="ask-ai-btn" type="submit" class="btn btn-warning">
+                                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                            <span class="btn-text"><i class="bi bi-send-fill"></i> {% trans "Ask Question" %}</span>
                                         </button>
+                                        <div id="ask-ai-loading" class="mt-2 text-muted small d-none">
+                                            <i class="bi bi-hourglass-split"></i> {% trans "AI is thinking... this may take up to 20 seconds" %}
+                                        </div>
                                     </form>
                                     
                                     {% if module_questions %}

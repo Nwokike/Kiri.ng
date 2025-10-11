@@ -4,6 +4,7 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
+packages = ["c-ares", "cacert", "cargo", "fontconfig", "freetype", "ghostscript", "glib", "glibcLocales", "grpc", "harfbuzz", "lcms2", "libffi", "libiconv", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "openssl", "pango", "pgadmin4", "pkg-config", "rustc", "tcl", "tk", "xcodebuild", "xsimd", "zlib"]
 
 [workflows]
 runButton = "Project"
@@ -32,7 +33,3 @@ waitForPort = 5000
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 36099
-externalPort = 3000
