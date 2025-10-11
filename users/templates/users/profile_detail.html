@@ -48,7 +48,6 @@
                  <p><strong>{% trans "City:" %}</strong> {{ profile.city|default:"Not provided." }}</p>
                  <p><strong>{% trans "State:" %}</strong> {{ profile.state|default:"Not provided." }}</p>
                  
-                 <!-- 🚀 ADDED REFERRAL SECTION 🚀 -->
                  <hr>
                  <h5>{% trans "Referral Link" %}</h5>
                  <p class="small text-muted">{% trans "Share this link to invite new users and grow the community." %}</p>
@@ -64,3 +63,7 @@
     </div>
 </div>
 {% endblock %}
+
+<!-- 🚀 FIX ADDED HERE 🚀 -->
+{% block extra_js %}{% endblock %}
+
