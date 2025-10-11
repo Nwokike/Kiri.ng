@@ -5,6 +5,7 @@ db.sqlite3
 .env
 venv/
 Onyii/
+SSH/
 env/
 *.log
 staticfiles/
