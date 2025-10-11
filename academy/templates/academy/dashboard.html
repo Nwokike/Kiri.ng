@@ -18,7 +18,7 @@
                             </a>
 
                             {% if pathway.is_complete %}
-                                <a href="{% url 'academy:download-certificate' pk=pathway.pk %}" 
+                                <a href="{% url 'academy:download-certificate' pk=pathway.pk %}"
                                    class="btn btn-outline-success">
                                     <i class="bi bi-award"></i> {% trans "Download Certificate" %}
                                 </a>
@@ -74,7 +74,7 @@
                 </p>
                 <div id="referralCodeSection" style="display: none;">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" value="https://kiri.ng/?ref={{ user.username }}" id="referralCode" readonly>
+                        <input type="text" class="form-control" value="https://kiri.ng/?ref={{ user.profile.referral_code }}" id="referralCode" readonly>
                         <button class="btn btn-outline-secondary" type="button" onclick="copyReferralCode()">
                             {% trans "Copy" %}
                         </button>
