@@ -3,7 +3,23 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from django.contrib.sitemaps.views import sitemap
 from users.auth_forms import CustomLoginForm
+from core.sitemaps import (
+    StaticViewSitemap,
+    BlogPostSitemap,
+    ServiceSitemap,
+    ArtisanProfileSitemap,
+    LearningPathwaySitemap
+)
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'blog': BlogPostSitemap,
+    'services': ServiceSitemap,
+    'artisans': ArtisanProfileSitemap,
+    'pathways': LearningPathwaySitemap,
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -18,6 +34,9 @@ urlpatterns = [
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
     path('notifications/', include('notifications.urls', namespace='notifications')),
     path('accounts/', include('allauth.urls')),
+    
+    # SEO URLs
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     
     # Password Reset URLs
     path('password-reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset.html'), name='password_reset'),

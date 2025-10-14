@@ -18,6 +18,14 @@ def validate_image_size(value):
 class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
     last_name = forms.CharField(max_length=150, required=True, help_text='Required.')
+    email = forms.EmailField(
+        required=True,
+        help_text=_('Required. Enter a valid email address.'),
+        error_messages={
+            'required': _('Email is required.'),
+            'invalid': _('Enter a valid email address.')
+        }
+    )
     accept_terms = forms.BooleanField(
         required=True,
         label='',
@@ -26,7 +34,47 @@ class CustomUserCreationForm(UserCreationForm):
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
 
     class Meta(UserCreationForm.Meta):
-        fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "email",)
+        fields = ("first_name", "last_name", "email", "password1", "password2")
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email:
+            email = email.lower()
+            from django.contrib.auth.models import User
+            if User.objects.filter(email__iexact=email).exists():
+                raise ValidationError(
+                    _('An account with this email already exists. Please use a different email or login to your existing account.')
+                )
+        return email
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        from django.contrib.auth.models import User
+        import re
+        
+        email = self.cleaned_data['email']
+        base_username = email.split('@')[0]
+        base_username = re.sub(r'[^a-zA-Z0-9_]', '', base_username)[:20]
+        
+        if not base_username:
+            first_name = self.cleaned_data.get('first_name', '').lower()
+            last_name = self.cleaned_data.get('last_name', '').lower()
+            base_username = f"{first_name}{last_name}"
+            base_username = re.sub(r'[^a-zA-Z0-9_]', '', base_username)[:20]
+        
+        if not base_username:
+            base_username = 'user'
+        
+        username = base_username
+        counter = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{base_username}{counter}"
+            counter += 1
+        
+        user.username = username
+        if commit:
+            user.save()
+        return user
 
 
 class ProfileUpdateForm(forms.ModelForm):

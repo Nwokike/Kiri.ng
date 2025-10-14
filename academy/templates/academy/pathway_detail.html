@@ -155,7 +155,8 @@
                                             </div>
                                             
                                             <button id="complete-module-btn" type="submit" class="btn btn-success btn-lg w-100">
-                                                <i class="bi bi-check-circle-fill"></i> {% trans "Submit Answer & Complete Module" %}
+                                                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                                <span class="btn-text"><i class="bi bi-check-circle-fill"></i> {% trans "Submit Answer & Complete Module" %}</span>
                                             </button>
                                         </form>
                                     {% else %}
@@ -166,7 +167,8 @@
                                             {% csrf_token %}
                                             <input type="hidden" name="legacy_complete" value="true">
                                             <button id="complete-module-btn" type="submit" class="btn btn-success btn-lg w-100">
-                                                <i class="bi bi-check-circle-fill"></i> {% trans "Mark as Complete & Unlock Next Module" %}
+                                                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                                <span class="btn-text"><i class="bi bi-check-circle-fill"></i> {% trans "Mark as Complete & Unlock Next Module" %}</span>
                                             </button>
                                         </form>
                                     {% endif %}

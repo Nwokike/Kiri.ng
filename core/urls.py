@@ -12,4 +12,5 @@ urlpatterns = [
     path('ai-support/', views.ai_support, name='ai-support'),
     path('api/ai-chat/', views.ai_chat, name='ai-chat'),
     path('api/ai-quick-help/', views.ai_quick_help, name='ai-quick-help'),
+    path('<str:key>.txt', views.indexnow_key, name='indexnow-key'),
 ]

@@ -94,7 +94,7 @@
             <div class="card-header"><h6>{% trans "My Badges" %}</h6></div>
             <div class="card-body">
                 {% for user_badge in my_badges %}
-                    <span class="badge bg-warning me-1 fs-6" style="color: #212529;">
+                    <span class="badge bg-warning me-1 fs-6" style="color: var(--light-text);">
                         {{ user_badge.badge.title }}
                     </span>
                 {% empty %}

@@ -225,7 +225,7 @@ body {
 
 .badge.bg-warning {
     background-color: var(--accent-gold) !important;
-    color: #212529 !important;
+    color: var(--light-bg) !important;
 }
 
 /* === Form Controls === */
@@ -783,4 +783,26 @@ a,
         width: 55px;
         height: 55px;
     }
+}
+
+/* === Additional Dark Mode Fixes === */
+[data-theme="dark"] .text-white {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .bg-primary.text-white,
+[data-theme="dark"] .bg-success.text-white,
+[data-theme="dark"] .bg-danger.text-white {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .alert-secondary {
+    background-color: rgba(74, 143, 82, 0.1) !important;
+    color: var(--light-text) !important;
+    border-color: var(--light-border) !important;
+}
+
+[data-theme="dark"] .card-header.bg-success,
+[data-theme="dark"] .card-header.bg-danger {
+    color: #ffffff !important;
 }

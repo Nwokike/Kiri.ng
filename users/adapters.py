@@ -13,10 +13,10 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         if sociallogin.is_existing:
             return
 
-        # Check if email exists
+        # Check if email exists (case-insensitive)
         if sociallogin.user.email:
             try:
-                existing_user = User.objects.get(email=sociallogin.user.email)
+                existing_user = User.objects.get(email__iexact=sociallogin.user.email)
                 sociallogin.connect(request, existing_user)
             except User.DoesNotExist:
                 pass

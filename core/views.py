@@ -79,3 +79,13 @@ def ai_quick_help(request):
         return JsonResponse({'response': response})
     except Exception as e:
         return JsonResponse({'response': f'Error: {str(e)}'}, status=500)
+
+
+def indexnow_key(request, key):
+    """Serve IndexNow key verification file"""
+    from .indexnow import get_indexnow_key
+    from django.http import HttpResponse
+    
+    if key == get_indexnow_key():
+        return HttpResponse(key, content_type='text/plain')
+    return HttpResponse(status=404)
