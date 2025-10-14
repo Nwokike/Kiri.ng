@@ -16,8 +16,8 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
 
 @receiver(pre_social_login)
 def capture_referral_on_social_login(sender, request, sociallogin, **kwargs):
-    """Capture referral code when user signs up via Google OAuth"""
-    referral_code = request.session.get('referral_code')
+    """Capture referral username when user signs up via Google OAuth"""
+    referral_code = request.session.get('referral_code')  # Note: session key kept for backward compatibility
     
     if referral_code and sociallogin.is_existing:
         return

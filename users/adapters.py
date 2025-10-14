@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
-        """Handle referral code capture and account linking for social logins"""
+        """Handle referral username capture and account linking for social logins"""
         # If user exists, try to connect the account
         if sociallogin.is_existing:
             return
@@ -22,7 +22,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
                 pass
 
     def save_user(self, request, sociallogin, form=None):
-        """Save social login user and handle referral code"""
+        """Save social login user and handle referral username"""
         user = super().save_user(request, sociallogin, form)
         
         referral_code = request.session.get('referral_code')
