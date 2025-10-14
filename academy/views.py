@@ -24,7 +24,8 @@ from .ai_services import (
     generate_pathway_outline,
     generate_module_content,
     fetch_multiple_youtube_videos,
-    answer_module_question
+    answer_module_question,
+    validate_module_answer
 )
 from .models import (
     LearningPathway,
@@ -329,7 +330,17 @@ def complete_module(request, module_id):
     if len(answer) < 50:
         messages.error(
             request,
-            _("Your answer is too short. Please describe what you learned in more detail to complete the module."),
+            _("Your answer is too short. Please describe what you learned in more detail (at least 50 characters)."),
+        )
+        return redirect("academy:pathway-detail", pk=module.pathway.pk)
+
+    # AI validation to ensure the answer shows actual understanding
+    is_valid, reason = validate_module_answer(answer, module.title, module.written_content)
+    
+    if not is_valid:
+        messages.error(
+            request,
+            _("Your answer doesn't demonstrate understanding of the module content. Please provide specific insights about what you learned. ({reason})").format(reason=reason),
         )
         return redirect("academy:pathway-detail", pk=module.pathway.pk)
 

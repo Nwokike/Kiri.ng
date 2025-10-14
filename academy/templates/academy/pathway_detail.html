@@ -117,12 +117,16 @@
                             <div class="card border-success">
                                 <div class="card-body">
                                     <h5 class="card-title text-success">{% trans "Complete This Module" %}</h5>
+                                    <div class="alert alert-info small mb-3">
+                                        <i class="bi bi-info-circle-fill"></i> <strong>{% trans "Important:" %}</strong> 
+                                        {% trans "Your answer will be validated by AI to ensure you've understood the module content. Please provide specific insights and takeaways from what you learned, not generic statements." %}
+                                    </div>
                                     <form id="complete-module-form" action="{% url 'academy:complete-module' module.id %}" method="POST">
                                         {% csrf_token %}
                                         <div class="mb-3">
-                                            <label for="validation_answer" class="form-label"><strong>{% trans "Reflect on what you learned (min. 50 characters):" %}</strong></label>
-                                            <textarea name="validation_answer" rows="4" class="form-control" required minlength="50" placeholder="{% trans 'Describe what you learned and how you plan to apply it to your business...' %}"></textarea>
-                                            <div class="form-text">{% trans "Share your key takeaways to unlock the next module" %}</div>
+                                            <label for="validation_answer" class="form-label"><strong>{% trans "What did you learn from this module?" %}</strong></label>
+                                            <textarea name="validation_answer" rows="5" class="form-control" required minlength="50" placeholder="{% trans 'Example: I learned how to calculate my profit margins by subtracting all costs from revenue. I will apply this to my carpentry business by tracking material costs more carefully...' %}"></textarea>
+                                            <div class="form-text">{% trans "Minimum 50 characters. Be specific about what you learned and how you'll apply it." %}</div>
                                         </div>
                                         <button id="complete-module-btn" type="submit" class="btn btn-success">
                                             <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
