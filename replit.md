@@ -6,22 +6,39 @@ Kiri.ng is a comprehensive Django-based Progressive Web Application (PWA) that s
 
 The application targets Nigerian artisans and customers, offering localized features including multi-language support (English, Hausa, Igbo, Yoruba), state-specific location services, and business resources tailored to the Nigerian market.
 
-## Recent Changes (October 11, 2025)
+## Recent Changes (October 14, 2025)
 
-### New Features Added
+### Bug Fixes & Improvements
+1. **Referral System Overhaul**: Switched from UUID-based referral codes to username-based referrals
+   - Referral URLs now use format: `https://kiri.ng/users/signup/?ref=USERNAME`
+   - Backward compatible with legacy UUID referral codes
+   - Removed referral input field from signup form (URL-based only)
+   - Fixed referral count tracking - now properly increments when users sign up
+   
+2. **Academy Dark Mode Fixes**: Improved dark mode support in Academy module pages
+   - Fixed AI question card background to properly adapt to dark mode
+   - Added custom `ai-question-card` CSS class for better theme support
+   
+3. **Academy Validation Enhancement**: Implemented AI-powered answer validation
+   - Users can no longer submit nonsense text to unlock modules
+   - Gemini AI validates that answers demonstrate actual understanding
+   - Gracefully fails open if AI service is unavailable
+   - Provides specific feedback on why answers are rejected
+   - Better user guidance with examples in the reflection prompt
+
+### Previous Features (October 11, 2025)
 1. **AI Customer Service System**: 24/7 Gemini-powered chatbot with quick help guides and admin controls
 2. **Push Notifications**: Web Push API integration for real-time alerts (all platforms except iOS)
 3. **PDF Certificate Generation**: WeasyPrint integration with proper error handling (verified working - 187KB PDFs)
 4. **ML Service Recommendations**: Re-enabled TF-IDF vectorization with fallback to random recommendations
 5. **Analytics & Monetization**: Google Analytics and Google AdSense integration
-6. **Referral URL System**: Shareable URLs (https://kiri.ng/?ref=username) for easier referrals
 
 ### Technical Improvements
 - Installed system dependencies for WeasyPrint (pango, cairo, gdk-pixbuf, libffi)
 - Added comprehensive error handling for PDF generation with logging
 - Enhanced AI customer service with conversation history tracking
-- Improved referral system to accept both username and referral codes
 - Added floating AI support button for easy access
+- Improved error handling across referral flows (regular signup, social login)
 
 ## User Preferences
 
