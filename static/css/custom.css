@@ -695,6 +695,11 @@ a,
     color: var(--primary-green) !important;
 }
 
+[data-theme="dark"] .accordion-item {
+    background-color: var(--light-card) !important;
+    border-color: var(--light-border) !important;
+}
+
 /* AI Question Card Styling */
 .ai-question-card {
     background-color: rgba(255, 193, 7, 0.1);
