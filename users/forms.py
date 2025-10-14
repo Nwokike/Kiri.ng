@@ -18,7 +18,6 @@ def validate_image_size(value):
 class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
     last_name = forms.CharField(max_length=150, required=True, help_text='Required.')
-    referral_code = forms.CharField(max_length=150, required=False, label=_('Referral Code (Optional)'))
     accept_terms = forms.BooleanField(
         required=True,
         label='',

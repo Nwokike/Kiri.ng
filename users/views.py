@@ -39,9 +39,7 @@ def signup(request):
                 with transaction.atomic():
                     user = form.save()
                     
-                    form_referral_code = form.cleaned_data.get('referral_code')
-                    session_referral_code = request.session.get('referral_code')
-                    referral_code_to_use = form_referral_code or session_referral_code
+                    referral_code_to_use = request.session.get('referral_code')
                     
                     if referral_code_to_use:
                         try:
