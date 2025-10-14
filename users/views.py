@@ -45,20 +45,23 @@ def signup(request):
                     
                     if referral_code_to_use:
                         try:
-                            # This is the corrected referral logic from before
-                            referrer_profile = Profile.objects.get(referral_code=referral_code_to_use)
-                            referred_by_user = referrer_profile.user
+                            # Try to find referrer by username (new system) or referral_code (legacy)
+                            try:
+                                referrer_user = User.objects.get(username=referral_code_to_use)
+                            except User.DoesNotExist:
+                                referrer_profile = Profile.objects.get(referral_code=referral_code_to_use)
+                                referrer_user = referrer_profile.user
 
                             profile, created = Profile.objects.get_or_create(user=user)
                             if not profile.referred_by:
-                                profile.referred_by = referred_by_user
+                                profile.referred_by = referrer_user
                                 profile.save()
 
                                 Notification.objects.create(
-                                    recipient=referred_by_user,
+                                    recipient=referrer_user,
                                     message=_(f"Congratulations! {user.username} signed up using your referral link.")
                                 )
-                        except Profile.DoesNotExist:
+                        except (User.DoesNotExist, Profile.DoesNotExist):
                             pass
                     
                     if 'referral_code' in request.session:

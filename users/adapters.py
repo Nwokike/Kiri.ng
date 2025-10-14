@@ -28,20 +28,26 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         referral_code = request.session.get('referral_code')
         if referral_code:
             try:
-                referrer_profile = Profile.objects.get(referral_code=referral_code)
+                # Try to find referrer by username (new system) or referral_code (legacy)
+                try:
+                    referrer_user = User.objects.get(username=referral_code)
+                except User.DoesNotExist:
+                    referrer_profile = Profile.objects.get(referral_code=referral_code)
+                    referrer_user = referrer_profile.user
+                
                 profile, created = Profile.objects.get_or_create(user=user)
                 
                 if not profile.referred_by:
-                    profile.referred_by = referrer_profile.user
+                    profile.referred_by = referrer_user
                     profile.save()
                     
                     Notification.objects.create(
-                        recipient=referrer_profile.user,
+                        recipient=referrer_user,
                         message=_(f"Congratulations! {user.username or user.email} signed up using your referral link.")
                     )
                     
                 del request.session['referral_code']
-            except Profile.DoesNotExist:
+            except (User.DoesNotExist, Profile.DoesNotExist):
                 pass
         
         return user

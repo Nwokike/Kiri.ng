@@ -52,7 +52,7 @@
                  <h5>{% trans "Referral Link" %}</h5>
                  <p class="small text-muted">{% trans "Share this link to invite new users and grow the community." %}</p>
                  <div class="input-group mb-3">
-                     <input type="text" class="form-control" value="https://kiri.ng/users/signup/?ref={{ profile.referral_code }}" id="referralCode" readonly>
+                     <input type="text" class="form-control" value="https://kiri.ng/users/signup/?ref={{ profile.user.username }}" id="referralCode" readonly>
                      <button class="btn btn-outline-secondary" type="button" onclick="copyReferralCode()">
                          <i class="bi bi-clipboard"></i> {% trans "Copy" %}
                      </button>

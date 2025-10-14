@@ -35,8 +35,11 @@ class Profile(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.referral_code:
-            self.referral_code = str(uuid.uuid4())[:8].upper()
+            self.referral_code = self.user.username
         super().save(*args, **kwargs)
+    
+    def get_referral_url(self):
+        return f"https://kiri.ng/users/signup/?ref={self.user.username}"
 
     class Meta:
         verbose_name = 'User Profile'
