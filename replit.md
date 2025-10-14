@@ -8,23 +8,30 @@ The application targets Nigerian artisans and customers, offering localized feat
 
 ## Recent Changes (October 14, 2025)
 
-### Bug Fixes & Improvements
-1. **Referral System Overhaul**: Switched from UUID-based referral codes to username-based referrals
+### Critical Bug Fixes
+1. **Referral Count Bug FIXED**: Users now properly get credit when someone signs up with their referral link
+   - Removed problematic signal code that was overwriting the `referred_by` field
+   - Referral notifications now correctly increment successful_referrals_count
+   - Users can now create new pathways after getting 1 referral (requirement works!)
+
+### Major Feature Updates
+2. **Multiple Choice Quiz System**: Replaced text-based validation with AI-generated quizzes
+   - AI automatically generates MCQ questions based on module content
+   - 4 options per question, only one correct answer
+   - Users must answer correctly to unlock next module
+   - Legacy modules without quizzes have simple completion button (backward compatible)
+   - On-the-fly quiz generation fallback if quiz is missing
+   
+3. **Referral System Overhaul**: Switched from UUID-based referral codes to username-based referrals
    - Referral URLs now use format: `https://kiri.ng/users/signup/?ref=USERNAME`
    - Backward compatible with legacy UUID referral codes
    - Removed referral input field from signup form (URL-based only)
-   - Fixed referral count tracking - now properly increments when users sign up
+   - Removed obsolete generate_referral_codes command from build.sh
    
-2. **Academy Dark Mode Fixes**: Improved dark mode support in Academy module pages
+4. **Academy Dark Mode Fixes**: Complete dark mode support across all Academy pages
    - Fixed AI question card background to properly adapt to dark mode
-   - Added custom `ai-question-card` CSS class for better theme support
-   
-3. **Academy Validation Enhancement**: Implemented AI-powered answer validation
-   - Users can no longer submit nonsense text to unlock modules
-   - Gemini AI validates that answers demonstrate actual understanding
-   - Gracefully fails open if AI service is unavailable
-   - Provides specific feedback on why answers are rejected
-   - Better user guidance with examples in the reflection prompt
+   - Fixed accordion-item containers showing white background in dark mode
+   - All module content now respects theme settings
 
 ### Previous Features (October 11, 2025)
 1. **AI Customer Service System**: 24/7 Gemini-powered chatbot with quick help guides and admin controls
