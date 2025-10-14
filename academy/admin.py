@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import LearningPathway, PathwayModule, ModuleStep, Badge, UserBadge, Comment, ModuleVideo, ModuleQuestion
+from .models import LearningPathway, PathwayModule, ModuleStep, Badge, UserBadge, Comment, ModuleVideo, ModuleQuestion, ModuleQuiz
 
 class PathwayModuleInline(admin.TabularInline):
     model = PathwayModule
@@ -61,5 +61,10 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ('author', 'pathway', 'created_at')
     list_filter = ('created_at', 'author')
     search_fields = ('body', 'author__username', 'pathway__goal')
+
+@admin.register(ModuleQuiz)
+class ModuleQuizAdmin(admin.ModelAdmin):
+    list_display = ('module', 'question', 'correct_answer')
+    search_fields = ('question', 'module__title')
 
 admin.site.register(ModuleStep)

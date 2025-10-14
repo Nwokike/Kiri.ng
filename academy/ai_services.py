@@ -208,32 +208,35 @@ def generate_pathway_outline(goal, location, category=None):
         return None
 
 
-def validate_module_answer(answer, module_title, module_content):
-    """Validate if the user's answer demonstrates actual understanding of the module."""
+def generate_module_quiz(module_title, module_content):
+    """Generate a multiple choice quiz question for the module."""
     try:
         gemini_api_key = os.getenv('GEMINI_API_KEY')
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_api_key}"
         
         prompt = f"""
-        You are an expert instructor evaluating a student's learning reflection.
+        You are an educational content creator designing a multiple choice quiz.
         
         Module: "{module_title}"
-        Module Content Summary: {module_content[:800] if module_content else "N/A"}
+        Module Content: {module_content[:1000] if module_content else "N/A"}
         
-        Student's Answer: "{answer}"
+        Create ONE multiple choice question that tests understanding of the key concepts from this module.
         
-        Evaluate if the student's answer demonstrates:
-        1. Actual understanding of the module concepts (not just generic statements)
-        2. Specific learning takeaways or insights from the module
-        3. Genuine engagement with the material (not random text or gibberish)
+        Requirements:
+        - Question should test actual comprehension, not just memorization
+        - All options should be plausible but only one correct
+        - Avoid "all of the above" or "none of the above"
+        - Keep question and options concise and clear
         
         Return ONLY a JSON object with:
         {{
-            "is_valid": true/false,
-            "reason": "Brief explanation"
+            "question": "The question text",
+            "option_a": "First option",
+            "option_b": "Second option",
+            "option_c": "Third option",
+            "option_d": "Fourth option",
+            "correct_answer": "A" (or B, C, or D)
         }}
-        
-        Be fair but ensure the answer shows real understanding. Generic answers like "I learned a lot" or nonsense text should be marked invalid.
         """
         
         payload = {
@@ -245,12 +248,11 @@ def validate_module_answer(answer, module_title, module_content):
         response.raise_for_status()
         result_json = response.json()
         
-        validation_text = result_json['candidates'][0]['content']['parts'][0]['text']
-        validation_data = json.loads(validation_text)
+        quiz_text = result_json['candidates'][0]['content']['parts'][0]['text']
+        quiz_data = json.loads(quiz_text)
         
-        return validation_data.get('is_valid', False), validation_data.get('reason', '')
+        return quiz_data
         
     except Exception as e:
-        logger.error(f"Error validating answer: {e}")
-        # If validation fails, allow the answer (fail open)
-        return True, "Validation service unavailable"
+        logger.error(f"Error generating quiz: {e}")
+        return None

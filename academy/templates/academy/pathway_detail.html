@@ -116,23 +116,60 @@
                             <hr class="my-4">
                             <div class="card border-success">
                                 <div class="card-body">
-                                    <h5 class="card-title text-success">{% trans "Complete This Module" %}</h5>
-                                    <div class="alert alert-info small mb-3">
-                                        <i class="bi bi-info-circle-fill"></i> <strong>{% trans "Important:" %}</strong> 
-                                        {% trans "Your answer will be validated by AI to ensure you've understood the module content. Please provide specific insights and takeaways from what you learned, not generic statements." %}
-                                    </div>
-                                    <form id="complete-module-form" action="{% url 'academy:complete-module' module.id %}" method="POST">
-                                        {% csrf_token %}
-                                        <div class="mb-3">
-                                            <label for="validation_answer" class="form-label"><strong>{% trans "What did you learn from this module?" %}</strong></label>
-                                            <textarea name="validation_answer" rows="5" class="form-control" required minlength="50" placeholder="{% trans 'Example: I learned how to calculate my profit margins by subtracting all costs from revenue. I will apply this to my carpentry business by tracking material costs more carefully...' %}"></textarea>
-                                            <div class="form-text">{% trans "Minimum 50 characters. Be specific about what you learned and how you'll apply it." %}</div>
-                                        </div>
-                                        <button id="complete-module-btn" type="submit" class="btn btn-success">
-                                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                                            <span class="btn-text"><i class="bi bi-check-circle-fill"></i> {% trans "Complete & Unlock Next Module" %}</span>
-                                        </button>
-                                    </form>
+                                    {% if module.quiz %}
+                                        <h5 class="card-title text-success"><i class="bi bi-patch-question-fill"></i> {% trans "Module Quiz" %}</h5>
+                                        <p class="text-muted small">{% trans "Answer the question correctly to complete this module and unlock the next one." %}</p>
+                                        
+                                        <form id="complete-module-form" action="{% url 'academy:complete-module' module.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <div class="mb-4">
+                                                <p class="fw-bold mb-3">{{ module.quiz.question }}</p>
+                                                
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="radio" name="quiz_answer" id="option_a" value="A" required>
+                                                    <label class="form-check-label" for="option_a">
+                                                        <strong>A.</strong> {{ module.quiz.option_a }}
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="radio" name="quiz_answer" id="option_b" value="B" required>
+                                                    <label class="form-check-label" for="option_b">
+                                                        <strong>B.</strong> {{ module.quiz.option_b }}
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="radio" name="quiz_answer" id="option_c" value="C" required>
+                                                    <label class="form-check-label" for="option_c">
+                                                        <strong>C.</strong> {{ module.quiz.option_c }}
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="radio" name="quiz_answer" id="option_d" value="D" required>
+                                                    <label class="form-check-label" for="option_d">
+                                                        <strong>D.</strong> {{ module.quiz.option_d }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            
+                                            <button id="complete-module-btn" type="submit" class="btn btn-success btn-lg w-100">
+                                                <i class="bi bi-check-circle-fill"></i> {% trans "Submit Answer & Complete Module" %}
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <h5 class="card-title text-success">{% trans "Complete This Module" %}</h5>
+                                        <p class="text-muted small">{% trans "Click the button below to mark this module as complete and unlock the next one." %}</p>
+                                        
+                                        <form id="complete-module-form" action="{% url 'academy:complete-module' module.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="legacy_complete" value="true">
+                                            <button id="complete-module-btn" type="submit" class="btn btn-success btn-lg w-100">
+                                                <i class="bi bi-check-circle-fill"></i> {% trans "Mark as Complete & Unlock Next Module" %}
+                                            </button>
+                                        </form>
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endif %}

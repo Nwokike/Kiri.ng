@@ -25,7 +25,7 @@ from .ai_services import (
     generate_module_content,
     fetch_multiple_youtube_videos,
     answer_module_question,
-    validate_module_answer
+    generate_module_quiz
 )
 from .models import (
     LearningPathway,
@@ -33,6 +33,7 @@ from .models import (
     ModuleStep,
     ModuleVideo,
     ModuleQuestion,
+    ModuleQuiz,
     Badge,
     UserBadge,
     Comment,
@@ -217,6 +218,23 @@ class PathwayDetailView(LoginRequiredMixin, generic.DetailView):
             unlocked_module.written_content = module_content
             unlocked_module.content_generated = True
             unlocked_module.save()
+            
+            # Generate quiz question for the module
+            try:
+                if not hasattr(unlocked_module, 'quiz'):
+                    quiz_data = generate_module_quiz(unlocked_module.title, module_content)
+                    if quiz_data:
+                        ModuleQuiz.objects.create(
+                            module=unlocked_module,
+                            question=quiz_data['question'],
+                            option_a=quiz_data['option_a'],
+                            option_b=quiz_data['option_b'],
+                            option_c=quiz_data['option_c'],
+                            option_d=quiz_data['option_d'],
+                            correct_answer=quiz_data['correct_answer'].upper()
+                        )
+            except Exception as e:
+                logger.error(f"Error generating quiz: {e}")
 
         context["unlocked_module"] = unlocked_module
         
@@ -325,27 +343,60 @@ def ask_question(request, module_id):
 @require_POST
 def complete_module(request, module_id):
     module = get_object_or_404(PathwayModule, id=module_id, pathway__user=request.user)
-    answer = request.POST.get("validation_answer", "").strip()
-
-    if len(answer) < 50:
-        messages.error(
-            request,
-            _("Your answer is too short. Please describe what you learned in more detail (at least 50 characters)."),
-        )
-        return redirect("academy:pathway-detail", pk=module.pathway.pk)
-
-    # AI validation to ensure the answer shows actual understanding
-    is_valid, reason = validate_module_answer(answer, module.title, module.written_content)
     
-    if not is_valid:
-        messages.error(
-            request,
-            _("Your answer doesn't demonstrate understanding of the module content. Please provide specific insights about what you learned. ({reason})").format(reason=reason),
-        )
-        return redirect("academy:pathway-detail", pk=module.pathway.pk)
+    # Check if this is a legacy module without quiz
+    is_legacy = request.POST.get("legacy_complete") == "true"
+    
+    if is_legacy:
+        # Legacy module - complete without quiz validation
+        module.is_completed = True
+        module.save()
+    else:
+        # Modern module with quiz
+        selected_answer = request.POST.get("quiz_answer", "").strip().upper()
+        
+        # Check if quiz exists
+        try:
+            quiz = module.quiz
+        except ModuleQuiz.DoesNotExist:
+            # If no quiz exists, try to generate one on the fly
+            try:
+                quiz_data = generate_module_quiz(module.title, module.written_content)
+                if quiz_data:
+                    quiz = ModuleQuiz.objects.create(
+                        module=module,
+                        question=quiz_data['question'],
+                        option_a=quiz_data['option_a'],
+                        option_b=quiz_data['option_b'],
+                        option_c=quiz_data['option_c'],
+                        option_d=quiz_data['option_d'],
+                        correct_answer=quiz_data['correct_answer'].upper()
+                    )
+                else:
+                    # Fallback to legacy completion if quiz generation fails
+                    module.is_completed = True
+                    module.save()
+                    messages.success(request, _("Module completed successfully!"))
+                    return redirect("academy:pathway-detail", pk=module.pathway.pk)
+            except Exception as e:
+                logger.error(f"Error generating quiz on the fly: {e}")
+                module.is_completed = True
+                module.save()
+                messages.success(request, _("Module completed successfully!"))
+                return redirect("academy:pathway-detail", pk=module.pathway.pk)
 
-    module.is_completed = True
-    module.save()
+        # Validate the quiz answer
+        if not selected_answer:
+            messages.error(request, _("Please select an answer to complete the module."))
+            return redirect("academy:pathway-detail", pk=module.pathway.pk)
+        
+        if selected_answer != quiz.correct_answer:
+            messages.error(request, _("Incorrect answer. Please review the module content and try again."))
+            return redirect("academy:pathway-detail", pk=module.pathway.pk)
+
+        # Correct answer - mark module as completed
+        module.is_completed = True
+        module.save()
 
     pathway = module.pathway
     if not pathway.modules.filter(is_completed=False).exists():

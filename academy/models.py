@@ -94,6 +94,21 @@ class UserBadge(models.Model):
         unique_together = ('user', 'badge')
     def __str__(self): return f"{self.user.username} earned {self.badge.title}"
 
+class ModuleQuiz(models.Model):
+    """Multiple choice quiz for module completion validation"""
+    module = models.OneToOneField(PathwayModule, on_delete=models.CASCADE, related_name='quiz')
+    question = models.TextField(_("Quiz Question"))
+    option_a = models.CharField(_("Option A"), max_length=500)
+    option_b = models.CharField(_("Option B"), max_length=500)
+    option_c = models.CharField(_("Option C"), max_length=500)
+    option_d = models.CharField(_("Option D"), max_length=500)
+    correct_answer = models.CharField(_("Correct Answer"), max_length=1, choices=[
+        ('A', 'Option A'), ('B', 'Option B'), ('C', 'Option C'), ('D', 'Option D')
+    ])
+    
+    def __str__(self):
+        return f"Quiz for {self.module.title}"
+
 class Comment(models.Model):
     pathway = models.ForeignKey(LearningPathway, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='academy_comments') # Added related_name
