@@ -695,6 +695,17 @@ a,
     color: var(--primary-green) !important;
 }
 
+/* AI Question Card Styling */
+.ai-question-card {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-color: #ffc107;
+}
+
+[data-theme="dark"] .ai-question-card {
+    background-color: rgba(240, 201, 82, 0.15);
+    border-color: var(--accent-gold);
+}
+
 /* === Contact Support Modal === */
 .modal-content {
     background-color: var(--light-card);
