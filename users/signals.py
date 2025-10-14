@@ -9,12 +9,9 @@ from django.utils.translation import gettext_lazy as _
 
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
-    """Create profile for new users or update existing ones"""
+    """Create profile for new users"""
     if created:
         Profile.objects.create(user=instance)
-    else:
-        if hasattr(instance, 'profile'):
-            instance.profile.save()
 
 
 @receiver(pre_social_login)
