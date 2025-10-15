@@ -1,7 +1,6 @@
 {% extends "core/base.html" %}
 {% load i18n academy_extras %}
 
-{# SEO blocks from the original public template are kept for public visibility #}
 {% block title %}{{ pathway.goal }} - Learn at Kiri.ng Academy{% endblock %}
 {% block description %}Explore this learning pathway: {{ pathway.goal }}. Join Kiri.ng Academy to access AI-powered learning modules, video tutorials, and practical skills training.{% endblock %}
 {% block og_url %}https://kiri.ng{{ pathway.get_public_url }}{% endblock %}
@@ -32,44 +31,62 @@
         <div class="accordion" id="pathwayAccordion">
             {% for module in pathway.modules.all %}
                 <div class="accordion-item mb-2">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ module.id }}">
-                            📖 {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}
-                        </button>
-                    </h2>
-                    <div id="collapse{{ module.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#pathwayAccordion">
-                        <div class="accordion-body">
-                            
-                            {% if module.videos.all %}
-                                <div class="mb-4">
-                                    <h5 class="mb-3"><i class="bi bi-play-circle-fill text-primary"></i> {% trans "Video Tutorials" %}</h5>
-                                    <div class="row">
-                                        {% for video in module.videos.all %}
-                                        <div class="col-md-6 mb-3">
-                                            <div class="card h-100">
-                                                <div class="ratio ratio-16x9">
-                                                    <iframe src="https://www.youtube.com/embed/{{ video.video_url|get_yt_id }}" title="{{ video.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                                </div>
-                                                <div class="card-body">
-                                                    <h6 class="card-title">{{ forloop.counter }}. {{ video.title }}</h6>
-                                                    {% if video.description %}<p class="card-text text-muted small">{{ video.description }}</p>{% endif %}
+
+                    {# NEW: Check if the module has any content to display #}
+                    {% if module.written_content or module.videos.all %}
+                        
+                        {# If YES, render the full, interactive accordion item #}
+                        <h2 class="accordion-header">
+                            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ module.id }}">
+                                📖 {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ module.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#pathwayAccordion">
+                            <div class="accordion-body">
+                                
+                                {% if module.videos.all %}
+                                    <div class="mb-4">
+                                        <h5 class="mb-3"><i class="bi bi-play-circle-fill text-primary"></i> {% trans "Video Tutorials" %}</h5>
+                                        <div class="row">
+                                            {% for video in module.videos.all %}
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card h-100">
+                                                    <div class="ratio ratio-16x9">
+                                                        <iframe src="https://www.youtube.com/embed/{{ video.video_url|get_yt_id }}" title="{{ video.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <h6 class="card-title">{{ forloop.counter }}. {{ video.title }}</h6>
+                                                        {% if video.description %}<p class="card-text text-muted small">{{ video.description }}</p>{% endif %}
+                                                    </div>
                                                 </div>
                                             </div>
+                                            {% endfor %}
                                         </div>
-                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                
+                                {% if module.written_content %}
+                                <div class="mb-4">
+                                    <h5 class="mb-3"><i class="bi bi-book-fill text-success"></i> {% trans "Written Lesson" %}</h5>
+                                    <div class="p-3 rounded markdown-content" style="background-color: var(--light-card); border: 1px solid var(--light-border);">
+                                        {{ module.written_content|markdownify|safe }}
                                     </div>
                                 </div>
-                            {% endif %}
-                            
-                            <div class="mb-4">
-                                <h5 class="mb-3"><i class="bi bi-book-fill text-success"></i> {% trans "Written Lesson" %}</h5>
-                                <div class="p-3 rounded markdown-content" style="background-color: var(--light-card); border: 1px solid var(--light-border);">
-                                    {{ module.written_content|markdownify|safe }}
-                                </div>
+                                {% endif %}
+                                
                             </div>
-                            
                         </div>
-                    </div>
+
+                    {% else %}
+                        
+                        {# If NO, render a disabled, non-clickable header to show it's "locked" #}
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed disabled" type="button">
+                                🔒 {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}
+                            </button>
+                        </h2>
+
+                    {% endif %}
                 </div>
             {% empty %}
                 <div class="alert alert-info">
