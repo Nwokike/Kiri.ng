@@ -25,7 +25,7 @@ sitemaps = {
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # Custom CKEditor upload endpoint (must be before default ckeditor5 URLs)
+    # Custom CKEditor upload endpoint
     path('ckeditor5/image_upload/', custom_upload_file, name='ckeditor5_upload'),
     
     # App URLs
@@ -37,16 +37,16 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
     path('notifications/', include('notifications.urls', namespace='notifications')),
+    
     path('accounts/', include('allauth.urls')),
     
     # SEO URLs
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     
-    # Password Reset URLs
-    path('password-reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset.html'), name='password_reset'),
-    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),
-    path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),
-    path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
+    # path('password-reset/', ...),
+    # path('password-reset/done/', ...),
+    # path('password-reset-confirm/...', ...),
+    # path('password-reset-complete/', ...),
 ]
 
 if settings.DEBUG:
