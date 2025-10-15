@@ -228,6 +228,16 @@ body {
     color: var(--light-bg) !important;
 }
 
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+/* Lighter green notification badge in dark mode */
+[data-theme="dark"] .badge.bg-danger {
+    background-color: #7bed9f !important;
+    color: #000000 !important;
+}
+
 /* === Form Controls === */
 input,
 textarea,
@@ -402,7 +412,7 @@ body.skiptranslate {
 }
 
 .card-img-top-custom {
-    height: 200px;
+    height: 150px;
     object-fit: cover;
 }
 

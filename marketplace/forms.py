@@ -27,19 +27,15 @@ class MultipleFileField(forms.FileField):
         return result
 
 class ServiceForm(forms.ModelForm):
-    image = forms.ImageField(
-        required=False,
-        widget=forms.FileInput(attrs={'class': 'form-control'}),
-        validators=[validate_file_size]
-    )
     additional_images = MultipleFileField(
         required=False,
-        help_text=_('You can upload multiple images (max 2MB each)')
+        label=_('Service Images'),
+        help_text=_('Upload one or more images for your service (max 2MB each). You can upload multiple images at once.')
     )
     
     class Meta:
         model = Service
-        fields = ['category', 'title', 'description', 'price', 'image']
+        fields = ['category', 'title', 'description', 'price']
         widgets = {
             'category': forms.Select(attrs={'class': 'form-select'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
