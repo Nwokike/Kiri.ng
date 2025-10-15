@@ -51,10 +51,8 @@ class ServiceListView(generic.ListView):
         context['active_category'] = self.kwargs.get('category_slug')
         
         from users.models import Profile
-        cities = list(Profile.objects.exclude(city='').values_list('city', flat=True).distinct())
-        states = list(Profile.objects.exclude(state='').values_list('state', flat=True).distinct())
-        locations = sorted(set([loc for loc in cities + states if loc]))
-        context['locations'] = locations
+        states = Profile.objects.exclude(state='').values_list('state', flat=True).distinct().order_by('state')
+        context['locations'] = [state for state in states if state]
         
         return context
 
