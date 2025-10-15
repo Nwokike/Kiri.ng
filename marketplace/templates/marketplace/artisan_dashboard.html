@@ -38,6 +38,9 @@
                             <a href="{% url 'marketplace:service-update' pk=service.pk %}" class="btn btn-secondary btn-sm">
                                 {% trans "Edit Service" %}
                             </a>
+                            <a href="{% url 'marketplace:service-delete' pk=service.pk %}" class="btn btn-danger btn-sm">
+                                {% trans "Delete Service" %}
+                            </a>
                         </div>
                     </div>
                 </div>

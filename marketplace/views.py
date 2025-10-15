@@ -163,6 +163,19 @@ class ServiceUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_queryset(self):
         return Service.objects.filter(artisan=self.request.user)
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        delete_image_id = request.GET.get('delete_image')
+        if delete_image_id:
+            try:
+                img = ServiceImage.objects.get(id=delete_image_id, service=self.object)
+                img.delete()
+                messages.success(request, _("Image has been deleted."))
+                return redirect('marketplace:service-update', pk=self.object.pk)
+            except ServiceImage.DoesNotExist:
+                pass
+        return super().get(request, *args, **kwargs)
+
     def form_valid(self, form):
         response = super().form_valid(form)
         
