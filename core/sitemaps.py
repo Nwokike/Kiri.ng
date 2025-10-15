@@ -11,9 +11,15 @@ class StaticViewSitemap(Sitemap):
     changefreq = 'daily'
 
     def items(self):
-        # 🚀 THE ONLY FIX NEEDED IS ON THIS LINE 🚀
-        # Corrected the typo 'academy:academy-home' to the correct URL name 'academy:home'
-        return ['core:home', 'core:terms', 'core:privacy', 'marketplace:service-list', 'blog:post-list', 'academy:home']
+        # 🚀 FIX: Changed 'post-list' to 'post_list' and 'academy-home' to 'home'
+        return [
+            'core:home', 
+            'core:terms', 
+            'core:privacy', 
+            'marketplace:service-list', 
+            'blog:post_list', 
+            'academy:home'
+        ]
 
     def location(self, item):
         return reverse(item)
