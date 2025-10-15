@@ -11,8 +11,14 @@ class StaticViewSitemap(Sitemap):
     changefreq = 'daily'
 
     def items(self):
-        # Corrected URL names from previous fix
-        return ['core:home', 'core:terms', 'core:privacy', 'marketplace:service-list', 'blog:post_list', 'academy:home']
+        return [
+            'core:home', 
+            'core:terms', 
+            'core:privacy', 
+            'marketplace:service-list', 
+            'blog:post_list', 
+            'academy:home'
+        ]
 
     def location(self, item):
         return reverse(item)
@@ -34,14 +40,11 @@ class ServiceSitemap(Sitemap):
     priority = 0.6
 
     def items(self):
-        # Changed from all() to only include active services if you have such a field
-        # If not, .all() is fine.
         return Service.objects.all().order_by('-created_at')
 
     def lastmod(self, obj):
         return obj.created_at
 
-    # 🚀 FIX ADDED: Explicitly tells the sitemap how to find a service's URL.
     def location(self, obj):
         return reverse('marketplace:service-detail', kwargs={'pk': obj.pk})
 
@@ -62,9 +65,12 @@ class LearningPathwaySitemap(Sitemap):
     priority = 0.6
 
     def items(self):
-        return LearningPathway.objects.filter(is_public=True).order_by('-created_at')
+        # 🚀 THE ONLY FIX NEEDED IS ON THIS LINE 🚀
+        # Removed the filter for 'is_public=True' which does not exist on the LearningPathway model.
+        return LearningPathway.objects.all().order_by('-created_at')
 
     def location(self, obj):
+        # This correctly points to the public detail view for each pathway.
         return reverse('academy:public-pathway-detail', kwargs={'pk': obj.pk})
 
     def lastmod(self, obj):
