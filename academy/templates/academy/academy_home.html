@@ -167,7 +167,7 @@
             <h3 class="text-center mb-4">{% trans "Recent Learning Pathways from Our Community" %}</h3>
             <div class="list-group">
                 {% for pathway in recent_pathways %}
-                    <div class="list-group-item">
+                    <a href="{% url 'academy:public-pathway-detail' pk=pathway.pk slug=pathway.slug %}" class="list-group-item list-group-item-action">
                         <div class="d-flex w-100 justify-content-between">
                             <h6 class="mb-1">{{ pathway.goal }}</h6>
                             <small class="text-muted">{{ pathway.created_at|timesince }} {% trans "ago" %}</small>
@@ -175,7 +175,7 @@
                         <p class="mb-1 text-muted small">
                             {% trans "Created by a community member" %} • {{ pathway.modules.count }} {% trans "modules" %}
                         </p>
-                    </div>
+                    </a>
                 {% endfor %}
             </div>
             <div class="text-center mt-3">

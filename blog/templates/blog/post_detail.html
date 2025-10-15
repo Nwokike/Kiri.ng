@@ -1,6 +1,21 @@
 {% extends "core/base.html" %}
 {% load i18n %}
 
+{% block title %}{{ post.title }} - Kiri.ng Blog{% endblock %}
+
+{% block description %}{% if post.meta_description %}{{ post.meta_description }}{% else %}{{ post.body|striptags|truncatewords:25 }}{% endif %}{% endblock %}
+
+{% block og_url %}https://kiri.ng{{ post.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ post.title }}{% endblock %}
+{% block og_description %}{% if post.meta_description %}{{ post.meta_description }}{% else %}{{ post.body|striptags|truncatewords:25 }}{% endif %}{% endblock %}
+{% if post.header_image %}{% block og_image %}{{ post.header_image.url }}{% endblock %}{% endif %}
+
+{% block twitter_title %}{{ post.title }}{% endblock %}
+{% block twitter_description %}{% if post.meta_description %}{{ post.meta_description }}{% else %}{{ post.body|striptags|truncatewords:25 }}{% endif %}{% endblock %}
+{% if post.header_image %}{% block twitter_image %}{{ post.header_image.url }}{% endblock %}{% endif %}
+
+{% block canonical_url %}https://kiri.ng{{ post.get_absolute_url }}{% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-lg-8 mx-auto">

@@ -10,14 +10,22 @@ class Post(models.Model):
         DRAFT = 'DF', _('Draft')
         PUBLISHED = 'PB', _('Published')
 
+    class Category(models.TextChoices):
+        GENERAL = 'GN', _('General')
+        TUTORIAL = 'TU', _('Tutorial')
+        STORY = 'ST', _('Story')
+        TIPS = 'TP', _('Tips & Tricks')
+        NEWS = 'NW', _('News')
+
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250, unique_for_date='publish')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
     
-    # --- THIS IS THE FIX: Removed the "Text" label ---
     body = CKEditor5Field(config_name='default')
+    meta_description = models.CharField(max_length=160, blank=True, help_text=_("SEO meta description (max 160 characters). Leave blank to auto-generate."))
     
     header_image = models.ImageField(upload_to='post_headers/', blank=True, null=True, help_text=_("Optional: Upload an image that will appear at the top of your post."))
+    category = models.CharField(max_length=2, choices=Category.choices, default=Category.GENERAL, help_text=_("Select the category that best describes your post"))
     publish = models.DateTimeField(auto_now_add=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

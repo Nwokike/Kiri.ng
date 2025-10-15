@@ -10,7 +10,7 @@
 <hr>
 <div class="list-group">
     {% for pathway in pathways %}
-        <a href="{% url 'academy:pathway-detail' pk=pathway.pk %}" class="list-group-item list-group-item-action">
+        <a href="{% if user.is_authenticated and pathway.user == user %}{% url 'academy:pathway-detail' pk=pathway.pk %}{% else %}{% url 'academy:public-pathway-detail' pk=pathway.pk slug=pathway.slug %}{% endif %}" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">{{ pathway.goal }}</h5>
                 <small>{{ pathway.created_at|timesince }} {% trans "ago" %}</small>

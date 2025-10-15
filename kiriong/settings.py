@@ -160,10 +160,35 @@ else:
     }
 
 # --- CKEditor ---
+CKEDITOR_5_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 CKEDITOR_5_CONFIGS = {
     'default': {
         'toolbar': ['heading', '|', 'bold', 'italic', 'link',
-                    'bulletedList', 'numberedList', 'blockQuote', 'imageUpload'],
+                    'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', '|',
+                    'undo', 'redo'],
+        'heading': {
+            'options': [
+                {'model': 'paragraph', 'title': 'Paragraph'},
+                {'model': 'heading1', 'title': 'Heading 1'},
+                {'model': 'heading2', 'title': 'Heading 2'},
+                {'model': 'heading3', 'title': 'Heading 3'},
+            ]
+        },
+        'image': {
+            'toolbar': [
+                'imageTextAlternative', '|',
+                'imageStyle:alignLeft',
+                'imageStyle:alignCenter', 
+                'imageStyle:alignRight'
+            ],
+            'styles': [
+                'full',
+                'alignLeft',
+                'alignCenter',
+                'alignRight'
+            ]
+        },
     },
 }
 

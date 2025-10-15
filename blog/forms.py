@@ -17,10 +17,11 @@ class PostForm(forms.ModelForm):
     )
     class Meta:
         model = Post
-        fields = ['title', 'header_image', 'body']
+        fields = ['title', 'category', 'meta_description', 'header_image', 'body']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control form-control-lg'}),
-            # --- THIS IS THE FIX: The conflicting 'body' widget has been removed ---
+            'category': forms.Select(attrs={'class': 'form-select mb-3'}),
+            'meta_description': forms.Textarea(attrs={'class': 'form-control mb-3', 'rows': 2, 'maxlength': 160, 'placeholder': _('Brief description for search engines (max 160 characters)')}),
         }
         help_texts = {
             'title': _('Choose a catchy and descriptive title for your story or tutorial.'),

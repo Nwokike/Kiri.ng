@@ -4,7 +4,14 @@
 {% block content %}
 <div class="row">
     <div class="col-lg-8 mx-auto">
-        <h2 class="mb-4">{% trans "Community Blog & Stories" %}</h2>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">{% trans "Community Blog & Stories" %}</h2>
+            {% if user.is_authenticated and user.profile.is_verified_artisan %}
+                <a href="{% url 'blog:post_create' %}" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> {% trans "Write a Post" %}
+                </a>
+            {% endif %}
+        </div>
         {% for post in posts %}
             <div class="card mb-4">
                 {% if post.header_image %}
