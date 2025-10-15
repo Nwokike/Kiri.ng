@@ -31,13 +31,16 @@ urlpatterns = [
     path('users/', include('users.urls')), 
     path('marketplace/', include('marketplace.urls')),
     path('academy/', include('academy.urls')),
-    # This path is now correct and safe because login.html remains in registration/
+    
+    # This path is safe because login.html remains in the registration folder
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html', authentication_form=CustomLoginForm), name='login'),
+    
     path('blog/', include('blog.urls')),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
     path('notifications/', include('notifications.urls', namespace='notifications')),
     
-    # Allauth handles all account management correctly.
+    # Allauth now handles ALL account management correctly.
+    # The broken URL overrides have been removed.
     path('accounts/', include('allauth.urls')),
     
     # SEO URL
