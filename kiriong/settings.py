@@ -161,6 +161,7 @@ else:
 
 # --- CKEditor ---
 CKEDITOR_5_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = 'authenticated'  # Allow authenticated users to upload
 
 CKEDITOR_5_CONFIGS = {
     'default': {

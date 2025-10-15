@@ -19,11 +19,22 @@
                         <div class="form-text">{{ form.title.help_text }}</div>
                     </div>
                     <div class="mb-3">
+                        <label for="{{ form.category.id_for_label }}" class="form-label">{% trans "Category" %}</label>
+                        {{ form.category }}
+                        <div class="form-text">{{ form.category.help_text }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.meta_description.id_for_label }}" class="form-label">{% trans "Meta Description" %}</label>
+                        {{ form.meta_description }}
+                        <div class="form-text">{{ form.meta_description.help_text }}</div>
+                    </div>
+                    <div class="mb-3">
                         <label for="{{ form.header_image.id_for_label }}" class="form-label">{{ form.header_image.label }}</label>
                         {{ form.header_image }}
                         <div class="form-text">{{ form.header_image.help_text }}</div>
                     </div>
                     <div class="mb-3">
+                        <label for="{{ form.body.id_for_label }}" class="form-label">{% trans "Content" %}</label>
                         {{ form.body }}
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">{% trans "Save Draft" %}</button>

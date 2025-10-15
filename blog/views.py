@@ -11,10 +11,16 @@ from notifications.models import Notification  # Added import
 
 
 class PostListView(generic.ListView):
-    queryset = Post.objects.filter(status=Post.Status.PUBLISHED)
     context_object_name = 'posts'
     paginate_by = 5
     template_name = 'blog/post_list.html'
+
+    def get_queryset(self):
+        queryset = Post.objects.filter(status=Post.Status.PUBLISHED)
+        category = self.request.GET.get('category')
+        if category and category in dict(Post.Category.choices):
+            queryset = queryset.filter(category=category)
+        return queryset
 
 
 class PostDetailView(generic.DetailView):

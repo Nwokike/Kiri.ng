@@ -222,7 +222,11 @@
     <div id="sub-nav-blog">
         <div class="container-fluid border-bottom">
             <div class="d-flex justify-content-around nav nav-tabs border-0">
-                <a class="nav-link" href="{% url 'blog:post_list' %}">{% trans "Community Blog" %}</a>
+                <a class="nav-link" href="{% url 'blog:post_list' %}">{% trans "All" %}</a>
+                <a class="nav-link" href="{% url 'blog:post_list' %}?category=TU">{% trans "Tutorials" %}</a>
+                <a class="nav-link" href="{% url 'blog:post_list' %}?category=ST">{% trans "Stories" %}</a>
+                <a class="nav-link" href="{% url 'blog:post_list' %}?category=TP">{% trans "Tips" %}</a>
+                <a class="nav-link" href="{% url 'blog:post_list' %}?category=NW">{% trans "News" %}</a>
             </div>
         </div>
     </div>

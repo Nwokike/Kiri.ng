@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from users.auth_forms import CustomLoginForm
+from blog.upload_views import custom_upload_file
 from core.sitemaps import (
     StaticViewSitemap,
     BlogPostSitemap,
@@ -24,6 +25,9 @@ sitemaps = {
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    # Custom CKEditor upload endpoint (must be before default ckeditor5 URLs)
+    path('ckeditor5/image_upload/', custom_upload_file, name='ckeditor5_upload'),
+    
     # App URLs
     path('', include('core.urls')),
     path('users/', include('users.urls')), 

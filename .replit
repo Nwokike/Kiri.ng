@@ -1,4 +1,4 @@
-modules = ["web", "nodejs-20", "bash", "python-3.12"]
+modules = ["web", "nodejs-20", "bash", "python-3.11"]
 [agent]
 expertMode = true
 
@@ -33,3 +33,7 @@ outputType = "webview"
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 34169
+externalPort = 3000
