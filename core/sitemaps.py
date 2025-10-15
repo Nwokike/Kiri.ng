@@ -11,7 +11,14 @@ class StaticViewSitemap(Sitemap):
     changefreq = 'daily'
 
     def items(self):
-        return ['core:home', 'core:terms', 'core:privacy', 'marketplace:service-list', 'blog:post-list', 'academy:academy-home']
+        return [
+            'core:home', 
+            'core:terms', 
+            'core:privacy', 
+            'marketplace:service-list', 
+            'blog:post-list', 
+            'academy:home'
+        ]
 
     def location(self, item):
         return reverse(item)
@@ -22,9 +29,11 @@ class BlogPostSitemap(Sitemap):
     priority = 0.7
 
     def items(self):
+        # 🚀 FIX: Using the correct status 'PB' and date field 'publish' from your models.py
         return Post.objects.filter(status=Post.Status.PUBLISHED).order_by('-publish')
 
     def lastmod(self, obj):
+        # 🚀 FIX: Using the correct field 'updated' from your models.py
         return obj.updated
 
 
