@@ -17,9 +17,6 @@ The application serves two primary user types:
 - **Marketplace UI Redesign**: Redesigned service browsing with compact cards, grid/list view toggle, and filtering by location and category
 - **Academy Public Access**: Made learning pathway module content (videos, written content, steps) fully accessible to guest users to encourage sign-ups
 
-## User Preferences
-
-Preferred communication style: Simple, everyday language.
 
 ## System Architecture
 
