@@ -33,23 +33,64 @@
 
         <hr class="my-4">
 
-        <h3 class="mb-3">{% trans "Curriculum" %}</h3>
+        <h3 class="mb-3">{% trans "Learning Modules" %}</h3>
         {% for module in pathway.modules.all %}
-            <div class="card mb-3">
-                <div class="card-header">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">{% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</h5>
                 </div>
-                {% if module.steps.all %}
-                    <ul class="list-group list-group-flush">
-                        {% for step in module.steps.all %}
-                            <li class="list-group-item">{{ step.title }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+                <div class="card-body">
+                    {% if module.written_content %}
+                        <div class="markdown-content mb-3">
+                            {{ module.written_content|linebreaks }}
+                        </div>
+                    {% endif %}
+                    
+                    {% if module.videos.all %}
+                        <h6 class="mt-3 mb-2">{% trans "Video Resources" %}</h6>
+                        <div class="row">
+                            {% for video in module.videos.all %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="ratio ratio-16x9">
+                                        <iframe src="{{ video.video_url }}" allowfullscreen></iframe>
+                                    </div>
+                                    <p class="small text-muted mt-1">{{ video.title }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% elif module.video_url %}
+                        <h6 class="mt-3 mb-2">{% trans "Video Resource" %}</h6>
+                        <div class="ratio ratio-16x9">
+                            <iframe src="{{ module.video_url }}" allowfullscreen></iframe>
+                        </div>
+                    {% endif %}
+                    
+                    {% if module.steps.all %}
+                        <h6 class="mt-3 mb-2">{% trans "Key Steps" %}</h6>
+                        <ul class="list-group list-group-flush">
+                            {% for step in module.steps.all %}
+                                <li class="list-group-item">
+                                    <strong>{{ step.title }}</strong>
+                                    {% if step.description %}
+                                        <p class="mb-0 small text-muted">{{ step.description }}</p>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
             </div>
         {% empty %}
-            <p>{% trans "The modules for this pathway are still being generated." %}</p>
+            <div class="alert alert-info">
+                {% trans "The modules for this pathway are still being generated. Check back soon!" %}
+            </div>
         {% endfor %}
+        
+        <div class="alert alert-success mt-4">
+            <h5>{% trans "Want to create your own learning pathway?" %}</h5>
+            <p>{% trans "Sign up for Kiri.ng to get AI-powered personalized learning paths, track your progress, and earn certificates!" %}</p>
+            <a href="{% url 'users:signup' %}" class="btn btn-primary">{% trans "Get Started Free" %}</a>
+        </div>
     </div>
 </div>
 {% endblock %}

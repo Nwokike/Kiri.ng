@@ -7,7 +7,8 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
-from notifications.models import Notification  # Added import
+from notifications.models import Notification
+from core.indexnow import submit_to_indexnow
 
 
 class PostListView(generic.ListView):
@@ -81,8 +82,16 @@ class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        response = super().form_valid(form)
+        
+        if form.instance.status == Post.Status.PUBLISHED:
+            try:
+                submit_to_indexnow(form.instance.get_absolute_url())
+            except Exception:
+                pass
+        
         messages.success(self.request, _("Your post has been saved as a draft."))
-        return super().form_valid(form)
+        return response
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
@@ -97,8 +106,16 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
         return self.get_object().get_absolute_url()
 
     def form_valid(self, form):
+        response = super().form_valid(form)
+        
+        if form.instance.status == Post.Status.PUBLISHED:
+            try:
+                submit_to_indexnow(form.instance.get_absolute_url())
+            except Exception:
+                pass
+        
         messages.success(self.request, _("Your post has been updated successfully."))
-        return super().form_valid(form)
+        return response
 
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):

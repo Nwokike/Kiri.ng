@@ -22,11 +22,15 @@ class ServiceListView(generic.ListView):
     paginate_by = 9
 
     def get_queryset(self):
-        queryset = Service.objects.filter(artisan__isnull=False).select_related('artisan', 'category')
+        queryset = Service.objects.filter(artisan__isnull=False).select_related('artisan', 'artisan__profile', 'category')
         
         category_slug = self.kwargs.get('category_slug')
         if category_slug:
             queryset = queryset.filter(category__slug=category_slug)
+        
+        location = self.request.GET.get('location')
+        if location:
+            queryset = queryset.filter(artisan__profile__location__icontains=location)
             
         sort = self.request.GET.get('sort', 'newest')
         if sort == 'price_asc':
@@ -42,6 +46,11 @@ class ServiceListView(generic.ListView):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         context['active_category'] = self.kwargs.get('category_slug')
+        
+        from users.models import Profile
+        locations = Profile.objects.exclude(location='').values_list('location', flat=True).distinct().order_by('location')
+        context['locations'] = [loc for loc in locations if loc]
+        
         return context
 
 
