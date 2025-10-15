@@ -8,15 +8,6 @@ The application serves two primary user types:
 - **Artisans**: Professionals offering services, managing bookings, and building their skills
 - **Customers**: Users seeking artisan services and learning new trades
 
-## Recent Changes
-
-### October 15, 2025
-- **Blog CKEditor Improvements**: Fixed image upload functionality with custom CSRF-exempt endpoint; added meta description and category fields to post creation form
-- **Blog Category Navigation**: Implemented category filtering in blog views with navigation display
-- **SEO Enhancements**: Fixed sitemap to only include published posts; integrated IndexNow for automatic search engine indexing
-- **Marketplace UI Redesign**: Redesigned service browsing with compact cards, grid/list view toggle, and filtering by location and category
-- **Academy Public Access**: Made learning pathway module content (videos, written content, steps) fully accessible to guest users to encourage sign-ups
-
 
 ## System Architecture
 
