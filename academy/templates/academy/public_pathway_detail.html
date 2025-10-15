@@ -1,96 +1,102 @@
 {% extends "core/base.html" %}
-{% load i18n %}
-{% load academy_extras %}
+{% load i18n academy_extras %}
 
+{# SEO blocks from the original public template are kept for public visibility #}
 {% block title %}{{ pathway.goal }} - Learn at Kiri.ng Academy{% endblock %}
-
-{% block description %}Explore this learning pathway: {{ pathway.goal }}. Join Kiri.ng Academy to access AI-powered learning modules, video tutorials, and practical skills training for Nigerian artisans.{% endblock %}
-
+{% block description %}Explore this learning pathway: {{ pathway.goal }}. Join Kiri.ng Academy to access AI-powered learning modules, video tutorials, and practical skills training.{% endblock %}
 {% block og_url %}https://kiri.ng{{ pathway.get_public_url }}{% endblock %}
 {% block og_title %}{{ pathway.goal }} - Kiri.ng Academy{% endblock %}
 {% block og_description %}AI-powered learning pathway created by {{ pathway.user.username }}. Master {{ pathway.goal|lower }} with structured modules and video tutorials at Kiri.ng Academy.{% endblock %}
-
-{% block twitter_title %}{{ pathway.goal }} - Kiri.ng Academy{% endblock %}
-{% block twitter_description %}AI-powered learning pathway: {{ pathway.goal }}. Join Kiri.ng Academy for structured learning and skill development.{% endblock %}
-
 {% block canonical_url %}https://kiri.ng{{ pathway.get_public_url }}{% endblock %}
+
 
 {% block content %}
 <div class="row">
-    <div class="col-lg-8 mx-auto">
+    {# Using the wider col-lg-10 from the main template for a consistent look #}
+    <div class="col-lg-10 mx-auto">
         <div class="mb-4">
+            {# Using the h1 from the public template for better SEO #}
             <h1 class="fw-bold">{{ pathway.goal }}</h1>
             <p class="lead text-muted">
                 {% blocktrans with username=pathway.user.username %}
-                A public learning pathway created by {{ username }} on Kiri.ng
+                A learning pathway created by {{ username }}.
                 {% endblocktrans %}
             </p>
+            <p class="mt-3">
+                <a href="{% url 'users:signup' %}" class="btn btn-primary">
+                    <i class="bi bi-rocket-takeoff-fill"></i> {% trans "Create Your Own AI Pathway - Sign Up Free!" %}
+                </a>
+            </p>
         </div>
-        
-        <p>
-            {% trans "Interested in creating your own AI-powered learning plan? " %}
-            <a href="{% url 'users:signup' %}" class="fw-bold">{% trans "Sign up for Kiri.ng today!" %}</a>
-        </p>
 
         <hr class="my-4">
 
-        <h3 class="mb-3">{% trans "Learning Modules" %}</h3>
-        {% for module in pathway.modules.all %}
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">{% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}</h5>
-                </div>
-                <div class="card-body">
-                    {% if module.written_content %}
-                        <div class="markdown-content mb-3">
-                            {{ module.written_content|markdownify }}
-                        </div>
-                    {% endif %}
-                    
-                    {% if module.videos.all %}
-                        <h6 class="mt-3 mb-2">{% trans "Video Resources" %}</h6>
-                        <div class="row">
-                            {% for video in module.videos.all %}
-                                <div class="col-md-6 mb-3">
-                                    <div class="ratio ratio-16x9">
-                                        <iframe src="{{ video.video_url }}" allowfullscreen></iframe>
+        {# This accordion structure is copied directly from your main template #}
+        <div class="accordion" id="pathwayAccordion">
+            {% for module in pathway.modules.all %}
+                <div class="accordion-item mb-2">
+                    {# 
+                        Simplified accordion header for public view.
+                        - We check if it's the first module in the loop (forloop.first).
+                        - If it is, the button is not 'collapsed' and the body will have the 'show' class to be open by default.
+                        - Otherwise, it's collapsed.
+                    #}
+                    <h2 class="accordion-header">
+                        <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ module.id }}">
+                            📖 {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ module.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#pathwayAccordion">
+                        <div class="accordion-body">
+                            
+                            {# Replicating the nice video card layout from the main template #}
+                            {% if module.videos.all %}
+                                <div class="mb-4">
+                                    <h5 class="mb-3"><i class="bi bi-play-circle-fill text-primary"></i> {% trans "Video Tutorials" %}</h5>
+                                    <div class="row">
+                                        {% for video in module.videos.all %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card h-100">
+                                                <div class="ratio ratio-16x9">
+                                                    {# Using the embed URL filter for consistency #}
+                                                    <iframe src="https://www.youtube.com/embed/{{ video.video_url|get_yt_id }}" title="{{ video.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h6 class="card-title">{{ forloop.counter }}. {{ video.title }}</h6>
+                                                    {% if video.description %}<p class="card-text text-muted small">{{ video.description }}</p>{% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
                                     </div>
-                                    <p class="small text-muted mt-1">{{ video.title }}</p>
                                 </div>
-                            {% endfor %}
+                            {% endif %}
+                            
+                            {# Displaying the written lesson with the same styling as the main template #}
+                            <div class="mb-4">
+                                <h5 class="mb-3"><i class="bi bi-book-fill text-success"></i> {% trans "Written Lesson" %}</h5>
+                                <div class="p-3 rounded markdown-content" style="background-color: var(--light-card); border: 1px solid var(--light-border);">
+                                    {{ module.written_content|markdownify|safe }}
+                                </div>
+                            </div>
+                            
                         </div>
-                    {% elif module.video_url %}
-                        <h6 class="mt-3 mb-2">{% trans "Video Resource" %}</h6>
-                        <div class="ratio ratio-16x9">
-                            <iframe src="{{ module.video_url }}" allowfullscreen></iframe>
-                        </div>
-                    {% endif %}
-                    
-                    {% if module.steps.all %}
-                        <h6 class="mt-3 mb-2">{% trans "Key Steps" %}</h6>
-                        <ul class="list-group list-group-flush">
-                            {% for step in module.steps.all %}
-                                <li class="list-group-item">
-                                    <strong>{{ step.title }}</strong>
-                                    {% if step.description %}
-                                        <p class="mb-0 small text-muted">{{ step.description }}</p>
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
+                    </div>
                 </div>
-            </div>
-        {% empty %}
-            <div class="alert alert-info">
-                {% trans "The modules for this pathway are still being generated. Check back soon!" %}
-            </div>
-        {% endfor %}
+            {% empty %}
+                {# Fallback message if no modules exist #}
+                <div class="alert alert-info">
+                    {% trans "The modules for this pathway are still being generated. Check back soon!" %}
+                </div>
+            {% endfor %}
+        </div>
         
-        <div class="alert alert-success mt-4">
-            <h5>{% trans "Want to create your own learning pathway?" %}</h5>
+        {# Keeping the final call-to-action block from the original public template #}
+        <div class="alert alert-success mt-5 text-center">
+            <h4 class="alert-heading">🚀 {% trans "Ready to Start Your Own Learning Journey?" %}</h4>
             <p>{% trans "Sign up for Kiri.ng to get AI-powered personalized learning paths, track your progress, and earn certificates!" %}</p>
-            <a href="{% url 'users:signup' %}" class="btn btn-primary">{% trans "Get Started Free" %}</a>
+            <hr>
+            <a href="{% url 'users:signup' %}" class="btn btn-primary btn-lg">{% trans "Get Started for Free" %}</a>
         </div>
     </div>
 </div>
