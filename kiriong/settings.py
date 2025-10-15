@@ -22,16 +22,12 @@ GOOGLE_ANALYTICS_ID = config('GOOGLE_ANALYTICS_ID', default='')
 GOOGLE_ADSENSE_CLIENT_ID = config('GOOGLE_ADSENSE_CLIENT_ID', default='')
 
 # --- Core Django Settings ---
-# In development (Replit), DEBUG should be True
-# Only set to False in production by checking for production environment indicator
 IS_PRODUCTION = config('IS_PRODUCTION', default=False, cast=bool)
 DEBUG = not IS_PRODUCTION
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=lambda v: [s.strip() for s in v.split(',')])
 
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = []
-if 'REPLIT_DEV_DOMAIN' in os.environ:
-    CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ['REPLIT_DEV_DOMAIN']}")
 if not DEBUG:
     CSRF_TRUSTED_ORIGINS.extend([
         'https://kiri.ng',
@@ -81,8 +77,8 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': ['profile', 'email'],
         'AUTH_PARAMS': {'access_type': 'online'},
         'APP': {
-            'client_id': config('GOOGLE_OAUTH_CLIENT_ID', default=''),
-            'secret': config('GOOGLE_OAUTH_CLIENT_SECRET', default=''),
+            'client_id': '620893536751-qobhp3tehl45drngqu1g7q25siu0fdrg.apps.googleusercontent.com',
+            'secret': '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',
         },
     },
 }
