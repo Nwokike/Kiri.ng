@@ -30,7 +30,10 @@ class ServiceListView(generic.ListView):
         
         location = self.request.GET.get('location')
         if location:
-            queryset = queryset.filter(artisan__profile__location__icontains=location)
+            queryset = queryset.filter(
+                Q(artisan__profile__city__icontains=location) | 
+                Q(artisan__profile__state__icontains=location)
+            )
             
         sort = self.request.GET.get('sort', 'newest')
         if sort == 'price_asc':
@@ -48,8 +51,10 @@ class ServiceListView(generic.ListView):
         context['active_category'] = self.kwargs.get('category_slug')
         
         from users.models import Profile
-        locations = Profile.objects.exclude(location='').values_list('location', flat=True).distinct().order_by('location')
-        context['locations'] = [loc for loc in locations if loc]
+        cities = list(Profile.objects.exclude(city='').values_list('city', flat=True).distinct())
+        states = list(Profile.objects.exclude(state='').values_list('state', flat=True).distinct())
+        locations = sorted(set([loc for loc in cities + states if loc]))
+        context['locations'] = locations
         
         return context
 

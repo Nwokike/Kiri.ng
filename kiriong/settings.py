@@ -22,7 +22,10 @@ GOOGLE_ANALYTICS_ID = config('GOOGLE_ANALYTICS_ID', default='')
 GOOGLE_ADSENSE_CLIENT_ID = config('GOOGLE_ADSENSE_CLIENT_ID', default='')
 
 # --- Core Django Settings ---
-DEBUG = config('DEBUG', default='True', cast=bool)
+# In development (Replit), DEBUG should be True
+# Only set to False in production by checking for production environment indicator
+IS_PRODUCTION = config('IS_PRODUCTION', default=False, cast=bool)
+DEBUG = not IS_PRODUCTION
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=lambda v: [s.strip() for s in v.split(',')])
 
 # CSRF Trusted Origins

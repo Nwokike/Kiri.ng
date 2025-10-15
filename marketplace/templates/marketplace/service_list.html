@@ -34,7 +34,7 @@
             </select>
         </div>
         <div class="col-md-4">
-            <select class="form-select form-select-sm" onchange="this.form.submit()">
+            <select class="form-select form-select-sm" id="sort-filter" onchange="filterServices()">
                 <option value="newest">{% trans "Newest First" %}</option>
                 <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>{% trans "Price: Low to High" %}</option>
                 <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>{% trans "Price: High to Low" %}</option>
@@ -45,7 +45,7 @@
 
 <div class="row" id="services-container">
     {% for service in services %}
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-3 service-card-wrapper" data-location="{{ service.artisan.profile.location }}">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 mb-3 service-card-wrapper" data-location="{{ service.artisan.profile.city|default:service.artisan.profile.state }}">
             <div class="card h-100 service-card-compact">
                 {% with first_additional=service.additional_images.first %}
                     {% if first_additional %}
@@ -63,9 +63,16 @@
                     <p class="card-text text-muted small mb-1">
                         <i class="bi bi-person"></i> {{ service.artisan.username }}
                     </p>
+                    {% if service.artisan.profile.city or service.artisan.profile.state %}
                     <p class="card-text text-muted small mb-2">
-                        <i class="bi bi-geo-alt"></i> {{ service.artisan.profile.location|default:"N/A" }}
+                        <i class="bi bi-geo-alt"></i> 
+                        {% if service.artisan.profile.city and service.artisan.profile.state %}
+                            {{ service.artisan.profile.city }}, {{ service.artisan.profile.state }}
+                        {% else %}
+                            {{ service.artisan.profile.city|default:service.artisan.profile.state }}
+                        {% endif %}
                     </p>
+                    {% endif %}
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="text-success fw-bold small">₦{{ service.price|floatformat:0 }}</span>
                         <a href="{% url 'marketplace:service-detail' pk=service.pk %}" class="btn btn-primary btn-sm py-0 px-2">{% trans "View" %}</a>
@@ -89,16 +96,26 @@
     height: 120px;
     object-fit: cover;
 }
+@media (max-width: 576px) {
+    .service-img-compact {
+        height: 100px;
+    }
+    .service-card-compact .card-body {
+        padding: 0.5rem !important;
+    }
+}
 .list-view .service-card-wrapper {
     flex: 0 0 100%;
     max-width: 100%;
 }
 .list-view .service-card-compact {
+    display: flex;
     flex-direction: row;
 }
 .list-view .service-img-compact {
     width: 150px;
     height: 100px;
+    flex-shrink: 0;
 }
 .list-view .card-body {
     flex: 1;
@@ -123,13 +140,16 @@ document.getElementById('list-view-btn').addEventListener('click', function() {
 function filterServices() {
     const category = document.getElementById('category-filter').value;
     const location = document.getElementById('location-filter').value;
-    const params = new URLSearchParams(window.location.search);
+    const sort = document.getElementById('sort-filter').value;
+    
+    const params = new URLSearchParams();
+    if (location) params.set('location', location);
+    if (sort && sort !== 'newest') params.set('sort', sort);
     
     if (category) {
-        window.location.href = `/marketplace/category/${category}/?location=${location}`;
+        window.location.href = `/marketplace/category/${category}/?${params.toString()}`;
     } else {
-        params.set('location', location);
-        window.location.href = '?' + params.toString();
+        window.location.href = `/marketplace/?${params.toString()}`;
     }
 }
 </script>
