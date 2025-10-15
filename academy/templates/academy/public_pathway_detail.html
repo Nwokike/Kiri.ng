@@ -12,10 +12,8 @@
 
 {% block content %}
 <div class="row">
-    {# Using the wider col-lg-10 from the main template for a consistent look #}
     <div class="col-lg-10 mx-auto">
         <div class="mb-4">
-            {# Using the h1 from the public template for better SEO #}
             <h1 class="fw-bold">{{ pathway.goal }}</h1>
             <p class="lead text-muted">
                 {% blocktrans with username=pathway.user.username %}
@@ -31,16 +29,9 @@
 
         <hr class="my-4">
 
-        {# This accordion structure is copied directly from your main template #}
         <div class="accordion" id="pathwayAccordion">
             {% for module in pathway.modules.all %}
                 <div class="accordion-item mb-2">
-                    {# 
-                        Simplified accordion header for public view.
-                        - We check if it's the first module in the loop (forloop.first).
-                        - If it is, the button is not 'collapsed' and the body will have the 'show' class to be open by default.
-                        - Otherwise, it's collapsed.
-                    #}
                     <h2 class="accordion-header">
                         <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ module.id }}">
                             📖 {% trans "Module" %} {{ module.order|add:1 }}: {{ module.title }}
@@ -49,7 +40,6 @@
                     <div id="collapse{{ module.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#pathwayAccordion">
                         <div class="accordion-body">
                             
-                            {# Replicating the nice video card layout from the main template #}
                             {% if module.videos.all %}
                                 <div class="mb-4">
                                     <h5 class="mb-3"><i class="bi bi-play-circle-fill text-primary"></i> {% trans "Video Tutorials" %}</h5>
@@ -58,7 +48,6 @@
                                         <div class="col-md-6 mb-3">
                                             <div class="card h-100">
                                                 <div class="ratio ratio-16x9">
-                                                    {# Using the embed URL filter for consistency #}
                                                     <iframe src="https://www.youtube.com/embed/{{ video.video_url|get_yt_id }}" title="{{ video.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                                 </div>
                                                 <div class="card-body">
@@ -72,7 +61,6 @@
                                 </div>
                             {% endif %}
                             
-                            {# Displaying the written lesson with the same styling as the main template #}
                             <div class="mb-4">
                                 <h5 class="mb-3"><i class="bi bi-book-fill text-success"></i> {% trans "Written Lesson" %}</h5>
                                 <div class="p-3 rounded markdown-content" style="background-color: var(--light-card); border: 1px solid var(--light-border);">
@@ -84,14 +72,12 @@
                     </div>
                 </div>
             {% empty %}
-                {# Fallback message if no modules exist #}
                 <div class="alert alert-info">
                     {% trans "The modules for this pathway are still being generated. Check back soon!" %}
                 </div>
             {% endfor %}
         </div>
         
-        {# Keeping the final call-to-action block from the original public template #}
         <div class="alert alert-success mt-5 text-center">
             <h4 class="alert-heading">🚀 {% trans "Ready to Start Your Own Learning Journey?" %}</h4>
             <p>{% trans "Sign up for Kiri.ng to get AI-powered personalized learning paths, track your progress, and earn certificates!" %}</p>
