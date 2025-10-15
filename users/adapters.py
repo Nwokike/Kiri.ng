@@ -54,6 +54,15 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
 
 class CustomAccountAdapter(DefaultAccountAdapter):
+
+    # 🚀 FIX ADDED: This new method allows password resets for social accounts. 🚀
+    def is_email_password_reset_allowed(self, email):
+        """
+        Overrides the default allauth behavior to ALWAYS allow password resets.
+        This enables users who signed up with Google to set a local password.
+        """
+        return True
+
     def is_safe_url(self, url):
         """Override to allow custom redirects"""
         return super().is_safe_url(url)
