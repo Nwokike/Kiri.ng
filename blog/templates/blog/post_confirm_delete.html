@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6 mx-auto">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h2>{% trans "Delete Post" %}</h2>
+            </div>
+            <div class="card-body">
+                <p>{% trans "Are you sure you want to delete this post?" %}</p>
+                <p class="fw-bold">{{ object.title }}</p>
+                <p class="text-muted">{% trans "This action cannot be undone." %}</p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">{% trans "Yes, Delete" %}</button>
+                    <a href="{{ object.get_absolute_url }}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

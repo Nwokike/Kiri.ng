@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 
@@ -53,3 +54,39 @@ class IndexNowSubmission(models.Model):
     def __str__(self):
         status = "✓" if self.success else "✗"
         return f"{status} {self.url} - {self.submitted_at.strftime('%Y-%m-%d %H:%M')}"
+
+
+class SupportTicket(models.Model):
+    class Status(models.TextChoices):
+        OPEN = 'OPEN', _('Open')
+        IN_PROGRESS = 'IN_PROGRESS', _('In Progress')
+        RESOLVED = 'RESOLVED', _('Resolved')
+        CLOSED = 'CLOSED', _('Closed')
+    
+    class Category(models.TextChoices):
+        TECHNICAL = 'TECH', _('Technical Issue')
+        ACCOUNT = 'ACCT', _('Account Issue')
+        PAYMENT = 'PAY', _('Payment Issue')
+        FEATURE = 'FEAT', _('Feature Request')
+        BOOKING = 'BOOK', _('Booking Issue')
+        OTHER = 'OTHER', _('Other')
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='support_tickets', null=True, blank=True)
+    email = models.EmailField(help_text=_("Contact email for ticket updates"))
+    category = models.CharField(max_length=15, choices=Category.choices, default=Category.OTHER)
+    subject = models.CharField(max_length=200)
+    description = models.TextField()
+    status = models.CharField(max_length=15, choices=Status.choices, default=Status.OPEN)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    admin_notes = models.TextField(blank=True, help_text=_("Internal notes for admin"))
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [models.Index(fields=['-created_at', 'status'])]
+        verbose_name = _("Support Ticket")
+        verbose_name_plural = _("Support Tickets")
+    
+    def __str__(self):
+        return f"Ticket #{self.pk} - {self.subject}"

@@ -1,6 +1,16 @@
 {% extends "core/base.html" %}
 {% load i18n %}
 
+{% block title %}{{ service.title }} - Kiri.ng{% endblock %}
+
+{% block og_title %}{{ service.title }}{% endblock %}
+{% block og_description %}{{ service.description|striptags|truncatewords:30 }}{% endblock %}
+{% if service.image %}{% block og_image %}{{ service.image.url }}{% endblock %}{% endif %}
+
+{% block twitter_title %}{{ service.title }}{% endblock %}
+{% block twitter_description %}{{ service.description|striptags|truncatewords:30 }}{% endblock %}
+{% if service.image %}{% block twitter_image %}{{ service.image.url }}{% endblock %}{% endif %}
+
 {% block content %}
 <div class="row">
     <div class="col-lg-8">

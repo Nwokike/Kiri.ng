@@ -177,6 +177,31 @@ body {
     border-bottom: 3px solid var(--primary-green);
 }
 
+/* === Compact Blog Category Header === */
+#sub-nav-blog .nav-link {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#sub-nav-blog .nav-tabs {
+    min-height: auto;
+}
+
+#sub-nav-blog .container-fluid {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    #sub-nav-blog .nav-link {
+        padding: 0.35rem 0.4rem;
+        font-size: 0.75rem;
+    }
+}
+
 /* === Buttons with Logo Colors === */
 .btn-primary {
     background-color: var(--primary-green);
@@ -606,26 +631,29 @@ a,
     background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 0.95rem;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
     box-shadow: 0 4px 12px rgba(44, 85, 48, 0.3);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+}
+
+.pwa-install-button i {
+    font-size: 1.3rem;
 }
 
 .pwa-install-button:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.05);
     box-shadow: 0 6px 16px rgba(44, 85, 48, 0.4);
     background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
 }
 
 .pwa-install-button:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
 }
 
 /* === Google Translate Dropdown Fix === */
@@ -752,8 +780,12 @@ a,
     .pwa-install-button {
         bottom: 90px;
         right: 15px;
-        padding: 10px 20px;
-        font-size: 0.85rem;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .pwa-install-button i {
+        font-size: 1.1rem;
     }
 }
 

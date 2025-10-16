@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.urls import reverse
 from django.utils.html import format_html
-from .models import SEOSettings, IndexNowSubmission
+from .models import SEOSettings, IndexNowSubmission, SupportTicket
 from .indexnow import submit_to_indexnow, ping_search_engines
 from django.contrib.sites.models import Site
 
@@ -92,4 +92,29 @@ class IndexNowSubmissionAdmin(admin.ModelAdmin):
                 self.message_user(request, "Retry completed with errors", messages.WARNING)
         else:
             self.message_user(request, "No failed submissions to retry", messages.INFO)
+
+
+@admin.register(SupportTicket)
+class SupportTicketAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'email', 'category', 'subject', 'status', 'created_at']
+    list_filter = ['status', 'category', 'created_at']
+    search_fields = ['subject', 'description', 'email', 'user__username']
+    readonly_fields = ['created_at', 'updated_at']
+    list_editable = ['status']
+    
+    fieldsets = (
+        ('Ticket Information', {
+            'fields': ('user', 'email', 'category', 'subject', 'description')
+        }),
+        ('Status', {
+            'fields': ('status', 'resolved_at')
+        }),
+        ('Admin Notes', {
+            'fields': ('admin_notes',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
 

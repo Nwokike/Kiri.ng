@@ -28,8 +28,32 @@
             <header class="mb-4">
                 <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
                 <div class="text-muted fst-italic mb-2">{% blocktrans with author=post.author.username publish_date=post.publish|date:"F j, Y" %}Posted on {{ publish_date }} by {{ author }}{% endblocktrans %}</div>
-                {% if post.author == user %}<a href="{% url 'blog:post_edit' post.pk %}" class="btn btn-sm btn-secondary">{% trans "Edit Post" %}</a>{% endif %}
+                <div class="d-flex gap-2 align-items-center">
+                    {% if post.author == user %}
+                    <div class="btn-group btn-group-sm">
+                        <a href="{% url 'blog:post_edit' post.pk %}" class="btn btn-secondary">{% trans "Edit Post" %}</a>
+                        <a href="{% url 'blog:post_delete' post.pk %}" class="btn btn-danger">{% trans "Delete Post" %}</a>
+                    </div>
+                    {% endif %}
+                    <button class="btn btn-outline-primary btn-sm" onclick="sharePost()">
+                        <i class="bi bi-share me-1"></i> {% trans "Share" %}
+                    </button>
+                </div>
             </header>
+            <script>
+            function sharePost() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: '{{ post.title|escapejs }}',
+                        text: '{{ post.meta_description|default:post.body|striptags|truncatewords:20|escapejs }}',
+                        url: window.location.href
+                    }).catch(err => console.log('Error sharing:', err));
+                } else {
+                    navigator.clipboard.writeText(window.location.href);
+                    alert('{% trans "Link copied to clipboard!" %}');
+                }
+            }
+            </script>
             <section class="mb-5 markdown-content">{{ post.body|safe }}</section>
         </article>
         <hr class="my-5">

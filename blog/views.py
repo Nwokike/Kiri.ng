@@ -118,6 +118,19 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
         return response
 
 
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = Post
+    template_name = 'blog/post_confirm_delete.html'
+    success_url = reverse_lazy('marketplace:artisan-dashboard')
+
+    def test_func(self):
+        return self.request.user == self.get_object().author
+
+    def post(self, request, *args, **kwargs):
+        messages.success(self.request, _("Your post has been deleted successfully."))
+        return super().post(request, *args, **kwargs)
+
+
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Comment
     form_class = CommentForm

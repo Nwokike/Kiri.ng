@@ -1,6 +1,16 @@
 {% extends "core/base.html" %}
 {% load i18n marketplace_tags %}
 
+{% block title %}{{ artisan.first_name }} {{ artisan.last_name }} - Artisan Storefront{% endblock %}
+
+{% block og_title %}{{ artisan.first_name }} {{ artisan.last_name }} - Artisan on Kiri.ng{% endblock %}
+{% block og_description %}{% if artisan.profile.bio %}{{ artisan.profile.bio|striptags|truncatewords:30 }}{% else %}Skilled artisan offering quality services on Kiri.ng{% endif %}{% endblock %}
+{% if artisan.profile.profile_picture %}{% block og_image %}{{ artisan.profile.profile_picture.url }}{% endblock %}{% endif %}
+
+{% block twitter_title %}{{ artisan.first_name }} {{ artisan.last_name }} - Artisan on Kiri.ng{% endblock %}
+{% block twitter_description %}{% if artisan.profile.bio %}{{ artisan.profile.bio|striptags|truncatewords:30 }}{% else %}Skilled artisan offering quality services on Kiri.ng{% endif %}{% endblock %}
+{% if artisan.profile.profile_picture %}{% block twitter_image %}{{ artisan.profile.profile_picture.url }}{% endblock %}{% endif %}
+
 {% block content %}
 <div class="card p-4 mb-4">
     <div class="row align-items-center">

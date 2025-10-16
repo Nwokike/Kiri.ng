@@ -2,6 +2,7 @@ from django import forms
 from .models import Post, Comment
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 def validate_image_size(value):
     limit = 2 * 1024 * 1024  # 2MB
@@ -22,6 +23,7 @@ class PostForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-control form-control-lg'}),
             'category': forms.Select(attrs={'class': 'form-select mb-3'}),
             'meta_description': forms.Textarea(attrs={'class': 'form-control mb-3', 'rows': 2, 'maxlength': 160, 'placeholder': _('Brief description for search engines (max 160 characters)')}),
+            'body': CKEditor5Widget(config_name='default'),
         }
         help_texts = {
             'title': _('Choose a catchy and descriptive title for your story or tutorial.'),
