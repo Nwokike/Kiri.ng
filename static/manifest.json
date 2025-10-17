@@ -36,14 +36,21 @@
       "name": "Browse Services",
       "short_name": "Services",
       "description": "Browse artisan services",
-      "url": "/services/",
+      "url": "/marketplace/",
       "icons": [{ "src": "/static/logo-light.png", "sizes": "96x96" }]
     },
     {
       "name": "Academy",
       "short_name": "Learn",
-      "description": "Access learning pathways",
+      "description": "Create or Access learning pathways",
       "url": "/academy/",
+      "icons": [{ "src": "/static/logo-light.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Blog",
+      "short_name": "Blog",
+      "description": "Find tutorials, stories, news and more from other artisans",
+      "url": "/blog/",
       "icons": [{ "src": "/static/logo-light.png", "sizes": "96x96" }]
     }
   ]
