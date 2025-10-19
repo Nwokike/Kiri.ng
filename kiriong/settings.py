@@ -166,6 +166,7 @@ else:
 # --- CKEditor ---
 CKEDITOR_5_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 CKEDITOR_5_FILE_UPLOAD_PERMISSION = 'authenticated'  # Allow authenticated users to upload
+CKEDITOR_5_UPLOAD_URL = '/ckeditor5/image_upload/'
 
 CKEDITOR_5_CONFIGS = {
     'default': {
