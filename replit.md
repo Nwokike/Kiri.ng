@@ -6,6 +6,21 @@ Kiri.ng is a Django-based Progressive Web Application (PWA) that connects Nigeri
 
 The application combines a service marketplace, AI-powered educational academy, community blog, and comprehensive user management into a single cohesive platform optimized for the Nigerian market.
 
+## Recent Changes
+
+**October 19, 2025**
+- Fixed CKEditor 5 blog post editing by adding proper upload URL configuration
+- Enhanced blog sticky header to be more compact with horizontal scrolling categories
+- Implemented AI customer service ticket system with email notifications to users and admin via Brevo
+- Fixed social media sharing (Open Graph tags) to use first carousel image for services
+- Extended password reset token timeout to 24 hours
+- Added markdown rendering support in AI customer service chat interface
+- Implemented fullscreen image modal with carousel navigation for service images
+- Expanded Academy business goals from 8 to 10 options, including "Learn the trade" and "Get certified"
+- Made entire service cards clickable instead of just the button
+- Added complete location display (street address, city, state) on service detail pages with Google Maps integration
+- Service list cards now show only city and state for cleaner display
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
