@@ -46,34 +46,43 @@
 <div class="row" id="services-container">
     {% for service in services %}
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 mb-3 service-card-wrapper" data-location="{{ service.artisan.profile.city|default:service.artisan.profile.state }}">
-            <div class="card h-100 service-card-compact">
-                {% with first_additional=service.additional_images.first %}
-                    {% if first_additional %}
-                        <img src="{{ first_additional.image.url }}" class="card-img-top service-img-compact" alt="{{ service.title }}">
-                    {% elif service.image %}
-                        <img src="{{ service.image.url }}" class="card-img-top service-img-compact" alt="{{ service.title }}">
-                    {% else %}
-                        <div class="d-flex align-items-center justify-content-center service-img-compact" style="background-color: var(--light-bg);">
-                            <i class="bi bi-image text-muted"></i>
+            <a href="{% url 'marketplace:service-detail' pk=service.pk %}" class="text-decoration-none">
+                <div class="card h-100 service-card-compact">
+                    {% with first_additional=service.additional_images.first %}
+                        {% if first_additional %}
+                            <img src="{{ first_additional.image.url }}" class="card-img-top service-img-compact" alt="{{ service.title }}">
+                        {% elif service.image %}
+                            <img src="{{ service.image.url }}" class="card-img-top service-img-compact" alt="{{ service.title }}">
+                        {% else %}
+                            <div class="d-flex align-items-center justify-content-center service-img-compact" style="background-color: var(--light-bg);">
+                                <i class="bi bi-image text-muted"></i>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                    <div class="card-body p-2">
+                        <h6 class="card-title mb-1 text-truncate">{{ service.title }}</h6>
+                        <p class="card-text text-muted small mb-1">
+                            <i class="bi bi-person"></i> {{ service.artisan.username }}
+                        </p>
+                        {% if service.artisan.profile.street_address or service.artisan.profile.city or service.artisan.profile.state %}
+                        <p class="card-text text-muted small mb-1">
+                            <i class="bi bi-geo-alt"></i> 
+                            {% if service.artisan.profile.street_address %}{{ service.artisan.profile.street_address }}, {% endif %}
+                            {% if service.artisan.profile.city %}{{ service.artisan.profile.city }}, {% endif %}
+                            {{ service.artisan.profile.state }}
+                        </p>
+                        {% endif %}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-success fw-bold small">₦{{ service.price|floatformat:0 }}</span>
+                            {% if service.artisan.profile.street_address and service.artisan.profile.city %}
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ service.artisan.profile.street_address|urlencode }},+{{ service.artisan.profile.city|urlencode }},+{{ service.artisan.profile.state|urlencode }}" target="_blank" class="btn btn-outline-secondary btn-sm py-0 px-2" onclick="event.stopPropagation();" title="{% trans 'Find on Google Maps' %}">
+                                <i class="bi bi-map"></i>
+                            </a>
+                            {% endif %}
                         </div>
-                    {% endif %}
-                {% endwith %}
-                <div class="card-body p-2">
-                    <h6 class="card-title mb-1 text-truncate">{{ service.title }}</h6>
-                    <p class="card-text text-muted small mb-1">
-                        <i class="bi bi-person"></i> {{ service.artisan.username }}
-                    </p>
-                    {% if service.artisan.profile.state %}
-                    <p class="card-text text-muted small mb-2">
-                        <i class="bi bi-geo-alt"></i> {{ service.artisan.profile.state }}
-                    </p>
-                    {% endif %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="text-success fw-bold small">₦{{ service.price|floatformat:0 }}</span>
-                        <a href="{% url 'marketplace:service-detail' pk=service.pk %}" class="btn btn-primary btn-sm py-0 px-2">{% trans "View" %}</a>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     {% empty %}
         <div class="col"><div class="alert alert-info">{% trans "No services found." %}</div></div>

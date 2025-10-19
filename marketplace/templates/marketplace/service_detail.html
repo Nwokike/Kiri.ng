@@ -53,6 +53,21 @@
                 </div>
                 <p class="card-text"><small class="text-muted">{% trans "Offered by:" %} <a href="{% url 'users:artisan-storefront' service.artisan.username %}">{{ service.artisan.first_name }} {{ service.artisan.last_name }}</a></small></p>
                 
+                {% if service.artisan.profile.street_address or service.artisan.profile.city or service.artisan.profile.state %}
+                <div class="mb-3">
+                    <h6 class="mb-1"><i class="bi bi-geo-alt-fill text-primary"></i> {% trans "Location" %}</h6>
+                    <p class="text-muted mb-1">
+                        {% if service.artisan.profile.street_address %}{{ service.artisan.profile.street_address }}<br>{% endif %}
+                        {% if service.artisan.profile.city %}{{ service.artisan.profile.city }}, {% endif %}{{ service.artisan.profile.state }}
+                    </p>
+                    {% if service.artisan.profile.street_address and service.artisan.profile.city %}
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ service.artisan.profile.street_address|urlencode }},+{{ service.artisan.profile.city|urlencode }},+{{ service.artisan.profile.state|urlencode }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-map"></i> {% trans "View on Google Maps" %}
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
                 {% if service.artisan.profile.phone_number %}
                 <div class="mt-2 mb-3">
                     <button id="revealPhoneService" class="btn btn-success btn-sm" onclick="revealPhoneService()">
@@ -107,12 +122,30 @@
             <div class="modal-body p-0 position-relative">
                 <button type="button" class="btn-close position-absolute top-0 end-0 m-3 bg-white" data-bs-dismiss="modal" aria-label="Close" style="z-index: 1060;"></button>
                 <img id="fullscreenImage" src="" class="img-fluid w-100" alt="Fullscreen view">
+                {% if service.get_all_images|length > 1 %}
+                <button class="btn btn-light position-absolute start-0 top-50 translate-middle-y ms-3" onclick="navigateFullscreenImage(-1)" style="z-index: 1060; opacity: 0.8;">
+                    <i class="bi bi-chevron-left fs-3"></i>
+                </button>
+                <button class="btn btn-light position-absolute end-0 top-50 translate-middle-y me-3" onclick="navigateFullscreenImage(1)" style="z-index: 1060; opacity: 0.8;">
+                    <i class="bi bi-chevron-right fs-3"></i>
+                </button>
+                <div class="position-absolute bottom-0 start-50 translate-middle-x mb-3 bg-dark bg-opacity-50 text-white px-3 py-1 rounded" style="z-index: 1060;">
+                    <span id="imageCounter">1 / {{ service.get_all_images|length }}</span>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
 
 <script>
+const serviceImages = [
+    {% for image_url in service.get_all_images %}
+    '{{ image_url|escapejs }}'{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
+let currentImageIndex = 0;
+
 function shareService() {
     const shareData = {
         title: '{{ service.title|escapejs }}',
@@ -133,10 +166,25 @@ function shareService() {
 }
 
 function openImageFullscreen(imageUrl) {
-    const fullscreenImg = document.getElementById('fullscreenImage');
-    fullscreenImg.src = imageUrl;
+    currentImageIndex = serviceImages.indexOf(imageUrl);
+    updateFullscreenImage();
     const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
     imageModal.show();
+}
+
+function navigateFullscreenImage(direction) {
+    currentImageIndex = (currentImageIndex + direction + serviceImages.length) % serviceImages.length;
+    updateFullscreenImage();
+}
+
+function updateFullscreenImage() {
+    const fullscreenImg = document.getElementById('fullscreenImage');
+    fullscreenImg.src = serviceImages[currentImageIndex];
+    
+    const counterElement = document.getElementById('imageCounter');
+    if (counterElement) {
+        counterElement.textContent = `${currentImageIndex + 1} / ${serviceImages.length}`;
+    }
 }
 </script>
 {% endblock %}

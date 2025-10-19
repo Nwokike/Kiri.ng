@@ -182,14 +182,19 @@ body {
     padding: 0.25rem 0.5rem;
     font-size: 0.8rem;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: fit-content;
 }
 
 #sub-nav-blog .nav-tabs {
     min-height: auto;
     flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+#sub-nav-blog .nav-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 #sub-nav-blog .container-fluid {
@@ -199,7 +204,7 @@ body {
 
 @media (max-width: 768px) {
     #sub-nav-blog .nav-link {
-        padding: 0.2rem 0.35rem;
+        padding: 0.2rem 0.4rem;
         font-size: 0.7rem;
     }
 }
