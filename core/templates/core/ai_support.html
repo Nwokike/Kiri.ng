@@ -176,13 +176,37 @@ function addMessage(content, type) {
     const header = type === 'user' ? '{% trans "You" %}' : '{% trans "Kiri AI" %}';
     const icon = type === 'user' ? '<i class="bi bi-person-circle"></i>' : '<i class="bi bi-robot"></i>';
     
+    const formattedContent = type === 'ai' ? formatMarkdown(content) : escapeHtml(content);
+    
     messageDiv.innerHTML = `
         <div class="message-header">${icon} ${header}</div>
-        <div class="message-content">${content}</div>
+        <div class="message-content">${formattedContent}</div>
     `;
     
     messagesDiv.appendChild(messageDiv);
     scrollToBottom();
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function formatMarkdown(text) {
+    return text
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+        .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
+        .replace(/(<li>.*<\/li>)/s, function(match) {
+            if (!match.startsWith('<ul>')) {
+                return '<ol>' + match + '</ol>';
+            }
+            return match;
+        });
 }
 
 function scrollToBottom() {

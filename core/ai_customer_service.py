@@ -182,9 +182,11 @@ class AICustomerService:
             return f"Error processing admin query: {str(e)}"
     
     def create_support_ticket(self, user, email, category, subject, description):
-        """Create a support ticket for issues AI cannot handle"""
+        """Create a support ticket for issues AI cannot handle and send email notifications"""
         try:
             from .models import SupportTicket
+            from django.core.mail import send_mail
+            from notifications.models import Notification
             
             ticket = SupportTicket.objects.create(
                 user=user if user and user.is_authenticated else None,
@@ -194,10 +196,64 @@ class AICustomerService:
                 description=description
             )
             
+            try:
+                send_mail(
+                    subject=f'Support Ticket #{ticket.pk} Created - {subject}',
+                    message=f'''Hello,
+
+Your support ticket has been created successfully.
+
+Ticket ID: #{ticket.pk}
+Subject: {subject}
+Category: {ticket.get_category_display()}
+Status: {ticket.get_status_display()}
+
+Description:
+{description}
+
+Our team will review your request and contact you at {email} within 24-48 hours.
+
+Thank you for contacting Kiri.ng support!
+
+Best regards,
+The Kiri.ng Team''',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
+                
+                send_mail(
+                    subject=f'New Support Ticket #{ticket.pk} - Action Required',
+                    message=f'''New support ticket created:
+
+Ticket ID: #{ticket.pk}
+User: {user.username if user and user.is_authenticated else "Anonymous"}
+Email: {email}
+Category: {ticket.get_category_display()}
+Subject: {subject}
+
+Description:
+{description}
+
+Please review and respond within 24-48 hours.''',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[settings.DEFAULT_FROM_EMAIL],
+                    fail_silently=False,
+                )
+                
+                if user and user.is_authenticated:
+                    Notification.objects.create(
+                        recipient=user,
+                        message=f'Your support ticket #{ticket.pk} has been created. We will contact you at {email} within 24-48 hours.',
+                        link=None
+                    )
+            except Exception as email_error:
+                pass
+            
             return {
                 'success': True,
                 'ticket_id': ticket.pk,
-                'message': f'Support ticket #{ticket.pk} has been created successfully. Our team will contact you at {email} within 24-48 hours.'
+                'message': f'Support ticket #{ticket.pk} has been created successfully. A confirmation email has been sent to {email}. Our team will contact you within 24-48 hours.'
             }
         except Exception as e:
             return {

@@ -179,26 +179,28 @@ body {
 
 /* === Compact Blog Category Header === */
 #sub-nav-blog .nav-link {
-    padding: 0.4rem 0.6rem;
-    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: fit-content;
 }
 
 #sub-nav-blog .nav-tabs {
     min-height: auto;
+    flex-wrap: nowrap;
 }
 
 #sub-nav-blog .container-fluid {
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
 }
 
 @media (max-width: 768px) {
     #sub-nav-blog .nav-link {
-        padding: 0.35rem 0.4rem;
-        font-size: 0.75rem;
+        padding: 0.2rem 0.35rem;
+        font-size: 0.7rem;
     }
 }
 

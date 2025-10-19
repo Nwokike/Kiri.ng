@@ -5,11 +5,11 @@
 
 {% block og_title %}{{ service.title }}{% endblock %}
 {% block og_description %}{{ service.description|striptags|truncatewords:30 }}{% endblock %}
-{% if service.image %}{% block og_image %}{{ service.image.url }}{% endblock %}{% endif %}
+{% if service.get_all_images %}{% block og_image %}{{ service.get_all_images.0 }}{% endblock %}{% endif %}
 
 {% block twitter_title %}{{ service.title }}{% endblock %}
 {% block twitter_description %}{{ service.description|striptags|truncatewords:30 }}{% endblock %}
-{% if service.image %}{% block twitter_image %}{{ service.image.url }}{% endblock %}{% endif %}
+{% if service.get_all_images %}{% block twitter_image %}{{ service.get_all_images.0 }}{% endblock %}{% endif %}
 
 {% block content %}
 <div class="row">
@@ -24,7 +24,7 @@
                     </div>
                     <div class="carousel-inner">
                         {% for image_url in service.get_all_images %}
-                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}" style="cursor: pointer;" onclick="openImageFullscreen('{{ image_url }}')">
                             <img src="{{ image_url }}" class="d-block w-100" alt="{{ service.title }}" style="max-height: 500px; object-fit: cover;">
                         </div>
                         {% endfor %}
@@ -101,6 +101,17 @@
     </div>
 </div>
 
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-body p-0 position-relative">
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3 bg-white" data-bs-dismiss="modal" aria-label="Close" style="z-index: 1060;"></button>
+                <img id="fullscreenImage" src="" class="img-fluid w-100" alt="Fullscreen view">
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 function shareService() {
     const shareData = {
@@ -119,6 +130,13 @@ function shareService() {
             prompt('{% trans "Copy this link:" %}', shareUrl);
         });
     }
+}
+
+function openImageFullscreen(imageUrl) {
+    const fullscreenImg = document.getElementById('fullscreenImage');
+    fullscreenImg.src = imageUrl;
+    const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+    imageModal.show();
 }
 </script>
 {% endblock %}

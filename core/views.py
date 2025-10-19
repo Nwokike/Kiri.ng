@@ -45,13 +45,26 @@ def ai_support(request):
 
 @require_POST
 def ai_chat(request):
-    """Handle AI chat messages"""
+    """Handle AI chat messages and support ticket creation"""
     try:
         data = json.loads(request.body)
         user_message = data.get('message', '')
         conversation_history = data.get('history', [])
+        action = data.get('action', 'chat')
         
         ai_service = AICustomerService()
+        
+        if action == 'create_ticket':
+            ticket_data = data.get('ticket_data', {})
+            result = ai_service.create_support_ticket(
+                user=request.user if request.user.is_authenticated else None,
+                email=ticket_data.get('email', ''),
+                category=ticket_data.get('category', 'OTHER'),
+                subject=ticket_data.get('subject', ''),
+                description=ticket_data.get('description', '')
+            )
+            return JsonResponse(result)
+        
         response = ai_service.get_chat_response(
             user_message, 
             user=request.user if request.user.is_authenticated else None,

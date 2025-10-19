@@ -18,6 +18,7 @@ NIGERIAN_STATES = [
 # --- Predefined business goals for artisans ---
 BUSINESS_GOALS = [
     ('', _('Select your business goal...')),
+    ('learn_the_trade', _('Learn the trade and master the skills')),
     ('start_small_business', _('Start a small business from scratch')),
     ('grow_existing_business', _('Grow my existing business')),
     ('learn_marketing', _('Learn marketing and customer acquisition')),
@@ -26,6 +27,7 @@ BUSINESS_GOALS = [
     ('build_online_presence', _('Build an online presence for my business')),
     ('customer_service', _('Improve customer service and retention')),
     ('scale_operations', _('Scale my operations and hire helpers')),
+    ('get_certified', _('Get certified and build professional credentials')),
 ]
 
 # --- Updated GoalForm with predefined dropdown options only ---
