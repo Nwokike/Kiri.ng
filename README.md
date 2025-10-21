@@ -106,7 +106,7 @@ Visit **http://localhost:5000** in your browser.
 ## 🗂️ Complete Project Structure
 
 ```
-kiriong/
+kiri.ng/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml              # CI/CD pipeline for automated deployments
